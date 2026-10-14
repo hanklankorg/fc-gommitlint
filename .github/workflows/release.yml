@@ -25,19 +25,25 @@ permissions:
 
 jobs:
   release:
-    uses: hanklankorg/fc-forge-ci/.github/workflows/release-orchestrator.yml@2a0293c553318e67bde25a5186e16712166d8fd7
+    uses: hanklankorg/fc-forge-ci/.github/workflows/release-orchestrator.yml@e0b5dffd819f495096aeec6e5c58f7d5ae9a3ca5
     permissions:
       contents: write
       packages: write
       id-token: write
       actions: read
-    secrets: inherit
+    # Only what this release uses: GPG signs the Git objects, RELEASE_TOKEN
+    # pushes the release commit and creates the GitHub release.
+    secrets:
+      RELEASE_GPG_PRIVATE_KEY: ${{ secrets.RELEASE_GPG_PRIVATE_KEY }}
+      RELEASE_GPG_PASSPHRASE: ${{ secrets.RELEASE_GPG_PASSPHRASE }}
+      RELEASE_GPG_PUBLIC_KEY: ${{ secrets.RELEASE_GPG_PUBLIC_KEY }}
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
     with:
       branch: main
       forge-ci-binary-ref: v0.90.0-pre
-      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-2a0293c
-      runtime-image-full: ghcr.io/hanklankorg/forge-ci-runtime:sha-2a0293c
-      runtime-image-go: ghcr.io/hanklankorg/forge-ci-runtime-go-1.27:sha-2a0293c
+      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-e0b5dff
+      runtime-image-full: ghcr.io/hanklankorg/forge-ci-runtime:sha-e0b5dff
+      runtime-image-go: ghcr.io/hanklankorg/forge-ci-runtime-go-1.27:sha-e0b5dff
       artifacts-config: test/live/github/artifacts.yml
       changelog-creator: git-cliff
       release-publisher: github-cli
