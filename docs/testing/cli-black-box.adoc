@@ -1,0 +1,1376 @@
+= CLI Black-Box Testing Requirements
+
+This internal document defines black-box test scenarios for the `gommitlint` command-line application.
+The tests execute a built `gommitlint` binary in temporary repositories and assert only observable behavior: exit codes, stdout, stderr, files written, Git hook effects, and process behavior.
+
+Optional background on the method and isolation rationale is in link:https://codefloe.com/itiquette/docs/src/branch/main/development/notes/cli-black-box-testing.adoc[CLI black-box testing].
+This document owns Gommitlint's scenario IDs, fixtures, launcher, prerequisites, acceptance assertions, and release-gate requirements.
+
+== Scope
+
+In scope:
+
+* Root command behavior, command discovery, help, version, flag parsing, suggestions, and shell completion.
+* `validate` behavior for commit messages, refs, ranges, branch comparisons, count selection, rule filters, CI detection, output formats, reports, streams, and exit codes.
+* `config` behavior for discovery, precedence, presets, schema, health checks, managed-source sync, and safe writes.
+* `hook` behavior for local and global installation, removal, status, idempotency, coexistence, and Git workflow blocking.
+* `doctor` behavior as a read-only setup inspection command.
+* Main domain behavior exposed through the CLI: commit parsing, rules, checks, diagnostics, config activation, repository rules, and aggregation.
+* Git-specific edge cases expected from a commit-checking tool.
+* Usability, coherence, idiomatic CLI behavior, and local developer workflow quality.
+* Stability, speed, concurrency, logging, color, theme, localization, preferences, and non-interactive operation.
+
+Out of scope:
+
+* Internal algorithms and helper-level implementation details that are already covered by domain tests.
+* Screenshot or visual regression testing.
+* TUI behavior. Gommitlint is explicitly non-interactive.
+
+== Result Semantics
+
+* `PASS`: the scenario's full observable contract was exercised and matched expectations.
+* `PARTIAL`: only a smoke check or subset passed, not the complete requirement.
+* `BLOCKED` (historically `NEEDS`): the scenario could not execute because a required safe fixture, tool, artifact, or sandbox was unavailable.
+* `FAIL`: executed behavior violated the contract; triage whether the defect belongs to the product or harness.
+
+A release-gate scenario is satisfied only by `PASS`. `PARTIAL`, `BLOCKED`, `NEEDS`, and `FAIL` all require follow-up before claiming release-gate coverage.
+
+Report the exact scenario assertions, selected tier, artifacts, and unresolved requirements with each result.
+Requirements, implemented tests, and successful compilation are not proof that a scenario ran or passed.
+
+== Tracked Black-Box Harness
+
+The link:test-environments.adoc[VM guide] defines the additional native BSD/macOS
+boundary. Linux container and native VM results are reported separately.
+
+The external-binary harness lives under `test/blackbox` with the `blackbox` build tag.
+Untagged tests do not select it. Build tags select tests, not network or filesystem isolation.
+For a separately authorized local run, the supported entry point is:
+
+[source,sh]
+----
+just test-blackbox-container
+----
+
+The recipe is the supported entry point. Before clearing its environment, it
+refuses to run when any supported CI marker is present. It snapshots current
+tracked working-tree content and untracked
+non-ignored files into private state. The snapshot rejects symlinks, special
+files, control/traversal paths, and paths escaping the checkout; `.git`, ignored
+files, caches, and ambient credential paths are not copied. A SHA-256 manifest
+records every copied file and normalized executable/read-only mode.
+The snapshot copies working-tree bytes, not a separate version of each staged blob.
+Keep the checkout stable during capture. A manifest identifies captured content, not an atomic Git revision or authenticated publication.
+
+The sandbox image is prepared separately, by `just test-container-prepare`, which builds it from `Containerfile.sandbox` and records the OCI archive, its SHA-256 sidecar, and a key naming the digest-pinned base, the installed packages, and a hash of the Containerfile under `bin/sandbox-image`.
+That recipe is the only step that reaches a registry; it downloads the base image and its packages.
+The local launcher refuses to start when the recording is absent, fails its checksum, or carries a key that no longer matches the checkout's `Containerfile.sandbox`, and names the recipe that records it.
+It neither rebuilds the image nor runs against a stale one, so a tier run reaches no registry at all.
+The local launcher builds and checksums the source product on the host; that build can download Go dependencies before network-denied execution.
+The sandbox launcher copies and verifies the private source tree and prefetches Go modules on the host.
+It then compiles and runs tagged tests inside rootless Podman with `--network=none`.
+Podman 4 and 5 both work: the container's `HOME` is a plain `/home/sandbox` tmpfs with no `uid=`, `gid=` or `mode=` option, because 4.x rejects `uid=`/`gid=` on `--tmpfs` and fails the whole run with `unknown mount option`.
+The mount takes the default `1777` like `/tmp` and `/run`, which excludes nobody: the container runs a single unprivileged principal under `--network=none`, `--read-only`, `--cap-drop=ALL`, `--security-opt=no-new-privileges` and private ipc/uts.
+
+The container mounts the private source tree and module cache read-only, a writable build cache, and selected artifacts.
+It does not mount the live checkout, host home, or container socket.
+Capability restrictions, private state, and resource limits apply to execution, not the entire host preparation sequence.
+The container timeout defaults to 15 minutes and each Go test invocation to 10 minutes.
+`GOMMITLINT_EXTERNAL_RUN_TIMEOUT` and `GOMMITLINT_EXTERNAL_TEST_TIMEOUT` accept positive integer durations with `s`, `m`, or `h`.
+Product tiers are not executed by active Actions workflows.
+
+The launcher does not inherit ambient `GOMMITLINT_BLACKBOX_*` variables.
+It exposes an explicit allowlist instead:
+
+* `--source-root DIR`, `--source-manifest FILE`, and `--source-manifest-checksum FILE` provide the local launcher's already-hashed private snapshot. If omitted for a direct invocation, the sandbox launcher creates its own private snapshot before compiling tests.
+* `--source-bin FILE` plus `--source-checksum FILE` stage a separately built source binary and set `GOMMITLINT_BLACKBOX_BIN`.
+* `--sandbox-image FILE` plus `--sandbox-image-checksum FILE` provide the verified OCI archive loaded into a fresh private Podman store.
+* `--large-history-budget DURATION` sets the validated `GOMMITLINT_BLACKBOX_LARGE_HISTORY_BUDGET`; values use `ms`, `s`, `m`, or `h`.
+
+File inputs must be regular, non-symlink files already staged under the checkout or `RUNNER_TEMP`; a caller-provided source tree must be under `RUNNER_TEMP`.
+The launcher copies inputs into its private temporary state before verification, assigns read-only or executable-only modes, and mounts only the minimum artifact directory at `/artifacts:ro`.
+It never mounts the original artifact path, host home, container socket, or arbitrary host directory.
+
+The `source` tier runs the recursive integration packages and the whole source-built black-box contract in one sandbox.
+Run this local-only tier with `just test-combined-container`.
+The `distribution` tier runs the same integration packages and black-box contract once per distribution listed in `test/distribution/images`, against that distribution's own packaged git, GnuPG, and OpenSSH.
+Run it with `just test-combined-container-matrix`, or `just test-combined-container-matrix NAME...` for a subset; names outside the list are refused before anything runs.
+Its images come from `just test-container-prepare-distributions`, which builds `test/distribution/Containerfile` over each version-tagged, digest-pinned base, installs the tools with `test/distribution/install-deps.sh`, and records archive, checksum, and key under `bin/distribution-images/NAME`, admitting only that base's registry repository.
+The images carry no Go toolchain, so the local launcher compiles the tagged harnesses on the host from the same snapshot as the product, records them in a checksummed manifest, and never executes them there.
+The sandbox launcher stages and verifies that harness tree like the source snapshot, mounts it read-only under `/artifacts/harness`, and runs each harness from its package directory of the read-only source with the same `--network=none` rootless Podman options as the other tiers, minus the Go module and build caches.
+Each distribution runs in its own private store; a failure does not stop the others, and the run fails when any distribution fails.
+The `blackbox` tier runs that same black-box contract on its own, GPG, SSH, PTY, locale, namespace, and resource-limit scenarios included.
+It requires its tools and fails when they are missing; the sandbox image carries them, so no row is optional and nothing skips.
+A pass covers the selected subset, not every scenario in this document.
+No download token or other secret is forwarded to the launcher or sandbox.
+
+The common exit trap attempts private-state cleanup on success and failure.
+Cleanup failures still fail the run. Abrupt termination can bypass traps.
+Retain approved logs and artifact identities outside temporary state when evidence is needed.
+
+Harness rules:
+
+* Require a separately built `gommitlint` binary.
+  Execute it only as an external process.
+  The harness never builds the product.
+* Do not import `internal/...` product packages from black-box tests.
+* Set isolated `HOME`, XDG paths, `GIT_CONFIG_GLOBAL`, `GIT_CONFIG_NOSYSTEM=1`, `GNUPGHOME`, locale, and non-interactive Git environment per run.
+* Create all repositories, configs, key material, certificates, reports, and managed-source fixtures under `t.TempDir()`.
+* Use run-owned local TLS fixtures for `config sync`; trust only a disposable CA exposed through the child process environment.
+* Use fake sentinel secrets and assert they do not appear in stdout, stderr, vendored files, or rewritten config metadata.
+* Keep GPG/SSH signing, PTY, locale, namespace, and resource-limit scenarios fail-closed; a missing tool or capability fails the tier rather than skipping the scenario. The sandbox image the tier runs in provides them.
+
+The current harness uses the `script(1)` utility for PTY coverage.
+Do not infer complete visual behavior from captured terminal bytes.
+
+== Test Harness Requirements
+
+The product-under-test must not access real user data, host configuration, the real keyring, or external network services.
+Unexpected access is a *harness failure*, not a valid result.
+Read-only runtime files and verified inputs are distinct from writable test state.
+Host preparation necessarily reads source and tools and writes private build/container state. It is not itself an effect-free operation.
+
+[cols="1,4"]
+|===
+|ID |Requirement
+
+|HAR-01
+|Run the separately built, checksum-verified `gommitlint` artifact as an external process. Do not import internal product packages. The harness does not rebuild the product.
+
+|HAR-02
+|Create every repository, config file, HOME, XDG directory, keyring, and temporary report path under an isolated temp directory.
+
+|HAR-02A
+|Never read or write host user/system configuration. Each run must set isolated `HOME`, `XDG_CONFIG_HOME`, `XDG_CACHE_HOME`, `XDG_DATA_HOME`, `GIT_CONFIG_GLOBAL`, and `GIT_CONFIG_NOSYSTEM=1`; all Git config writes must target files under the run temp directory.
+
+|HAR-02B
+|Never touch real host repositories, hook directories, keyrings, package-manager state, or local policy files. Fixtures may read only files created by the run itself or static repository test fixtures copied into the run temp directory.
+
+|HAR-03
+|Set `LANG=C.UTF-8`, `LC_ALL=C.UTF-8`, and `GOMMITLINT_NO_CI_DETECT=1` by default. Enable CI variables only in CI-detection scenarios.
+
+|HAR-04
+|Capture stdout, stderr, exit code, elapsed time, and touched files separately for every command.
+
+|HAR-05
+|Use real Git repositories for Git behavior. Each test must create its own repository and configure user name and email locally.
+
+|HAR-06
+|Treat network access as forbidden unless the scenario explicitly tests `config sync` with a run-owned local HTTPS test server.
+
+|HAR-06A
+|Do not reach real network or real local services. Network-dependent black-box scenarios must use a run-owned in-process fixture bound to loopback with generated content, or be recorded as blocked by the isolation policy.
+
+|HAR-06B
+|Do not fetch real remote configs, keys, package metadata, schemas, or release artifacts during black-box runs. Offline behavior is part of the contract.
+
+|HAR-07
+|Use both `--flag value` and `--flag=value` forms in the matrix for string flags.
+
+|HAR-08
+|Run representative scenarios with stdout attached to a pipe and with stdout attached to a pseudo-terminal when color or human layout is under test.
+
+|HAR-09
+|Tests that assert no writes must snapshot the repository and temp HOME before and after the command.
+
+|HAR-10
+|Performance tests must record repository size, commit count, enabled rules, wall-clock time, and machine class so regressions are explainable.
+
+|HAR-11
+|Keep product writes inside isolated test state and remove run-owned temporary state afterward. Use disposable canaries for boundary assertions. Do not read real `HOME`, XDG data, or keyrings merely to compare before/after snapshots. Cleanup failure is a failure, not proof of leaving no trace.
+
+|HAR-12
+|Prove zero egress and ingress through `.forgejo/scripts/run-external-tests-sandbox.sh`, which uses rootless Podman `--network=none`. Never modify the host firewall. No scenario may depend on the public internet.
+
+|HAR-13
+|Use only fake secrets. Any token, signing key, or `${ENV_VAR}` managed-source credential is a disposable placeholder exported solely into the isolated environment — never a real credential, and never the user's real OS keyring. If a keyring path is exercised, use an in-memory/throwaway Secret Service inside a container or VM.
+
+|HAR-14
+|A real networked run (a live managed source, a real remote, real credentials) is a separate, explicitly opt-in activity. It is never part of this plan and never runs by default or in CI.
+|===
+
+An environment-only wrapper does not satisfy the isolation requirements.
+Do not substitute temporary `HOME` exports, a dead proxy, or raw tagged `go test` for the supported launcher.
+For agent verification, compile the harness without running it, using an unused temporary output directory:
+
+[source,sh]
+----
+(
+  set -eu
+  output_dir=$(mktemp -d "${TMPDIR:-/tmp}/gommitlint-compile.XXXXXX")
+  trap 'rm -rf -- "$output_dir"' EXIT
+  GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off \
+    go test -c -tags=blackbox -buildvcs=false -mod=readonly \
+    -o "$output_dir/gommitlint-blackbox.test" ./test/blackbox
+)
+----
+
+This requires an available local toolchain and dependency cache. It does not execute `TestMain`, scenarios, or the shipped binary.
+
+== Fixture Repositories
+
+[cols="1,4,3"]
+|===
+|ID |Repository shape |Purpose
+
+|FIX-01
+|Non-repository temp directory.
+|Missing Git environment and message-file-only behavior.
+
+|FIX-02
+|Repository with one valid conventional commit.
+|Default success path, help around zero configuration, clean output.
+
+|FIX-03
+|Repository with one invalid non-conventional commit.
+|Validation failure, diagnostics, exit code `1`, multiple output formats.
+
+|FIX-04
+|Repository with a long subject, missing sign-off, bad spelling, and body-policy failures enabled by config.
+|Multiple failures in one commit and verbose guidance.
+
+|FIX-05
+|Repository with `main` and `feature` branches and several feature-only commits.
+|`--base-branch`, fallback branch lists, explicit ranges, branch-ahead behavior.
+
+|FIX-06
+|Repository with merge commits and intentionally non-linear history.
+|Repository-level rules and merge-history reporting.
+
+|FIX-07
+|Repository with empty history or unborn branch where Git supports it.
+|Friendly no-commit and invalid-ref errors.
+
+|FIX-08
+|Repository with detached `HEAD`.
+|Ref handling without current branch assumptions.
+
+|FIX-09
+|Repository with dirty working tree, staged files, and untracked files.
+|Validation must inspect commits and not mutate worktree state.
+
+|FIX-10
+|Repository with local hooks absent, custom hooks present, and Gommitlint hooks present.
+|Hook status, install, remove, overwrite, and coexistence.
+
+|FIX-11
+|Repository with YAML, YML, TOML, explicit config, user config, presets, and local `extends` files.
+|Config discovery, precedence, parsing, and warnings.
+
+|FIX-12
+|Repository with signed, unsigned, trusted, untrusted, and SSH-signed commits when test keys are available.
+|Cryptographic signature policy behavior.
+
+|FIX-13
+|Repository with 100, 1,000, and max-limit-sized histories.
+|Speed, progress, memory stability, and commit-count limits.
+
+|FIX-14
+|Repository path containing spaces, Unicode, shell metacharacters as literal path characters, and symlinked directories.
+|Path handling and shell-safety expectations.
+
+|FIX-15
+|SHA-256 repository created by the system `git init --object-format=sha256`: valid and invalid commits on a feature branch, and SSH-signed and unsigned commits pushed to a SHA-256 bare remote through the installed `pre-push` hook.
+|The system-git adapter path: HEAD and range validation report full 64-hex IDs with the usual exit codes, and pre-push validates only the commits a push introduces, reading signatures from Git's `gpgsig-sha256` header. A Git that cannot create the repository fails the row. The distribution matrix runs it against each distribution's own Git.
+|===
+
+== Global CLI Contract
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|CLI-01
+|Help
+|Run `gommitlint` with no arguments.
+|Exit `64`. Concise usage on stderr, without a stack trace or redundant error line. Explicit help remains exit `0`.
+
+|CLI-02
+|Help
+|Run `gommitlint --help`, `gommitlint help`, and `gommitlint help validate`.
+|Exit `0`; help includes usage, command list, grouped flags, examples, and no validation side effects.
+
+|CLI-03
+|Help
+|Run `gommitlint validate --help`, `config --help`, `config show --help`, `config init --help`, `hook --help`, `hook install --help`, and `doctor --help`.
+|Exit `0`; each help page names accepted flags only for that command and includes examples where documented.
+
+|CLI-04
+|Version
+|Run `gommitlint --version`.
+|Exit `0`; stdout includes version and build date; no repository is required.
+
+|CLI-05
+|Version
+|Run `gommitlint validate --version`.
+|Exit non-zero with command misuse; subcommands do not accept root-only `--version`.
+
+|CLI-06
+|Suggestions
+|Run misspelled command names for `validate`, `config show`, and `hook install`.
+|Exit `2`; stderr includes a clear unknown-command message and a useful suggestion when available.
+
+|CLI-07
+|Flag parsing
+|Run equivalent commands with `--format json` and `--format=json`, `--count 2` and `--count=2`.
+|Observable output and exit code are equivalent.
+
+|CLI-08
+|Flag parsing
+|Pass unexpected positional arguments to root, `validate`, `config show`, `config init`, `config check`, `config schema`, `hook status`, and `doctor`.
+|Exit `2`; error explains that the command does not accept arguments or says which flags to use instead.
+
+|CLI-09
+|Boolean flags
+|Run boolean flags with explicit values, for example `--quiet=true` and `--force=false`, where the parser accepts or rejects them.
+|Behavior is stable and documented by help output; rejected forms fail with command misuse rather than being ignored.
+
+|CLI-10
+|Non-interactive
+|Run every command with stdin closed and with stdin from an empty pipe.
+|No command prompts for input; commands either complete or fail with an actionable error.
+
+|CLI-11
+|Repository path
+|Run `gommitlint --repo-path <repo> validate` from outside the repository.
+|Validation uses the named repository. Other relative paths retain their command-specific bases. `--repo-path` does not restrict global hook operations.
+
+|CLI-12
+|Repository path
+|Run commands against paths with spaces and symlinked paths.
+|Paths are treated as literal paths; errors and reports do not show shell-expanded or truncated paths.
+|===
+
+== Usability, Coherence, and Idiomatic CLI Behavior
+
+These scenarios test whether Gommitlint feels like a coherent Unix-style Git tool, not just whether it returns technically correct data.
+They should be run by asserting output text, but at least one release-candidate pass should also include a human review of the rendered terminal output.
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|UX-01
+|First run
+|Run `gommitlint validate` in a normal repository with no config.
+|The command succeeds or fails based on commits, not setup; output explains what happened without requiring configuration knowledge.
+
+|UX-02
+|Common local flow
+|Run `config init --preset conventional`, `validate`, `hook install`, `doctor`, and a blocked invalid `git commit` in sequence.
+|The commands form a coherent onboarding flow; each next step is discoverable from help, output, or docs.
+
+|UX-03
+|Error language
+|Trigger missing repo, missing config, bad ref, invalid range, bad output format, bad rule name, and unwritable report file.
+|Errors name the problem in user language, avoid internal package names, and include a concrete next action.
+
+|UX-04
+|Progressive disclosure
+|Compare default text output, `-v`, `-vv`, `--format json`, and `--rule-help subject` for the same failure.
+|Default output is concise: one finding line per violation with the inline `GLxxx` prefix, a collapsed tail beyond five violations, and the `--rule-help` hint. `-v` adds curated Expected/Actual context not already stated by the finding plus one remediation help block per rule, keeping passing commits as one-liners. `-vv` renders the complete context map per violation (deduplicated per rule) and check catalogs on passing rules. Machine output stays structured; rule help is educational.
+
+|UX-05
+|Flag consistency
+|Compare equivalent root and command flags across `validate`, `config show`, `config check`, `hook status`, and `doctor`.
+|Global flags behave consistently; command-specific flags do not appear where they do not apply.
+
+|UX-06
+|Input idioms
+|Use files, stdin, refs, ranges, branch names, `--repo-path`, and explicit config paths in realistic shell snippets.
+|Inputs use standard CLI idioms: `-` means stdin/stdout where documented, paths are literal, and no positional surprises occur.
+
+|UX-07
+|Pipe friendliness
+|Pipe JSON to `jq`, plain output to a CSV parser, text output to `grep`, and stderr to a log file.
+|Pipelines work without stderr scraping; stdout contains the data stream and stderr contains diagnostics.
+
+|UX-08
+|Quiet mode
+|Run `--quiet` for pass, validation fail, and infrastructure fail.
+|Quiet mode removes nonessential noise without hiding critical errors or changing exit-code semantics.
+
+|UX-09
+|Color and accessibility
+|Run text and table output with `--color auto`, `always`, `never`, `NO_COLOR=1`, and high-contrast terminal themes.
+|Color supports meaning but is not the only carrier of meaning; no-color output remains fully understandable.
+
+|UX-10
+|Terminal width
+|Run human formats under narrow, normal, and wide pseudo-terminals.
+|Output remains readable; long paths, commit subjects, and help suggestions wrap or truncate gracefully.
+
+|UX-11
+|Help usefulness
+|A user with only `gommitlint --help`, `validate --help`, and `config init --help` should be able to create config and validate a commit.
+|Help examples are executable, current, and do not require undocumented setup.
+
+|UX-12
+|Naming coherence
+|Inspect command names, flag names, rule IDs, check IDs, output field names, and docs examples.
+|Names are consistent: lowercase config-style rule IDs, `GLxxx` public checks, kebab-case flags, and stable JSON keys.
+
+|UX-13
+|Git mental model
+|Test behavior from repo root, subdirectory, detached HEAD, feature branch, and outside repo with `--repo-path`.
+|Behavior matches Git user expectations and does not depend on hidden current-directory assumptions.
+
+|UX-14
+|Recovery commands
+|Trigger outputs that recommend follow-up commands, such as `config check`, `hook install`, `git branch -a`, and `git log --oneline -10`.
+|Recommended commands are safe, specific, copy/pasteable, and relevant to the failure.
+
+|UX-15
+|No false interactivity
+|Run side-effecting commands (`config init`, `hook install`, `hook remove`, `config sync`) in non-interactive CI mode.
+|Commands never prompt; they require explicit flags like `--force` for unsafe overwrites and fail clearly otherwise.
+
+|UX-16
+|Coherent defaults
+|Run a typical valid conventional commit through defaults, `preset:minimal`, `preset:conventional`, `preset:ambitious`, and `preset:secure`.
+|Each preset feels intentional: minimal is low-friction, conventional is recommended, ambitious is stricter, secure emphasizes identity/signature policy.
+|===
+
+== Validation Target Selection
+
+Target-selection precedence is part of the black-box contract because users often combine flags accidentally.
+
+Precedence order:
+
+`--message-file` > `--base-branch` > `--range` > `--ref` > `--count` > default `HEAD`.
+
+The effective base can come from CI detection and outrank an explicit range, ref, or count.
+Keep HAR-03's CI-disable setting for independent target-selection scenarios. Enable CI only for scenarios that explicitly test it.
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|VAL-01
+|Default target
+|Run `gommitlint validate` in `FIX-02`.
+|Exit `0`; validates `HEAD`; no config is required.
+
+|VAL-02
+|Validation failure
+|Run `gommitlint validate` in `FIX-03`.
+|Exit `1`; validation output identifies the failing commit or message and the failing rule/check.
+
+|VAL-03
+|Message file
+|Run `gommitlint validate --message-file msg.txt` with valid and invalid files.
+|Exit `0` for valid message and `1` for invalid message; no Git repository is required for message-only rules.
+
+|VAL-04
+|Stdin message
+|Run `printf 'feat: add api\n' \\| gommitlint validate --message-file -` outside a Git repo.
+|Exit `0`; reads exactly stdin; no prompt; no repository-required error.
+
+|VAL-05
+|Empty message
+|Run `printf '' \\| gommitlint validate --message-file -`.
+|Exit `65`; stderr contains a recovery hint that provides an example subject and file/stdin alternatives.
+
+|VAL-06
+|Message precedence
+|Run `gommitlint validate --message-file msg.txt --base-branch main --range main..HEAD --ref HEAD~1 --count 5`.
+|Only the message file is validated; branch/range/ref/count state does not affect the result.
+
+|VAL-07
+|Base branch precedence
+|Run `gommitlint validate --base-branch main --range main..feature --ref HEAD~1 --count 5`.
+|The base-branch comparison is used rather than the explicit range, ref, or count.
+
+|VAL-08
+|Range precedence
+|Run `gommitlint validate --range main..feature --ref HEAD~1 --count 5`.
+|The explicit range is used rather than the ref or count.
+
+|VAL-09
+|Ref precedence
+|Run `gommitlint validate --ref HEAD~1 --count 5`.
+|The single ref is used rather than count.
+
+|VAL-10
+|Count target
+|Run `gommitlint validate --count 3` in a repository with at least three commits.
+|Exactly the last three commits are validated; summary commit count is `3` in machine-readable output.
+
+|VAL-11
+|Count validation
+|Run `gommitlint validate --count 0`, `--count -1`, and a count greater than configured max.
+|Exit `2` for non-positive counts as CLI misuse and `65` for syntactically valid counts above configured limits; errors are actionable and do not fall back to `HEAD`.
+
+|VAL-12
+|Reference not found
+|Run `gommitlint validate --ref does-not-exist`.
+|Exit `66`; stderr suggests listing branches or recent commits.
+
+|VAL-13
+|Invalid reference syntax
+|Pass shell metacharacters as literal data, for example `--ref 'HEAD; printf injected'`. Never evaluate the test payload as shell code.
+|Exit `65`; no shell command is executed; diagnostic maps to invalid-reference behavior.
+
+|VAL-14
+|Invalid range syntax
+|Run `gommitlint validate --range invalid-range-format`.
+|Exit `65`; message identifies invalid range syntax.
+
+|VAL-15
+|Fallback base branches
+|Run `gommitlint validate --base-branch missing,main,develop` where `main` exists.
+|Uses the first existing candidate; output and diagnostics name the branch actually used when visible.
+
+|VAL-16
+|Missing base branches
+|Run `gommitlint validate --base-branch missing1,missing2`.
+|Exit `66`; recovery hints include branch listing.
+
+|VAL-17
+|No repository
+|Run `gommitlint validate` in `FIX-01`.
+|Exit `69`; stderr says to run inside a Git repository or use `--repo-path`.
+
+|VAL-18
+|Dirty worktree
+|Run `gommitlint validate` in `FIX-09`.
+|Validation result depends only on commits/config; staged and untracked files remain unchanged.
+|===
+
+== Rule Selection and Diagnostics
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|RULE-01
+|Rule filter
+|Run `gommitlint validate --rule subject` on a commit that fails conventional format but passes subject rules.
+|Only the subject rule family is evaluated; conventional failures are not reported.
+
+|RULE-02
+|Rule filter
+|Run `gommitlint validate --rule subject,signoff` and `--rule 'subject, signoff'`.
+|Comma-separated rule names are accepted with optional spaces.
+
+|RULE-03
+|Rule filter
+|Run `gommitlint validate --rule 'subject signoff'`, `--rule ','`, and `--rule '   '`.
+|Exit `2` or configured misuse classification; stderr explains comma separation or that no rule names were found.
+
+|RULE-04
+|Unknown rule
+|Run `gommitlint validate --rule typo` and `--exclude-rule typo`.
+|Exit non-zero; stderr lists valid rule names and suggests `config show`.
+
+|RULE-05
+|Exclude rule
+|Run invalid commit with `--exclude-rule conventional`.
+|Conventional-format errors are absent; remaining configured rules still run.
+
+|RULE-06
+|Rule help
+|Run `gommitlint validate --rule-help subject` outside a Git repository and inside a repository with invalid config.
+|Exit `0`; stdout contains rule help; unrelated repository/config warnings do not contaminate the help output.
+
+|RULE-07
+|Rule help typo
+|Run `gommitlint validate --rule-help subjct`.
+|Exit non-zero; stderr lists valid rule names and suggests `--rule-help <name>`.
+
+|RULE-08
+|GL diagnostics
+|Run known failing commits with verbose text and JSON formats.
+|Text failure lines carry the `GLxxx:` prefix at every verbosity level, and the failure summary groups totals by check ID; JSON includes `diagnostic.id`, `diagnostic.reason`, `diagnostic.category`, and `diagnostic.summary`.
+
+|RULE-09
+|Dispatcher diagnostics
+|Trigger setup or runtime failures such as invalid refs, missing commits, missing repository, and validation failure summary.
+|Failures use stable public `GL9xx` metadata where exposed and render recovery-focused messages to users.
+|===
+
+== Main Domain Expectations
+
+These scenarios exercise the product's core expectations from the outside: a user gives Gommitlint commits, messages, Git state, and configuration; Gommitlint returns pass/fail results with stable diagnostics.
+The tests should use `validate --format json` for precise assertions and one human-readable format for usability assertions.
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|DOM-01
+|Rule defaults
+|Run `validate --format json` with no config on a valid conventional commit with sign-off and no required signature.
+|Default-enabled rules are represented consistently: subject, conventional, commitbody, signoff, spell, branchahead, and cryptosignature policy behavior; default-disabled rules do not fail unless enabled.
+
+|DOM-02
+|Rule activation
+|Enable each default-disabled rule (`identity`, `jirareference`, `linearhistory`) one at a time through config.
+|Each enabled rule affects validation; disabled-by-default behavior is not accidentally enforced before activation.
+
+|DOM-03
+|Rule veto
+|Configure a rule in both `rules.enabled` and `rules.disabled`.
+|Disabled wins; the rule does not run and the result explains active rule state through `config show` or report metadata where exposed.
+
+|DOM-04
+|Check activation
+|Enable one rule-backed `GLxxx` check through `checks.enabled` while the parent rule is otherwise disabled by default.
+|The check can activate its parent rule unless that rule is explicitly disabled. It is not an allowlist that disables every sibling check. Other configured checks can still fail. Check selection does not imply that the rule's execution is restricted to one diagnostic.
+
+|DOM-05
+|Check veto
+|Configure the same rule-backed `GLxxx` ID in `checks.enabled` and `checks.disabled`.
+|Disabled wins; the selected check is not enforced.
+
+|DOM-06
+|Dispatcher check boundaries
+|Try `checks.enabled: [GL901]`, `checks.disabled: [GL901]`, and `checks.disabled` for other dispatcher IDs.
+|Only `checks.disabled: [GL901]` is accepted; unsupported dispatcher activation/deactivation fails config validation.
+
+|DOM-07
+|Commit parsing
+|Validate messages with subject only, subject plus blank-line body, subject plus body without blank line, trailers only, multi-line trailers, empty input, CRLF line endings, and valid UTF-8 non-ASCII text.
+|Parsing produces stable pass/fail outcomes; malformed structure maps to body/subject diagnostics instead of panics or generic errors.
+
+|DOM-08
+|Invalid encoding
+|Validate a commit message containing invalid UTF-8 bytes through a message file.
+|Validation fails with subject/content diagnostic metadata for invalid UTF-8; output remains parseable.
+
+|DOM-09
+|Subject presence
+|Validate empty subject, whitespace-only subject, and normal subject.
+|Missing or empty subject fails with `GL101`; normal subject does not fail presence checks.
+
+|DOM-10
+|Subject length
+|Set `message.subject.max_length` to a small boundary and validate subjects at `max-1`, `max`, and `max+1`.
+|Only `max+1` fails; failure exposes `GL102`, actual length, and expected limit.
+
+|DOM-11
+|Subject case
+|Set `message.subject.case` to `lower`, `upper`, `sentence`, and `any` and validate matching/mismatching subjects.
+|Configured case policy is enforced exactly; `any` disables case failure.
+
+|DOM-12
+|Subject endings
+|Configure forbidden endings and validate subjects ending with `.`, `!`, `?`, comma, and allowed characters.
+|Forbidden suffixes fail with `GL106`; allowed endings pass.
+
+|DOM-13
+|Imperative subject
+|Enable `message.subject.require_imperative` and validate imperative, past-tense, gerund, third-person, and non-verb first words.
+|Non-imperative forms fail with `GL107`; clear imperative examples pass.
+
+|DOM-14
+|Conventional format
+|Validate missing type, missing colon, missing space after colon, empty description, valid scope, and valid no-scope messages.
+|Malformed messages fail with the correct `GL20x` diagnostic; valid conventional subjects pass.
+
+|DOM-15
+|Conventional type allow-list
+|Configure `conventional.types` and validate allowed, disallowed, uppercase, and unknown types.
+|Only configured lowercase allowed types pass; disallowed type failures expose `GL202`.
+
+|DOM-16
+|Conventional scope policy
+|Enable `conventional.require_scope`, configure `conventional.scopes`, and test missing, allowed, disallowed, and multi-scope values.
+|Missing scope fails with `GL206`; disallowed scope fails with `GL207`; multi-scope behavior follows `allow_multi_scope`.
+
+|DOM-17
+|Breaking marker policy
+|Set `conventional.disallow_breaking` and validate `feat!:`, `feat(api)!:`, and non-breaking equivalents.
+|Breaking markers fail only when disallowed and report `GL209`.
+
+|DOM-18
+|Conventional description length
+|Set `conventional.max_description_length` and validate boundary descriptions.
+|Only descriptions over the limit fail with `GL203`; length applies to the description, not the whole subject prefix.
+
+|DOM-19
+|Commit body required
+|Enable `message.body.required` and validate missing body, short body, body at minimum length, and body over minimum length.
+|Missing body fails with `GL303`; short body fails with `GL304`; valid bodies pass.
+
+|DOM-20
+|Commit body separation
+|Validate a message with subject immediately followed by body text without a blank line.
+|Fails with `GL302` or the documented body-structure diagnostic; guidance explains blank-line separation.
+
+|DOM-21
+|Commit body line length
+|Configure `message.body.max_line_length` and validate body lines at and over the boundary, including an over-limit line holding a single unbreakable token.
+|Only over-limit multi-word body lines fail with `GL305`; single-token lines pass; output identifies offending width context.
+
+|DOM-22
+|Sign-off required
+|Validate messages with no sign-off, malformed sign-off, valid sign-off, duplicate signers, and multiple distinct signers with `min_signoff_count` set.
+|Missing, malformed, misplaced, and insufficient sign-offs fail with `GL421`-`GL424` as appropriate.
+
+|DOM-23
+|Trailer ordering
+|Validate messages where `Signed-off-by:` and `Refs:` trailers appear before body content, after body content, and in conflicting order.
+|Trailer placement rules fail deterministically; normal Git trailer ordering passes.
+
+|DOM-24
+|JIRA reference presence
+|Enable `jirareference` and validate references in subject, body, both, ignored patterns, and absent references.
+|Presence requirements follow `jira.require_in_subject`, `jira.require_in_body`, and ignore patterns.
+
+|DOM-25
+|JIRA key format
+|Validate malformed keys, lowercase prefixes, invalid project prefixes, `Refs:` trailer casing, and `Refs:` after sign-off.
+|Invalid references fail with the relevant `GL404`-`GL409`; configured allowed prefixes are enforced.
+
+|DOM-26
+|JIRA config validation
+|Configure malformed ignore regexes and invalid project-prefix settings.
+|Config validation reports `GL410` or config-health errors instead of silently ignoring the bad rule config.
+
+|DOM-27
+|Spell checking
+|Validate common misspellings, words in `spell.ignore_words`, US/UK spelling variants under each locale setting, code-like tokens, URLs, and email addresses.
+|Actual misspellings fail with `GL601`; ignored words and accepted locale variants pass; output does not over-report code tokens.
+
+|DOM-28
+|Cryptographic signature required
+|Set `crypto_signature.required` true and false and validate unsigned commits.
+|Unsigned commits fail with `GL501` only when signatures are required.
+
+|DOM-29
+|Signature type policy
+|Validate GPG-signed, SSH-signed, malformed-signature, and unsupported-signature commits with `require_gpg`, `require_ssh`, and `verify_format` combinations.
+|Signature type and format failures map to `GL502`-`GL504`; mutually incompatible config fails configuration validation.
+
+|DOM-30
+|Signing key inventory policy
+|Configure missing key directories, unloadable keys, no eligible keys, weak keys where fixtures allow, and allowed signer filters.
+|Key setup and inventory-policy failures map to `GL505`-`GL507` or documented permission/config exit codes. Passing does not establish that an eligible key signed the commit; `GL508` remains reserved.
+
+|DOM-31
+|Identity allow-list
+|Enable `identity` with exact email, wildcard domain, case variants, disallowed author, and malformed allow-list entries.
+|Allowed identities pass; disallowed identity fails with `GL520`; malformed config fails with `GL521` or config-health error.
+
+|DOM-32
+|Branch-ahead boundary
+|Set `repo.max_commits_ahead` and validate branches at below, equal, and above the limit.
+|Only above-limit branches fail with `GL701`; missing or unreadable base branch reports `GL702`-`GL704` as appropriate.
+
+|DOM-33
+|Linear history
+|Enable `linearhistory` and validate linear history, merge commits, octopus merges where Git permits, and revert commits.
+|Merge commits fail with `GL710`; non-merge history and normal revert commits pass unless another rule fails.
+
+|DOM-34
+|Ignore commits
+|Configure ignored full SHAs, abbreviated SHAs, invalid SHA strings, and duplicate ignore entries.
+|Matching commits are skipped and counted; invalid ignore entries produce warnings without causing unrelated validation failure.
+
+|DOM-35
+|Fixup and squash commits
+|Validate `fixup!`, `squash!`, and normal commits with `allow_fixup_commits` true and false.
+|Fixup/squash commits fail with `GL901` by default. Allowing them, or disabling GL901, skips all commit rules for those commits, including identity and signature policy. Repository rules can still fail. Include `amend! ` in the same dispatcher policy coverage.
+
+|DOM-36
+|Aggregation
+|Validate a range containing passing commits, failing commits, ignored commits, and repository-rule failures.
+|Summary counts are internally consistent across text, plain, table, JSON, and CI formats.
+
+|DOM-37
+|Warning propagation
+|Create config warnings such as invalid ignore commits or deprecated/unknown fields where supported.
+|Warnings appear in structured output and stderr according to the stream contract without changing pass/fail unless policy says they should.
+
+|DOM-38
+|Determinism
+|Run the same domain scenario repeatedly with identical repository state and config.
+|Rule ordering, diagnostic IDs, summaries, and JSON field shapes remain stable except documented timestamps.
+
+|DOM-39
+|Rules versus checks names
+|Use lowercase rule IDs in `rules.*`, public `GLxxx` IDs in `checks.*`, and invalid cross-use such as rule IDs in `checks.*`.
+|Valid names work; invalid names fail with clear config diagnostics and no compatibility aliases.
+
+|DOM-40
+|Repository-rule isolation
+|Run message-file validation with repository rules enabled and with `--ignore-repo-rules`.
+|Message-only validation does not require repository context for commit-message rules; repository rules are skipped or explicitly reported according to output format.
+|===
+
+== Output, Streams, Color, and Preferences
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|OUT-01
+|Streams
+|Run `gommitlint validate --format json --log-level debug` on passing and failing repositories.
+|stdout is valid JSON; debug logs go to stderr; stderr redirection never corrupts stdout.
+
+|OUT-02
+|Streams
+|Run text, plain, table, github, gitlab, and forgejo formats with validation failures.
+|Validation report is on stdout; command diagnostics and logs are on stderr.
+
+|OUT-03
+|Quiet
+|Run `gommitlint --quiet validate` on passing, failing, and infrastructure-error scenarios.
+|Passing validation is silent; errors still surface enough information to diagnose the failure.
+
+|OUT-04
+|Verbose ladder
+|Run default, `-v`, `--verbose`, and `-vv` on the same failing commit.
+|Output becomes progressively more detailed; `-v` and `--verbose` are equivalent; `-vv` adds the full context map and check catalogs on passing rules.
+
+|OUT-05
+|Verbose misuse
+|Run a combined `-v --verbose`, then more than two verbose occurrences.
+|The aliases share one count. Two occurrences select verbose level 2. More than two fails with misuse, rather than silently adding detail.
+
+|OUT-06
+|JSON schema
+|Run `gommitlint validate --format json` for pass, fail, message-only, ignored commits, and repository-rule failures.
+|JSON parses successfully and contains stable top-level `summary`, `metadata`, `warnings`, `commits`, and `repository` fields as applicable.
+
+|OUT-07
+|Plain format
+|Run `gommitlint validate --format plain` with commas and newlines in commit subjects/messages.
+|Output is six-column headerless RFC-4180 CSV, with record type in the first column and `SUMMARY,<status>,...` for summaries. Parse CSV records, not physical lines: quoted fields can contain newlines.
+
+|OUT-08
+|Table format
+|Run `gommitlint validate --format table` in narrow and wide terminals where a pseudo-terminal is available.
+|Columns remain readable; no panic; summary remains present.
+
+|OUT-09
+|CI formats
+|Run `--format github`, `--format forgejo`, and `--format gitlab`.
+|GitHub and Forgejo output workflow annotations; GitLab output section markers; config warnings are represented in each format.
+
+|OUT-10
+|Report file
+|Run `gommitlint validate --format json --report-file report.json`.
+|Report is written to the file; stdout contains no duplicate report; exit code still reflects validation status.
+
+|OUT-11
+|Report stdout marker
+|Run `gommitlint validate --report-file -`.
+|Report is written to stdout exactly as if no report file was set.
+
+|OUT-12
+|Report path failure
+|Run `--report-file` pointing at an unwritable path or directory.
+|Exit non-zero; stderr says to check the report path or use `--report-file -`.
+
+|OUT-13
+|Color auto
+|Run default text output to a pipe and to a TTY.
+|Piped output has no ANSI color under `auto`; TTY output may colorize.
+
+|OUT-14
+|Color overrides
+|Run `--color always`, `--color never`, `NO_COLOR=1`, and `TERM=dumb`.
+|`always` permits color unless `NO_COLOR` is nonempty or `TERM=dumb`. `never` also suppresses color. An empty `NO_COLOR` value is not a suppression request.
+
+|OUT-15
+|Theme
+|Run all supported themes with `--color always` on pass and fail output.
+|Every theme renders without panic, keeps text readable, and preserves semantic content.
+
+|OUT-16
+|Unsupported output option
+|Run unsupported `--format`, `--color`, `--theme`, and `--log-level` values.
+|Exit `2`; stderr names accepted values and gives a recovery hint.
+
+|OUT-17
+|Job summary
+|Run GitHub-compatible format with `GITHUB_STEP_SUMMARY` set to an absolute writable file.
+|The job summary file is created or overwritten with Markdown, not appended. Invalid relative summary paths are ignored. Summary-write failures are nonfatal debug diagnostics. Check an existing marker is replaced rather than treating file existence as proof of correct writes.
+
+|OUT-18
+|SARIF format
+|Run `gommitlint validate --format sarif` in history mode and with `--message-file`, in a non-English locale.
+|Output is valid SARIF 2.1.0 with English messages regardless of locale; rules carry GLxxx descriptors from the check catalog; `--message-file` results anchor to the file with line regions while history results use logical commit locations; fingerprints are stable across identical runs.
+|===
+
+== Configuration and Preferences
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|CFG-01
+|Discovery
+|Run with no config, project `.gommitlint.yaml`, `.gommitlint.yml`, `.gommitlint.toml`, and XDG user config.
+|Discovery follows documented precedence; `config show` reports source and effective rules.
+
+|CFG-02
+|Explicit config
+|Run `gommitlint --config custom.yaml validate`.
+|Defaults plus the explicit file and its imports are loaded. Discovered project and user files are bypassed, not merged beneath the explicit file. Verbose text can identify the explicit source.
+
+|CFG-03
+|Ignore config
+|Run `gommitlint --ignore-config validate` in a repo with a strict project config.
+|Built-in defaults are used; project/user config warnings and rule overrides are ignored.
+
+|CFG-04
+|Bad explicit config
+|Run with a missing or malformed file passed to `--config`.
+|Missing named file exits `66`; malformed named file exits `78`; stderr is actionable.
+
+|CFG-05
+|Bad discovered config
+|Place malformed auto-discovered config in the repo and run `validate` and `config check`.
+|Validation degrades according to documented warning behavior; `config check` reports health problems clearly.
+
+|CFG-06
+|Config show formats
+|Run `config show --format text`, `json`, and `yaml` with compact and verbose views.
+|Text is readable. JSON has a version-1 inspection envelope with source/provenance fields and direct settings under `config`. YAML exports sanitized settings under `gommitlint:`, without that envelope or provenance fields. Test the two schemas separately.
+
+|CFG-07
+|Config check formats
+|Run `config check --format text`, `json`, and `yaml` against healthy and unhealthy managed-source configs.
+|Outputs include issue codes, managed-source status, warnings, and recommended next commands where applicable.
+
+|CFG-08
+|Config init default
+|Run `config init` in an empty directory.
+|Creates `.gommitlint.yaml`; refuses overwrite on second run unless `--force` is used.
+
+|CFG-09
+|Config init presets
+|Run `config init --preset minimal`, `conventional`, `ambitious`, and `secure`.
+|Each writes a small config that extends the selected preset; unknown preset exits non-zero with valid choices.
+
+|CFG-10
+|Config init output
+|Run `config init --stdout`, `config init --output custom.yaml`, and `config init -o -`.
+|Stdout mode writes no file; output path writes only the requested file; `-o -` matches stdout behavior.
+
+|CFG-11
+|Config schema
+|Run `config schema` and `config schema --compact`.
+|Both outputs are valid JSON; compact output is single-line; schema reflects running binary.
+
+|CFG-12
+|Config sync dry run
+|Run `config sync --dry-run` against a local HTTPS fixture with valid integrity.
+|Fetch and verify occur; vendored file and config metadata are not written.
+
+|CFG-13
+|Config sync check
+|Run `config sync --check` when vendored files are current and stale.
+|The command fetches selected sources even with `--check`. Current copies exit `0`, while missing/stale copies fail without refresh. Use the run-owned HTTPS fixture, not a real source.
+
+|CFG-14
+|Config sync source
+|Run `config sync --source team-policy` with multiple managed sources.
+|Only the named source is fetched or checked; unknown source fails clearly.
+|===
+
+== Git Checker Behavior
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|GIT-01
+|HEAD validation
+|Validate `HEAD` on normal branch, detached `HEAD`, and repository in subdirectory.
+|Correct commit is validated; repository discovery walks up from subdirectories unless `--repo-path` overrides it.
+
+|GIT-02
+|Ref resolution
+|Validate branch names, tags, full SHA, abbreviated SHA, `HEAD~1`, and `HEAD^`.
+|Supported refs resolve; missing refs exit `66`; invalid syntax exits `65`.
+
+|GIT-03
+|Range resolution
+|Validate `main..feature`, SHA ranges, empty ranges, and ranges where one side is missing.
+|Non-empty ranges validate expected commits; empty ranges produce a stable documented result; missing refs exit `66`.
+
+|GIT-04
+|Branch comparison
+|Validate feature branch against `main` and `origin/main` where available.
+|Only commits reachable from feature and not base are validated.
+
+|GIT-05
+|Branch ahead
+|Enable branch-ahead policy and vary ahead counts below, at, and above limit.
+|Pass/fail boundary is exact; diagnostics name configured base and actual count.
+
+|GIT-06
+|Linear history
+|Enable linear-history policy on linear and merge-history repositories.
+|Merge history fails when policy requires linear history; linear history passes.
+
+|GIT-07
+|Ignore commits
+|Configure full and abbreviated ignored SHAs, invalid ignore patterns, and non-matching SHAs.
+|Ignored commits are skipped and counted; invalid patterns warn without silently failing validation.
+
+|GIT-08
+|Signed commits
+|Validate signed and unsigned commits with signature policy disabled, optional, and required.
+|Unsigned commits fail only when required; signed commits are checked against configured constraints.
+
+|GIT-09
+|Identity
+|Enable identity rules and validate allowed, denied, malformed, and missing author identities.
+|Author checks match config; messages expose helpful expected/actual context.
+
+|GIT-10
+|Repository mutation
+|Run every read-only command in a dirty repo.
+|`validate`, `config show`, `config check`, `hook status`, and `doctor` do not change index, worktree, refs, or hooks.
+
+|GIT-11
+|Path safety
+|Run with config paths, message files, repo paths, and refs containing traversal, null bytes where representable, and shell metacharacters.
+|Dangerous inputs are rejected or treated as literals; no shell expansion or path escape occurs.
+
+|GIT-12
+|Large history
+|Validate histories around 100 and 1,000 commits using `--count` and explicit ranges.
+|Runtime remains within agreed budget; progress/logging does not corrupt stdout; memory usage is bounded.
+|===
+
+== Hook Workflow Behavior
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|HOOK-01
+|Status
+|Run `gommitlint hook status` before installation.
+|Exit `0`; output reports missing local hooks without modifying files.
+
+|HOOK-02
+|Install local
+|Run `gommitlint hook install` in a repository without hooks.
+|Creates executable `commit-msg` and `pre-push` hooks; output explains installed hooks and policy.
+
+|HOOK-03
+|Idempotency
+|Run `gommitlint hook install` twice.
+|Second run reports the existing Gommitlint hooks clearly, exits non-zero without `--force`, and does not duplicate hook content.
+
+|HOOK-04
+|Existing custom hook
+|Create a non-Gommitlint `commit-msg` hook and run `hook install` without `--force`.
+|Existing hook is not overwritten; command fails or reports required `--force` action clearly.
+
+|HOOK-05
+|Force install
+|Run `hook install --force` over an existing hook.
+|Existing Gommitlint-managed hooks are replaced only when explicitly forced; custom non-Gommitlint hooks are preserved even with `--force` and require explicit manual action.
+
+|HOOK-06
+|Remove local
+|Run `hook remove` after local install.
+|Gommitlint hooks are removed; unrelated hooks are preserved.
+
+|HOOK-07
+|Global install
+|Run `hook install --global` with isolated HOME and global Git config.
+|Dispatcher pattern is created under the isolated global hook path; global `core.hooksPath` is set there.
+
+|HOOK-08
+|Global remove
+|Run `hook remove --global`.
+|Gommitlint global plugins are removed; dispatcher/unrelated plugins remain where expected; `core.hooksPath` is restored or unset safely.
+
+|HOOK-09
+|Commit blocking
+|Install hooks, then attempt valid and invalid `git commit` commands.
+|Valid commit succeeds; invalid message is blocked by `commit-msg` with helpful output.
+
+|HOOK-10
+|Push blocking
+|Install hooks and push signed/unsigned commits to a local bare remote with signature policy required.
+|Push is blocked only when configured signature policy fails; `--no-verify` bypass remains Git's behavior.
+
+|HOOK-11
+|Installed-binary fallback
+|Run installed hooks with `gommitlint` absent from PATH, first with the binary recorded at install time available and then with it removed.
+|The recorded binary performs validation when available; when neither binary is available the hook fails closed unless `GOMMITLINT_HOOK_MISSING=skip` explicitly permits a warning and bypass.
+
+|HOOK-12
+|Hook debug
+|Run hooks with `GOMMITLINT_DEBUG=1`.
+|Debug diagnostics go to stderr and do not corrupt Git's expected hook behavior.
+
+|HOOK-13
+|SHA-256 pre-push
+|Push SSH-signed and unsigned commits from a SHA-256 repository to a SHA-256 bare remote through the installed hook (FIX-15), with an unsigned commit already on the remote via `--no-verify`.
+|Commits already on the remote are excluded; a signed push passes and moves the remote; an unsigned commit is refused and named, and the remote keeps its tip.
+|===
+
+== Doctor Command Behavior
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|DOC-01
+|Read-only inspection
+|Run `gommitlint doctor` before and after hook installation.
+|Exit `0`; reports repository path, configuration source, hook status, policy, and next steps; no files are modified.
+
+|DOC-02
+|Repository path
+|Run `gommitlint --repo-path <repo> doctor` from outside the repository.
+|Reports the named repository rather than current directory.
+
+|DOC-03
+|Warnings
+|Run `doctor` with config warnings present.
+|Warnings count is accurate; next steps suggest `gommitlint config check`.
+
+|DOC-04
+|No repository
+|Run `doctor` outside a repository.
+|Exit `69` or documented repository-unavailable code; message tells user how to specify a repository.
+|===
+
+== CI Behavior
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|CI-01
+|CI disabled default
+|Run with `GOMMITLINT_NO_CI_DETECT=1`.
+|No CI environment changes target selection or output format.
+
+|CI-02
+|GitHub detection
+|Set representative GitHub Actions pull-request environment variables and run `validate` without explicit format/base branch.
+|Uses GitHub-compatible output and detected base branch; explicit `--format` and `--base-branch` override detection.
+
+|CI-03
+|Forgejo detection
+|Set representative Forgejo or Gitea Actions variables.
+|Uses Forgejo/GitHub-compatible annotations where documented.
+
+|CI-04
+|GitLab detection
+|Set representative GitLab CI merge-request variables.
+|Uses GitLab section output and detected base branch where available.
+
+|CI-05
+|No CI detect flag
+|Run with CI variables plus `--no-ci-detect` or `GOMMITLINT_NO_CI_DETECT=1`.
+|Explicit disable wins; command behaves like local validation.
+
+|CI-06
+|Pipeline parsing
+|Pipe JSON to `jq`, plain output to a CSV parser, and CI annotations to log capture.
+|Output is parseable without scraping stderr.
+|===
+
+== Stability, Speed, and Concurrency
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|STAB-01
+|Repeated runs
+|Run the same validation command 100 times in the same repository.
+|Exit code and stdout/stderr content are stable except timestamps or documented ordering.
+
+|STAB-02
+|Parallel validation
+|Run 20 `gommitlint validate --format json --count 10` processes concurrently against the same read-only repository.
+|All processes complete; no data races are visible as output corruption, lockups, or mutated repo state.
+
+|STAB-03
+|Parallel isolated repos
+|Run validations concurrently across 20 independent repositories with different configs.
+|No cross-test leakage through HOME, XDG, cache, logs, hooks, or global Git config.
+
+|STAB-04
+|Cancellation
+|Send SIGINT, SIGQUIT, and SIGTERM to a long-running validation.
+|Process exits with documented `130`, `131`, or `143`; partial output remains parse-safe when possible.
+
+|STAB-05
+|Panic boundary
+|Trigger any available production-relevant fault-injection or unsupported subsystem failure scenario. Do not add test-only panic switches to the product binary.
+|Unrecovered panic exits `70` with internal-error text on stderr; no Go default exit `2` panic leak. If no natural black-box trigger exists, record this scenario as `BLOCKED` and keep unit-level panic recovery coverage at the process boundary.
+
+|STAB-06
+|Performance budget
+|Validate `FIX-13` with default rules, JSON output, and text output.
+|Records commit count, enabled rules, wall-clock time, repository size, and machine class. Meets agreed wall-clock budget when `GOMMITLINT_BLACKBOX_LARGE_HISTORY_BUDGET` is set; otherwise no superlinear slowdown beyond expected Git traversal cost is investigated from the recorded timing.
+
+|STAB-07
+|Resource limits
+|Run under low file-descriptor and constrained-memory conditions where practical.
+|Fails gracefully with classified exit code and recovery message rather than hanging or corrupting output.
+
+|STAB-08
+|No network
+|Run all commands except `config sync` with network blocked.
+|Commands do not attempt network access and do not wait on network timeouts.
+|===
+
+== Security and Safety
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|SEC-01
+|No shell injection
+|Use refs, branch names, config paths, repo paths, author names, and commit messages containing shell metacharacters.
+|No shell command is executed; inputs are either rejected or treated as data.
+
+|SEC-02
+|Path traversal
+|Use `../` paths for message files, configs, report files, hook paths via Git config, and managed-source destinations.
+|Dangerous paths are rejected or constrained to documented safe locations.
+
+|SEC-03
+|Secrets in output
+|Put token-like values in config source URLs, environment-managed source strings, and commit messages.
+|Logs and diagnostics do not reveal more secret material than the documented output contract permits.
+
+|SEC-04
+|Core dump preference
+|Run with and without `--allow-coredumps` or `GOMMITLINT_ALLOW_COREDUMPS=1`.
+|Default path attempts residue minimization; debug logging explains unavailable defenses without failing normal validation.
+
+|SEC-05
+|Permissions
+|Use unreadable config files, unwritable report files, and inaccessible key directories.
+|Exit codes classify no-input, no-permission, config, or unavailable failures correctly.
+
+|SEC-06
+|Terminal control characters
+|Validate commits and message files containing ANSI escapes, OSC hyperlinks, carriage returns, backspaces, tabs, and other control characters in subject, body, trailers, author names, and branch names.
+|Human output must not allow terminal spoofing or hidden text; machine output must remain valid and faithfully escaped.
+
+|SEC-07
+|CI annotation injection
+|Validate commit messages containing GitHub workflow commands (`::error::`), GitLab section markers, newlines, `%0A`, `%0D`, commas, colons, and bracket-like payloads.
+|GitHub, Forgejo, and GitLab formats escape payloads so commits cannot create forged annotations or sections.
+
+|SEC-08
+|JSON and plain escaping
+|Validate messages containing quotes, backslashes, Unicode separators, newlines, commas, and invalid-looking JSON fragments.
+|JSON parses as JSON. Plain output parses as RFC-4180 CSV with quoted fields, including embedded newlines. Assert logical records through a CSV parser, not line splitting.
+
+|SEC-09
+|Managed-source integrity
+|Run `config sync` against local HTTPS fixtures with matching SHA-256, mismatched SHA-256, redirects, missing integrity, and changed content after first sync.
+|Only verified content is written; mismatches fail without replacing the vendored file; `--check` never writes.
+
+|SEC-10
+|Managed-source secrets
+|Use `${ENV_VAR}` managed-source URLs and headers containing token-like values.
+|Secrets are sent only where configured, are not written to config/resolved metadata, and are redacted or absent from stdout/stderr/logs.
+
+|SEC-11
+|HTTPS and header policy
+|Configure managed sources with custom headers over rejected `http://` sources and a run-owned local HTTPS fixture.
+|Headers over insecure URLs are rejected before fetch; safe local HTTPS behavior follows documented policy.
+
+|SEC-12
+|Hook installation safety
+|Install and remove hooks in repositories with symlinked hook paths, read-only hook directories, existing custom hooks, and global Git config pointing outside isolated HOME.
+|Gommitlint preserves unrelated hooks even with `--force`, rejects unsafe hook paths, and reports permission failures clearly. Only existing Gommitlint-managed hooks are replaceable through that flag.
+
+|SEC-13
+|Global state isolation
+|Run global hook and XDG config commands with isolated `HOME`, `XDG_CONFIG_HOME`, `GIT_CONFIG_GLOBAL`, and `GIT_CONFIG_NOSYSTEM=1`.
+|Only the isolated test environment changes; user/system Git config is not read or modified.
+|===
+
+== Documentation, Localization, and Distribution Parity
+
+[cols="1,2,4,4"]
+|===
+|ID |Area |Scenario |Expected observable result
+
+|DOCS-01
+|Docs parity
+|Compare `gommitlint --help`, command help, generated command docs, and manpage command lists.
+|Public commands, flags, defaults, formats, and examples agree.
+
+|DOCS-02
+|Shell completion
+|Generate bash, zsh, and fish completions.
+|Completions include root commands, subcommands, flags, formats, color modes, themes, and rule names.
+
+|DOCS-03
+|Locale
+|Run representative commands under English and Swedish locales where translations are installed.
+|Output is localized where supported; machine-readable JSON keys and exit codes remain stable.
+
+|DOCS-04
+|Package parity
+|Run the same smoke matrix for source-built binary, release archive binary, package-installed binary, and container image where available.
+|CLI behavior and version metadata are consistent for the same release.
+|===
+
+== Minimum Release Gate
+
+A release candidate should not ship unless these black-box groups report `PASS` on at least one supported Linux architecture:
+
+* `CLI-01` through `CLI-12`
+* `UX-01` through `UX-16`
+* `VAL-01` through `VAL-18`
+* `RULE-01` through `RULE-09`
+* `DOM-01` through `DOM-40`
+* `OUT-01` through `OUT-17`
+* `CFG-01` through `CFG-11`
+* `GIT-01` through `GIT-12`
+* `HOOK-01` through `HOOK-09`
+* `DOC-01` through `DOC-04`
+* `CI-01`, `CI-05`, and `CI-06`
+* `STAB-01`, `STAB-02`, `STAB-04`, `STAB-06`, and `STAB-08`
+* `SEC-01` through `SEC-13`
+* `DOCS-01` and `DOCS-02`
+
+This membership is a requirement, not proof that the ordinary `blackbox` tier exercises every listed case.
+Some listed color, terminal, key, or platform assertions need separately recorded evidence.
+Do not convert a missing assertion or excluded test into `PASS` because the selected test process exited zero.
+
+The remaining scenarios should run locally during pre-release hardening because they require optional tools, test keys, local TLS fixtures, package images, or more expensive environments.
+
+== Traceability
+
+[cols="1,4"]
+|===
+|Source |Contract used by this test plan
+
+|`docs/modules/ROOT/pages/cli-conventions.adoc`
+|Non-interactive behavior, stream separation, color rules, exit codes, configuration discovery, and no telemetry.
+
+|`docs/modules/ROOT/pages/reference/commands.adoc`
+|Command syntax, flags, formats, environment variables, and exit-code table.
+
+|`docs/modules/ROOT/pages/tutorial.adoc`
+|Expected local workflows for validation, config init, hooks, doctor, output formats, CI, and troubleshooting.
+
+|`docs/modules/ROOT/pages/usecases/commit-range-validation.adoc`
+|Range, branch, and count validation scenarios.
+
+|`docs/modules/ROOT/pages/usecases/config-resolution.adoc`
+|Config discovery and precedence expectations.
+
+|`docs/modules/ROOT/pages/usecases/hook-lifecycle.adoc`
+|Local/global hook behavior and Git workflow effects.
+
+|`docs/modules/ROOT/pages/reference/rules.adoc`
+|Rule names, GL diagnostic catalog, and rule/check/reason vocabulary.
+|===

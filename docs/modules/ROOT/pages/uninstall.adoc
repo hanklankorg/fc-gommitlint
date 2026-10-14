@@ -1,0 +1,129 @@
+= Uninstall
+
+Keep a trusted Gommitlint binary available until its hook dependencies have been removed or deliberately replaced.
+Use the installation method and paths recorded when it was installed, not guesses from today's environment.
+The commands below are alternatives for an approved removal, not a script to run from top to bottom.
+
+== Inspect the installation
+
+From the intended checkout, inspect the active binary and hooks:
+
+[source,bash]
+----
+type -a gommitlint
+gommitlint --version
+gommitlint hook status -v
+----
+
+Aliases, version-manager shims, and multiple binaries can select a different installation than expected.
+Also inspect any retained `gommitlint-sha256` installation separately; its filename and consumers differ from the current one-binary layout.
+Do not delete the target of a shared shim or symlink merely because it appears on `PATH`.
+
+== Remove hook dependencies first
+
+Inspect each relevant checkout, including linked worktrees and repositories using global hooks.
+Local hooks can be shared through the common Git directory of linked worktrees.
+An effective `core.hooksPath` can redirect Git away from the files you expected.
+
+Preview local removal before approving it:
+
+[source,bash]
+----
+gommitlint hook remove --dry-run
+----
+
+After reviewing the preview, remove the managed local hooks from that checkout:
+
+[source,bash]
+----
+gommitlint hook remove
+----
+
+For an approved user-wide removal, use this alternative:
+
+[source,bash]
+----
+gommitlint hook remove --global
+----
+
+Global removal has no dry-run mode; `--global --dry-run` is rejected.
+It can restore or unset global `core.hooksPath`, but leaves it unchanged when other plugins still need the dispatcher.
+This operation affects user-wide hook policy, not just the current checkout.
+
+Run `gommitlint hook status -v` again from affected repositories and read the reported paths and outcomes.
+Removal can fail after some files changed; do not delete the binary while a hook still depends on it.
+Custom hooks, scripts, and CI jobs can invoke Gommitlint without being managed by its hook installer.
+Update those consumers through their own approved procedures.
+See xref:usecases/hook-lifecycle.adoc[Hook Lifecycle] for ownership, redirection, and removal limits.
+
+== Remove the selected installation
+
+For package-managed installations, choose only the matching package-manager command.
+Review the removal and dependencies before granting elevated privileges:
+
+[source,bash]
+----
+# Package manager installations
+# Debian/Ubuntu
+sudo dpkg -r gommitlint
+
+# Red Hat/Fedora/SUSE
+sudo rpm -e gommitlint
+
+# Alpine
+sudo apk del gommitlint
+
+----
+
+For a version-manager installation, use that manager's removal procedure rather than deleting its shared shim.
+For a Go installation, inspect the current settings only as diagnostic information:
+
+[source,bash]
+----
+go env GOBIN GOPATH
+----
+
+Go normally installs into `GOBIN` when set, otherwise into `bin` under the first `GOPATH` entry.
+Current values do not establish where an earlier installation wrote its binary.
+Do not pass an unquoted or multi-entry `GOPATH` expansion directly to `rm`.
+
+The repository's `just install-local` uses installer paths, not necessarily Go's `GOBIN`.
+Its binary installer accepts `INSTALL_DIR` and `XDG_BIN_HOME` overrides and otherwise defaults to `~/.local/bin`.
+Use the original installation record; there is no matching `just uninstall-local` recipe.
+
+For a manually installed binary, set `INSTALLED_BINARY` to its reviewed absolute path before using this Bash block.
+Do not use it for package-managed files. It removes one file or symlink, not a directory or an entire installation prefix:
+
+[source,bash]
+----
+(
+  set -eu
+  : "${INSTALLED_BINARY:?set the recorded absolute binary path}"
+  case "$INSTALLED_BINARY" in
+    /*) ;;
+    *) printf '%s\n' 'An absolute installation path is required' >&2; exit 2 ;;
+  esac
+  if [ ! -f "$INSTALLED_BINARY" ] && [ ! -L "$INSTALLED_BINARY" ]; then
+    printf '%s\n' 'Expected one installed file or symlink' >&2
+    exit 1
+  fi
+  rm -i -- "$INSTALLED_BINARY"
+)
+----
+
+The interactive prompt is intentional. If permission is denied, stop and review ownership instead of automatically retrying with `sudo`.
+Declining removal can still return exit `0`; inspect the path and command resolution afterward.
+
+== Review remaining files
+
+Removing the binary does not prove that every integration or user file was removed.
+Inspect only the recorded installation locations:
+
+* Shell completions, including files registered for renamed binaries. See xref:shell-completion.adoc[Shell Completion].
+* Installed manuals, localized manuals, and Gommitlint locale catalogs. Preserve unrelated files in shared directories.
+* User XDG configuration, project configuration, vendored policy, and retained diagnostic reports.
+* Older binaries and scripts that still refer to them.
+
+Keep configuration, public-key inventories, and diagnostic evidence when other repositories or installations still need them.
+Do not delete shared keyrings, signing keys, or whole XDG roots as routine application cleanup.
+Finally, inspect `PATH` resolution again; another installed copy or shell-cached command can remain active.

@@ -1,0 +1,82 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# The sandbox the external test tiers run in: black-box, integration and
+# fuzz, plus opt-in unit/race tests. `.forgejo/scripts/prepare-sandbox-image.sh` builds it into a private
+# Podman store, exports a read-only checksummed OCI archive, and
+# `.forgejo/scripts/run-external-tests-sandbox.sh` loads that archive with
+# `--pull=never`, so no registry is reachable while tests run.
+#
+# It carries exactly what test/blackbox and test/integration ask of
+# their environment and nothing else. Adding a tool here is a claim that a
+# test needs it; cite the test.
+
+ARG BASE_IMAGE=docker.io/library/golang:1.27.2-trixie@sha256:e58d6f83b3416618d8bcac2b3dde1b7f7e3c4a77d25e88637f8bbae81536c48d
+FROM ${BASE_IMAGE}
+
+# The Go version is the repository's: go.mod `go 1.27.2` and .mise.toml
+# `go = "1.27.2"`. The sandbox runs with GOTOOLCHAIN=local and GOPROXY=off, so
+# a toolchain older than go.mod's would fail the tier rather than download a
+# newer one. `scripts/dev/upgrade-go-version.sh --check` compares the three.
+
+# The base is buildpack-deps:trixie-scm, which already carries every other
+# binary the tiers execute. Assert them instead of reinstalling them, so a base
+# bump that drops one fails here, loudly, rather than deep inside a tier:
+#
+#   git          the signing and runtime rows (test/blackbox/signing_test.go,
+#                runtime_test.go) and test/integration/exec_helpers_test.go
+#   grep         the text pipe row (test/blackbox/cli_stdout_stderr_test.go)
+#   gpg          the GPG signing row; gpg-agent signs the commit
+#   ssh-keygen   the SSH signing row
+#   script       the PTY row in test/blackbox/runtime_test.go (allocates the PTY)
+#   stty         the same row, inside the PTY shell
+#   prlimit      the resource-limit row in test/blackbox/runtime_test.go
+#   unshare      the namespace row in test/blackbox/runtime_test.go
+#   sh           test/blackbox/harness_bounds_test.go and the installed
+#                commit-msg hook (test/blackbox/cli_hook_failure_test.go)
+# gcc is required by the unit lane's Go race detector.
+RUN set -eu; \
+    for tool in gcc git grep gpg gpg-agent ssh-keygen script stty prlimit unshare sh; do \
+        command -v "$tool" >/dev/null || { \
+            printf 'sandbox image: base image no longer provides %s\n' "$tool" >&2; \
+            exit 1; \
+        }; \
+    done
+
+# What the base does not carry:
+#
+#   gettext   msgfmt, which compiles locale/sv/gommitlint.po for the locale row
+#             (test/blackbox/runtime_test.go)
+#   jq        the JSON pipe row (test/blackbox/cli_stdout_stderr_test.go)
+#   locales   the source data locale-gen needs for sv_SE.UTF-8, which the
+#             locale row sets (test/blackbox/runtime_test.go)
+#
+# Package versions are deliberately not pinned. `just test-container-prepare`
+# builds this image on each contributor's machine, and a Debian point release
+# retires the exact versions from deb.debian.org: a pin would then fail every
+# local build at once rather than at a reviewed bump. What a tier runs is the
+# recorded archive, identified by its checksum and key, not a version list.
+# Containerfile.ci pins because an operator builds it once, under review.
+# hadolint ignore=DL3008
+RUN set -eu; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        gettext \
+        jq \
+        locales; \
+    rm -rf /var/lib/apt/lists/*
+
+# The tests set two locales and read output back in them, so both must exist,
+# not merely be installable. C.UTF-8 is built into glibc and is the harness
+# default (test/blackbox/harness_test.go); sv_SE.UTF-8 is generated here
+# and is what the locale row asks for.
+RUN set -eu; \
+    sed -i 's/^# *sv_SE.UTF-8 UTF-8$/sv_SE.UTF-8 UTF-8/' /etc/locale.gen; \
+    locale-gen sv_SE.UTF-8; \
+    locale -a >/tmp/locales; \
+    grep -Fxq 'C.utf8' /tmp/locales; \
+    grep -Fxq 'sv_SE.utf8' /tmp/locales; \
+    rm -f /tmp/locales; \
+    msgfmt --version >/dev/null; \
+    jq --version >/dev/null

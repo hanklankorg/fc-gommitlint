@@ -1,0 +1,58 @@
+{
+  "targets": {
+    "freebsd-amd64": {
+      "bootstrap": "freebsd-cloudinit",
+      "image": "https://download.freebsd.org/releases/VM-IMAGES/15.1-RELEASE/amd64/Latest/FreeBSD-15.1-RELEASE-amd64-BASIC-CLOUDINIT-ufs.qcow2.xz",
+      "sha256": "e4ca4db889f8559c9b9dfcacc70405c038476f4b6d41649b152d3809a2ed9e1f",
+      "format": "qcow2.xz",
+      "serial": "/dev/ttyu0"
+    },
+    "freebsd-arm64": {
+      "bootstrap": "freebsd-cloudinit",
+      "image": "https://download.freebsd.org/releases/VM-IMAGES/15.1-RELEASE/aarch64/Latest/FreeBSD-15.1-RELEASE-arm64-aarch64-BASIC-CLOUDINIT-ufs.qcow2.xz",
+      "sha256": "9722aea499610802de9a14bb645707fc4f6df49ff765cd9ce372b783c4693963",
+      "format": "qcow2.xz",
+      "serial": "/dev/ttyu0"
+    },
+    "openbsd-amd64": {
+      "bootstrap": "openbsd-autoinstall",
+      "release": "7.9",
+      "image": "https://cdn.openbsd.org/pub/OpenBSD/7.9/amd64/install79.iso",
+      "sha256": "7a4a92e953618035097c796a90b54424a0f3ae775552e1e7d102cf8a5130449f",
+      "format": "iso",
+      "serial": "/dev/tty00"
+    },
+    "openbsd-arm64": {
+      "bootstrap": "openbsd-autoinstall",
+      "release": "7.9",
+      "image": "https://cdn.openbsd.org/pub/OpenBSD/7.9/arm64/install79.iso",
+      "sha256": "49786ab82868b6e508a0117c0c1567694a2f6b46caf8972c726868617b8c22fb",
+      "format": "iso",
+      "serial": "/dev/tty00"
+    },
+    "netbsd-amd64": {
+      "bootstrap": "netbsd-cloud",
+      "image": "https://cdn.netbsd.org/pub/NetBSD/images/11.0/NetBSD-11.0-amd64-live.img.gz",
+      "sha512": "ad0bc2786b2cd8b7c140ae108fd780064465fe06337a3a2c3f3b694ed3a1e042b3d401c9a682be02c081f3eb3efeba1246cfd6a8803149468ebfbd9c0e7c77e8",
+      "format": "raw.gz",
+      "serial": "/dev/tty00"
+    },
+    "netbsd-arm64": {
+      "bootstrap": "netbsd-cloud",
+      "image": "https://cdn.netbsd.org/pub/NetBSD/NetBSD-11.0/evbarm-aarch64/binary/gzimg/arm64mbr.img.gz",
+      "sha512": "ce7f952173412779ed3d990c9de69e36f8440e2a6849cace8c6cd3894c894b1a48c138b5faf0d500b263f6e7ef3b962dbe52ba7f350575b3acef64fc3fd827f7",
+      "checksum_unpacked": true,
+      "format": "raw.gz",
+      "serial": "/dev/tty00"
+    },
+    "macos-arm64": {
+      "bootstrap": "tart",
+      "image": "ghcr.io/cirruslabs/macos-tahoe-base@sha256:87f3aa5ce21b5c876268f233bdfecf38b4c2a8116fe9bbb718e714cbae187377"
+    },
+    "linux-arm64": {
+      "bootstrap": "tart",
+      "image": "ghcr.io/cirruslabs/ubuntu@sha256:e004f7f4f6765e2b3ae2738a95040c5d03867b667eb21a57ea0c3729aad640b6",
+      "distributions": ["debian-13"]
+    }
+  }
+}

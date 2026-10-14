@@ -1,0 +1,15 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# One image per distribution in test/distribution/images, for the matrix tier.
+# `.forgejo/scripts/prepare-sandbox-image.sh --distribution NAME` passes the
+# digest-pinned base in and hands the builder a context holding install-deps.sh
+# and nothing else. The image carries no Go toolchain: the launcher compiles
+# the harnesses and the product outside the sandbox, checksums them, and runs
+# them here with --network=none.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+COPY install-deps.sh /tmp/install-deps.sh
+RUN sh /tmp/install-deps.sh && rm -f /tmp/install-deps.sh

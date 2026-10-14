@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Live-trial fixture, not an active workflow. Forge CI's hosted GitHub trial
+# copies this file to .github/workflows/ of a disposable repository and puts
+# the engine under test where this file names diggsweden/forge-ci.
+#
+# It is the reduced release Forge CI's GitHub orchestrator can express: the
+# amd64 binary, one image, keyless signatures and a GitHub release. Archives,
+# distribution packages and the second image stay with the Forgejo release.
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - "release-request/v*"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    uses: diggsweden/forge-ci/.github/workflows/release-orchestrator.yml@v0.90.0
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+      actions: read
+    secrets: inherit
+    with:
+      branch: main
+      forge-ci-binary-ref: v0.90.0
+      runtime-image: ghcr.io/diggsweden/forge-ci-runtime-base:v0.90.0
+      runtime-image-full: ghcr.io/diggsweden/forge-ci-runtime:v0.90.0
+      runtime-image-go: ghcr.io/diggsweden/forge-ci-runtime-go-1.27:v0.90.0
+      artifacts-config: test/live/github/artifacts.yml
+      changelog-creator: git-cliff
+      release-publisher: github-cli
+      release.attachartifacts: release-artifacts/*/gommitlint-*
+      promote-staging-environment: ""
+      promote-release-environment: ""

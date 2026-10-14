@@ -1,0 +1,159 @@
+= Config Discovery and Precedence Use Cases
+:relfilesuffix: .adoc
+:up: ../
+
+Gommitlint chooses one configuration load mode before applying command-specific
+runtime flags. The modes are discovery, an explicit configuration root, and
+defaults only. A healthy configuration is not proof that it contains your
+intended policy. Review the selected sources and effective rules before relying
+on a validation result.
+
+== Architecture Context
+
+The CLI selects the mode and the configuration adapter loads and merges that
+mode's sources. See xref:{up}architecture.adoc[Architecture] for the package
+boundaries. See xref:{up}reference/configuration.adoc[Configuration] for the
+schema and field defaults.
+
+== Discovery Mode
+
+With neither `--config` nor `--ignore-config`, sources merge from lowest to
+highest precedence:
+
+[,text]
+----
+built-in defaults -> global XDG settings -> project config
+----
+
+The global settings location is
+`$XDG_CONFIG_HOME/gommitlint/settings.*`, or
+`$HOME/.config/gommitlint/settings.*` when `XDG_CONFIG_HOME` is unset. The
+project location is the current directory or the directory selected by
+`--repo-path`.
+
+Project discovery looks for `.gommitlint.yaml`, `.gommitlint.yml`, or
+`.gommitlint.toml` in that one directory. It does not walk parent directories to
+find the Git root. A command run from a subdirectory can therefore load a
+different policy from one run at the repository root.
+
+At each location, Gommitlint checks `.yaml`, `.yml`, then `.toml` and loads only
+the first existing file. A project value overrides the corresponding global
+value. Selecting a file is not the same as successfully loading it.
+If the selected `.yaml` file fails to parse, discovery does not retry `.yml`
+or `.toml` at that location. It warns and skips the selected source.
+Other layers, including built-in defaults, can still produce a valid configuration.
+
+Examine the effective sources and health together:
+
+[,bash]
+----
+gommitlint config show --format=json &&
+  gommitlint config check --format=json
+----
+
+`config show` can succeed while reporting warnings about a skipped source.
+`config check` reports those warnings as health issues and fails when issues
+are present. Retain the command's exit status and stderr, not just its JSON.
+A load failure can occur before a JSON report is produced.
+
+Discovery without any project file can still be healthy. If CI requires a
+particular policy file, use an explicit path rather than relying on discovery
+and a health check alone.
+
+Merge behavior is field-specific. An omitted list inherits its previous value,
+while a supplied list replaces that value. An explicit empty list can clear an
+inherited list. A supplied boolean can override an inherited `true` with `false`.
+Do not assume an empty string clears a setting: string overlays generally retain
+the previous value when empty.
+
+== Explicit File Mode
+
+`--config /path/policy.yaml` loads built-in defaults plus that file and its
+`extends` or vendored managed-source inputs. It does not discover or merge the
+global XDG settings or a project `.gommitlint.*` file.
+
+Relative explicit paths resolve from the process's working directory, not from
+`--repo-path`. Use an absolute path when changing repository or working-directory
+context would make a relative path ambiguous.
+
+The option also accepts built-in preset roots, such as `--config preset:conventional`.
+That is an explicit selection, not an additional discovery layer.
+
+For a CI policy file, examine and validate that same root before commit
+validation. The example assumes that `main` and `HEAD` resolve to the intended
+commits in the current repository:
+
+[,bash]
+----
+gommitlint --config ci/gommitlint.yaml config show --format=json &&
+  gommitlint --config ci/gommitlint.yaml config check --format=json &&
+  gommitlint --config ci/gommitlint.yaml validate --no-ci-detect --range=main..HEAD --format=text
+----
+
+A missing, unreadable, or malformed explicit file is fatal to loading.
+Some issues, such as unknown keys or enabled/disabled rule overlap, remain
+warnings during loading even in explicit mode. `config check` is the separate
+health gate for those issues.
+
+`--config` selects the configuration root but does not disable CI auto-detection.
+The example uses `--no-ci-detect` because a detected PR base can otherwise take
+precedence over `--range` in the current implementation. Use an explicit
+platform format when needed, as described in xref:./ci-pipeline.adoc[CI/CD Pipeline].
+
+== Defaults-Only Mode
+
+`--ignore-config` skips all files and uses built-in defaults. It conflicts with
+`--config`.
+
+Use this mode only when deliberately selecting built-in policy, not to hide a
+failure in a required configuration file:
+
+[,bash]
+----
+gommitlint --ignore-config validate
+----
+
+Defaults-only does not disable all rules or CI auto-detection.
+The command above can still use a detected PR base. Explicit target and output
+flags remain necessary when the invocation must use an exact range and format.
+
+== Runtime Overrides
+
+Flags such as `--rule`, `--exclude-rule`, `--format`, and `--base-branch`
+affect the current command after configuration is loaded. They do not add a
+fourth configuration file to the merge graph.
+
+`config show` describes the loaded configuration and its resolved configured
+rules. It does not preview every command-specific flag on a later `validate`
+invocation. Compare results using the same load mode, root, repository, and
+runtime options.
+
+Environment variables mostly affect discovery or runtime behavior:
+
+* `XDG_CONFIG_HOME` and `HOME` locate global settings
+* `NO_COLOR`, `GOMMITLINT_NO_CI_DETECT`, and related dedicated variables
+  control runtime behavior
+* `${ENV_VAR}` placeholders in managed-source URLs and headers are resolved
+  only by the explicit `config sync` operation.
+
+There is no general environment-variable overlay for configuration fields.
+
+== Inspect the selected policy
+
+In `config show --format=json`, examine:
+
+* `config_source` and `config_sources` for the selected and merged sources
+* `source_graph` for configuration relationships
+* `provenance` for field origins
+* `config` and `enabled_rules` for the effective policy
+* `warnings` and `managed_sources` for loading and local integrity issues.
+
+Use `config check --format=json` to examine `ok`, `issues`, and managed-source
+status summaries. A successful check does not establish that an upstream source
+is trustworthy or that the selected rules satisfy your release policy.
+Keep diagnostics private until you review them for sensitive paths or metadata.
+
+An explicit file can still load its declared `extends` and vendored managed
+sources. It is not a promise to read only one physical file.
+Approve upstream policy changes before `config sync` updates those local copies.
+Do not refresh an unexpected source merely to remove its health warning.

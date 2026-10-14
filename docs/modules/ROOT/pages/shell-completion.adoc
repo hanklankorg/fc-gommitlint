@@ -1,0 +1,84 @@
+= Shell Completion
+
+Generate and install shell completions for `gommitlint`.
+The `completion` command owns user-level installation; packaging generators do
+not install files into a user's shell directories.
+
+Use an authenticated, pinned binary whose invoked name is on `PATH`.
+Completion scripts are executable shell code. Review the producer and generated script before loading it into your shell.
+The examples assume the invoked binary is named `gommitlint`.
+
+== Preview before installation
+
+By default, `completion bash` installs a file; it does not print a script.
+Use `--stdout` for one shell to inspect its generated script without installing it:
+
+[source,bash]
+----
+gommitlint completion bash --stdout
+----
+
+Replace `bash` with `zsh` or `fish` for the corresponding script.
+Do not pipe unreviewed generated output directly to `source` or `eval`.
+With `--all --stdout`, scripts for different shells are concatenated, not combined into one portable script.
+
+== Install selected completions
+
+[WARNING]
+====
+Installation creates parent directories and replaces existing completion files without an overwrite prompt.
+Inspect the destination and preserve any custom or package-managed file before installing.
+The installer does not provide an ownership check or rollback across shells.
+If an all-shell installation fails, earlier files can already have changed.
+====
+
+Choose the required shell, or deliberately select all three. Do not run every alternative as a routine sequence.
+
+[source,bash]
+----
+# Bash
+gommitlint completion bash
+
+# Zsh
+gommitlint completion zsh
+
+# Fish
+gommitlint completion fish
+
+# Install all supported shells
+gommitlint completion --all
+----
+
+== Installation paths
+
+For the usual binary name and unset XDG overrides, the destinations are:
+
+* bash: `~/.local/share/bash-completion/completions/gommitlint`
+* zsh: `~/.local/share/zsh/completions/_gommitlint`
+* fish: `~/.config/fish/completions/gommitlint.fish`
+
+Bash and Zsh use a nonempty `XDG_DATA_HOME`; Fish uses a nonempty `XDG_CONFIG_HOME`.
+The remaining path components are the same as above.
+Set overrides to approved absolute directories, or leave them unset.
+New files request mode `0600`, and new parent directories request `0700`; existing permissions are not necessarily changed.
+
+Filenames and completion registration follow the invoked executable basename when it is a supported name.
+A renamed binary can therefore install different files instead of updating `gommitlint`'s completions.
+Record the paths printed on stderr. Successful installation normally leaves stdout empty.
+
+== Activate and remove
+
+Bash requires `bash-completion` to be enabled and Zsh needs the completion directory in your `fpath` (the installer points to the correct path).
+Fish uses the command name for completions.
+Make sure that the binary name you run is on your `PATH`.
+
+The installer prints activation advice but does not edit shell startup files or activate the script in an existing shell.
+Use the exact installed directory in Zsh's `fpath` before running `compinit`.
+When sourcing a reviewed script manually, quote the path, especially if it contains spaces.
+Completion can invoke Gommitlint dynamically to inspect local Git refs.
+Completion suggestions are not validation results or a guarantee that a command will succeed.
+
+There is no completion-removal subcommand.
+Remove only the recorded completion files after checking their ownership and whether another installation still uses them.
+Do not delete shared shell directories or package-managed files manually.
+Removing a file does not unload an already active completion function; restart the shell or use its removal mechanism.

@@ -1,0 +1,96 @@
+// SPDX-FileCopyrightText: The Gommitlint Authors
+//
+// SPDX-License-Identifier: EUPL-1.2 OR GPL-3.0-or-later
+
+package output
+
+import "codefloe.com/itiquette/gommitlint/internal/domain/diagnostics"
+
+const (
+	testBranchRuleFailed                  = "Branch rule failed"
+	testBranchRuleName                    = "BranchRule"
+	testBranchValidationFailed            = "Branch validation failed"
+	testCommitHashABC123                  = "abc123"
+	testCommitHashABC1234                 = "abc1234"
+	testCommitHashABCDEF1                 = "abcdef1"
+	testCommitHashDEF5678                 = "def5678"
+	testCommitMessageFeatNew              = "feat: add new feature\n\nThis adds a great new feature"
+	testCommitSubjectDocsReadme           = "docs: update readme"
+	testCommitSubjectFeatFeature          = "feat: add feature"
+	testCommitSubjectFeatNew              = "feat: add new feature"
+	testCommitSubjectFeatOK               = "feat: ok"
+	testCommitSubjectNotConventional      = "not conventional commit"
+	testCommitSubjectTest                 = "test"
+	testCommitSubjectTestCommit           = "test commit"
+	testCommitSubjectValid                = "valid commit"
+	testContextValueSomethingElse         = "something else"
+	testContextValueSomething             = "something"
+	testContextValueWrong                 = "wrong"
+	testErrorCodeInvalidCase              = "invalid_case"
+	testErrorCodeInvalidConventional      = "invalid_conventional_format"
+	testErrorCodeMisspelledWord           = "misspelled_word"
+	testErrorCodeMissingConventionalScope = "missing_conventional_scope"
+	testErrorCodeMissingJira              = "missing_jira"
+	testErrorCodeMissingSignoff           = "missing_signoff"
+	testErrorCodeMissingSubject           = "missing_subject"
+	testErrorCodeNonImperative            = "non_imperative"
+	testErrorCodeSubjectTooLong           = "subject_too_long"
+	testErrorCodeWrongCaseUpper           = "wrong_case_upper"
+	testExpectedLabel                     = "Expected"
+	testExpectedWordFix                   = "Fix"
+	testInputBoldText                     = "bold text"
+	testInputErrorText                    = "error text"
+	testInputHeaderText                   = "header text"
+	testInputMutedText                    = "muted text"
+	testInputTestMessage                  = "test message"
+	testInputWarningText                  = "warning text"
+	testMessageError                      = "Error"
+	testMisspelledTehMessage              = "'teh' appears to be misspelled"
+	testNameEmptyMessage                  = "Empty message"
+	testNameIncompleteGPGSignature        = "Incomplete GPG signature"
+	testNameIncompleteSSHSignature        = "Incomplete SSH signature"
+	testNameInvalidMultiScope             = "Invalid multi scope"
+	testNameInvalidType                   = "Invalid type"
+	testNameMissingSubject                = "Missing subject"
+	testNameNoFirstWord                   = "No first word"
+	testNameSubjectTooLong                = "Subject too long"
+	testNameWeakKey                       = "Weak key"
+	testOutputErrorCodeHeader             = "Error Code:"
+	testOutputHelpHeader                  = "Help:"
+	testOutputFailingRule                 = "✗ Failing Rule"
+	testPassingRuleName                   = "PassingRule"
+	testRepoRuleName                      = "RepoRule"
+	testRuleFailedMessage                 = "Rule failed"
+	testRuleSubjectName                   = "Subject"
+	testRulePassedMessage                 = "Rule passed"
+	testRuleTestRule                      = "TestRule"
+	testRuleTestRuleDisplay               = "Test Rule"
+	testCheckIDGL101                      = "GL101"
+	testCheckIDGL102                      = "GL102"
+	testCheckIDGL201                      = "GL201"
+	testOutputCheckIDGL201                = "Check ID: " + testCheckIDGL201
+	testSentinelSwitchReason              = "sentinel: used in switch matching, not created directly"
+	testStartWithNot                      = "First word should be 'Not'"
+	testSubjectIsTooLongMessage           = "Subject is too long"
+	testTestCommitSubject                 = "Test commit"
+	testTestErrorMessage                  = "Test error message"
+	testTestErrorShort                    = "Test error"
+	testTestUserName                      = "Test User"
+	testTryTheSuggestion                  = "Try: \"the\""
+	testValidationBranchCode              = "branch_error"
+	testValidationBranchKey               = "branch"
+	testValidationErrorMessage            = "Test validation error"
+	testValidationMainBranch              = "main"
+	testValidationWarningCode             = "test"
+	testUserEmail                         = "test@example.com"
+	testWordAdd                           = "add"
+	testWordFixLower                      = "fix"
+)
+
+func testDiagnostic(reason diagnostics.Reason) diagnostics.Diagnostic {
+	return diagnostics.Diagnostic{Reason: reason}
+}
+
+func testDiagnosticWithID(id diagnostics.ID, reason diagnostics.Reason) diagnostics.Diagnostic {
+	return diagnostics.Diagnostic{ID: id, Reason: reason}
+}

@@ -1,0 +1,292 @@
+= CI/CD Pipeline Use Cases
+:relfilesuffix: .adoc
+:up: ../
+
+CI/CD pipelines provide a checked-out Git history, configuration, and a
+validation target. Platform environment variables support CI auto-detection.
+They are not a general configuration overlay.
+
+Use an authenticated Gommitlint release and a checkout that contains the
+intended commits. A successful run establishes only the configured validation
+result for its selected range, not the security of the source or build.
+Keep validation as a required job rather than ignoring its exit status.
+
+== Architecture Context
+
+The CLI resolves configuration and CI defaults, the application service selects
+commits, and output adapters render platform annotations. See
+xref:{up}architecture.adoc[Architecture] for the shared validation flow.
+
+== Use Case Scenarios
+
+=== 1. Pull Request Validation
+
+Use the event's base and head commit IDs when the gate must cover an exact PR
+snapshot. Fetch both commits and the history needed to compare them.
+Do not substitute the default branch name or a synthetic merge commit without
+reviewing how that changes the range.
+
+[,text]
+----
+PR Created ──▶ Trigger Pipeline ──▶ Validate Range ──▶ Report Status
+     │              │                    │                 │
+     ▼              ▼                    ▼                 ▼
+   PR Event     CI Job Start       main..feature     CI Annotations
+----
+
+=== 2. Push Event Validation
+
+CI auto-detection does not read a push event's `before` and `after` commit IDs.
+Pass an explicit range for an existing branch update. New branches and deleted
+refs can use an all-zero event value, which is not a Git commit.
+Define separate policies for those events instead of passing the zero value as
+a range endpoint.
+
+[,text]
+----
+Push Event ──▶ Extract Range ──▶ Batch Validation ──▶ Pipeline Decision
+     │              │                  │                    │
+     ▼              ▼                  ▼                    ▼
+before..after   Multiple Commits   Rule Application    Pass/Fail Gate
+----
+
+*Configuration Pattern:*
+
+[,yaml]
+----
+# .gommitlint.yaml
+gommitlint:
+  rules:
+    enabled:
+      - conventional
+      - signoff
+      - subject
+----
+
+`rules.enabled` enables these rules. It does not disable every other
+default-enabled rule. Review the effective configuration before treating this
+example as a complete policy.
+
+=== 3. Release Pipeline Validation
+
+Select the previous and current release commits explicitly. A tag-triggered job
+does not automatically infer the last release or generate release notes.
+The diagram shows the surrounding pipeline, not operations performed by
+`gommitlint validate`. Define a first-release policy when no previous tag exists.
+
+[,text]
+----
+Release Tag ──▶ Validate History ──▶ Generate Notes ──▶ Deploy Gate
+     │               │                    │                │
+     ▼               ▼                    ▼                ▼
+v1.2.3        last-release..tag    Commit Categories   Quality Check
+----
+
+== CI Platform Integration
+
+gommitlint auto-detects GitHub Actions, Forgejo/Gitea Actions, and GitLab CI
+environments. In PR pipelines, it resolves the target branch from the
+platform's environment and selects the platform-native output format.
+
+For Forgejo Actions examples, see xref:{up}tutorial.adoc[Tutorial].
+
+=== Any Supported Platform (Auto-Detection)
+
+With a trusted binary already on `PATH`, the common command is:
+
+[,bash]
+----
+gommitlint validate
+----
+
+Actions workflows put this command under `run`. GitLab CI uses `script`.
+Auto-detection selects defaults but does not fetch missing branches or commits.
+
+Auto-detection reads platform-specific environment variables:
+
+|===
+| Platform | Base branch source | Output format
+
+| GitHub Actions
+| `GITHUB_BASE_REF`
+| github
+
+| Forgejo/Gitea Actions
+| `GITHUB_BASE_REF`
+| forgejo
+
+| GitLab CI
+| `CI_MERGE_REQUEST_TARGET_BRANCH_NAME`, then `CI_EXTERNAL_PULL_REQUEST_TARGET_BRANCH_NAME`
+| gitlab
+|===
+
+Explicit flags (`--base-branch`, `--format`) always override auto-detection.
+
+For an exact `--range`, also pass `--no-ci-detect` and an explicit `--format`.
+In the current implementation, a detected PR base takes precedence over
+`--range` unless CI detection is disabled or `--base-branch` is explicitly set.
+The examples disable detection so that the event commit IDs determine selection.
+
+=== Runner prerequisites
+
+Provision the approved runner with Git and an independently authenticated
+Gommitlint binary before the job starts. Record the binary's version and digest
+through your organization's software-distribution process.
+Set `CI_RUNNER_LABEL` to that runner's label and `GOMMITLINT_BIN` to the binary's
+absolute path in repository variables.
+Keep the binary outside the checkout and outside directories writable by PR
+code. Use a runner approved for untrusted code and do not expose production
+credentials to PR jobs.
+
+The checkout actions below remain pinned and do not persist credentials.
+The runner must support their JavaScript runtime and the repository's Git object
+format. Full history does not compensate for an unsupported SHA-256 checkout.
+If either event commit is unavailable after checkout, stop rather than narrowing
+the range to a commit that happens to exist.
+
+=== Historical action limitation
+
+`gommitlint-action` at commit `696488f3ca652942717200b92031eb2ae93285e8`
+pins Gommitlint `v0.9.10`. That action downloads from Codeberg and installs
+`./gommitlint` inside the checkout, not `$RUNNER_TEMP/gommitlint`.
+Its same-origin checksum comparison detects corruption or mismatch, not a
+compromised release origin. Its shell script also interpolates action inputs
+directly into command text.
+
+Do not assume that this historical pin has the current action's behavior or
+pass untrusted inputs to it. The examples below use the pre-provisioned binary
+instead. They do not select an unauthenticated replacement action revision.
+See xref:{up}verify.adoc[Artifact Verification] for signer-generation limitations.
+
+=== Forgejo Actions
+
+[,yaml]
+----
+# .forgejo/workflows/validate-commits.yml
+name: Validate Commits
+on: [pull_request]
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 10
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ forgejo.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate the event range
+        shell: bash
+        env:
+          GOMMITLINT_BIN: ${{ vars.GOMMITLINT_BIN }}
+          BASE_SHA: ${{ forgejo.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ forgejo.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          case "${GOMMITLINT_BIN}" in
+            /*) ;;
+            *) printf '%s\n' 'GOMMITLINT_BIN must be an approved absolute path' >&2; exit 2 ;;
+          esac
+          test -x "${GOMMITLINT_BIN}"
+          [[ "${BASE_SHA}" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+          [[ "${HEAD_SHA}" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+          "${GOMMITLINT_BIN}" validate --no-ci-detect \
+            --range "${BASE_SHA}..${HEAD_SHA}" --format forgejo
+----
+
+The range excludes commits reachable from the base and includes commits
+reachable from the head that are not reachable from the base.
+The job does not execute the downloaded historical action or install tools.
+
+=== GitHub Actions
+
+[,yaml]
+----
+# .github/workflows/validate-commits.yml
+name: Validate Commits
+on: [pull_request]
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Validate the event range
+        shell: bash
+        env:
+          GOMMITLINT_BIN: ${{ vars.GOMMITLINT_BIN }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          case "${GOMMITLINT_BIN}" in
+            /*) ;;
+            *) printf '%s\n' 'GOMMITLINT_BIN must be an approved absolute path' >&2; exit 2 ;;
+          esac
+          test -x "${GOMMITLINT_BIN}"
+          [[ "${BASE_SHA}" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+          [[ "${HEAD_SHA}" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+          git cat-file -e "${BASE_SHA}^{commit}"
+          git cat-file -e "${HEAD_SHA}^{commit}"
+          "${GOMMITLINT_BIN}" validate --no-ci-detect \
+            --range "${BASE_SHA}..${HEAD_SHA}" --format github
+----
+
+The event values enter the shell through environment variables, not shell-source
+interpolation. Invalid IDs, missing objects, or validation failures stop the job.
+Annotations supplement the exit status. Do not use an annotation count as the
+pass/fail decision.
+
+=== GitLab CI
+
+GitLab cannot invoke an Actions composite. Runner images, trusted artifact
+digests, executable paths, and private-project credentials belong to the
+deployment's policy. Install an exact Gommitlint release through your
+organization's authenticated software-distribution path.
+Then run `gommitlint validate`.
+Auto-detection reads `CI_MERGE_REQUEST_TARGET_BRANCH_NAME` and selects GitLab output.
+For an exact range, use the same endpoint checks as the Actions examples and
+pass `--no-ci-detect --range "${BASE_SHA}..${HEAD_SHA}" --format=gitlab`.
+Supply those variables from the intended GitLab event. Do not assume that a
+regular push exports merge-request variables.
+
+== Integration Examples
+
+=== Multi-Stage Pipeline
+
+[,text]
+----
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Build     │───▶│  Validate   │───▶│   Deploy    │
+│   Stage     │    │  Commits    │    │   Stage     │
+└─────────────┘    └─────────────┘    └─────────────┘
+       │                  │                  │
+       ▼                  ▼                  ▼
+   Code Build         Message Check      Quality Gate
+----
+
+=== Parallel Validation
+
+[,text]
+----
+┌─────────────┐
+│ Commit Range│
+└─────┬───────┘
+      │
+      ├──▶ Unit Tests
+      ├──▶ Integration Tests
+      ├──▶ Message Validation ◀── gommitlint
+      └──▶ Security Scan
+----

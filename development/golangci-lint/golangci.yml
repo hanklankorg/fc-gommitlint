@@ -1,0 +1,146 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+# Shared golangci-lint baseline for the itiquette Go projects. gommitlint holds
+# the canonical copy; every other project copies this file verbatim and adds
+# only what sits under "Local to this project" at the end of each section, each
+# line with its reason. A project that enables a linter disabled here removes it
+# from `disable` and lists it under a local `enable:` (golangci-lint refuses a
+# linter that is both), and deletes any marker it leaves empty: yamlfmt
+# re-indents a marker that follows a list.
+# Bump it by hand with the golangci-lint pin and re-copy it everywhere.
+#
+# Every linter golangci-lint ships is on unless it is disabled below with a
+# reason, so a linter a new release adds is evaluated at the next bump rather
+# than silently skipped.
+version: "2"
+run:
+  timeout: 5m
+  # Keep paths stable when this file moves within development/.
+  relative-path-mode: gomod
+output:
+  formats:
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true
+issues:
+  uniq-by-line: true
+linters:
+  default: all
+  disable:
+    - canonicalheader # net/http canonicalises names on Get/Set; provider docs spell headers such as PRIVATE-TOKEN.
+    - dupword # Repeated words are mostly false positives in prose doc comments.
+    - exhaustruct # Deprecated; replaced by exhaustruct_v5.
+    - exhaustruct_v5 # Most structs are deliberately partially initialised.
+    - forbidigo # Forbidden calls are per project; a project with rules enables it locally.
+    - funlen # cyclop, gocognit and maintidx already bound function size.
+    - gomodguard # Deprecated; replaced by gomodguard_v2.
+    - gosmopolitan # Times show in the user's zone on purpose, and non-Latin literals are deliberate Unicode test data.
+    - ireturn # Factories and adapters legitimately return interfaces.
+    - lll # Long lines are prose and URLs; gofmt owns layout.
+    - mnd # Sizes, modes and statuses are named where the name adds meaning.
+    - noinlineerr # `if err := f(); err != nil` is idiomatic Go.
+    - paralleltest # Parallelism is chosen per test; t.Setenv and t.Chdir forbid it. tparallel keeps it consistent.
+    - tagliatelle # JSON and YAML tag names are external contracts.
+    - testpackage # Tests live in the package to exercise unexported seams.
+    - wrapcheck # Errors are wrapped where a caller gains context, not at every boundary.
+    - wsl # Deprecated; replaced by wsl_v5.
+    # Local to this project:
+  settings:
+    depguard:
+      rules:
+        # Local boundaries: docs/modules/ROOT/pages/architecture.adoc.
+        # Shared guidance: https://codefloe.com/itiquette/docs/src/branch/main/development/notes/go-architecture-conventions.md
+        # Each project names its own composition and shared-support exceptions.
+        domain:
+          files:
+            - "**/internal/domain/**"
+            - "!$test"
+          deny:
+            - pkg: "codefloe.com/itiquette/gommitlint/internal/app"
+              desc: domain holds rules, not sequencing; move the orchestration into internal/app
+            - pkg: "codefloe.com/itiquette/gommitlint/internal/adapters"
+              desc: domain must not know a concrete tool; declare a port and let the adapter satisfy it
+            - pkg: "os"
+              desc: the filesystem belongs behind a port
+            - pkg: "os/exec"
+              desc: process execution belongs in an adapter
+            - pkg: "net/http"
+              desc: transport belongs in an adapter
+            - pkg: "syscall"
+              desc: system calls belong in an adapter
+        app:
+          files:
+            - "**/internal/app/**"
+            - "!$test"
+          deny:
+            - pkg: "codefloe.com/itiquette/gommitlint/internal/adapters"
+              desc: a use case depends on a port it declares; construct the adapter in the composition root
+            - pkg: "os/exec"
+              desc: process execution belongs in an adapter
+            - pkg: "net/http"
+              desc: transport belongs in an adapter
+            - pkg: "syscall"
+              desc: system calls belong in an adapter
+        driven-adapters:
+          list-mode: lax
+          files:
+            - "**/internal/adapters/**"
+            - "!**/internal/adapters/cli/**" # the composition root wires its siblings
+            - "!**/internal/adapters/repository/**" # factory: opens a repository with go-git or the git CLI
+            - "!**/internal/adapters/rulefactory/**" # factory: builds the rule set from signing and stemming
+            - "!$test"
+          # Shared driven adapters: several adapters need them and a port would
+          # only restate their whole surface.
+          allow:
+            - "codefloe.com/itiquette/gommitlint/internal/adapters/fileops" # bounded file reads for key loaders
+            - "codefloe.com/itiquette/gommitlint/internal/adapters/filesystem" # path and file helpers for configuration discovery
+            - "codefloe.com/itiquette/gommitlint/internal/adapters/gitrefs" # ref-name rules shared by both git adapters
+            - "codefloe.com/itiquette/gommitlint/internal/adapters/output" # the writer the configuration and i18n adapters report through
+          # Application-owned contracts and request/result types are legitimate
+          # inward dependencies for driven adapters as well as CLI callers.
+          deny:
+            - pkg: "codefloe.com/itiquette/gommitlint/internal/adapters"
+              desc: driven adapters do not import each other; reach the other through a port or a util package
+    cyclop:
+      # CLI and configuration boundaries branch by explicit error class.
+      max-complexity: 15
+    exhaustive:
+      default-signifies-exhaustive: true
+    # govet's shadow analyzer stays off: it flags the idiomatic scoped rebind
+    # `if err := f(); err != nil` and `if _, ok := m[k]; !ok`.
+    varnamelen:
+      min-name-length: 2
+    revive:
+      severity: "warning"
+      confidence: 0.8
+      # Local to this project: Name() implements an interface whose contract documents it.
+      rules:
+        - name: exported
+          disabled: false
+          exclude: ["Name"]
+  exclusions:
+    generated: lax
+    paths:
+      - generated
+    rules:
+      - path: "_test\\.go"
+        linters:
+          - cyclop # A test walks one behavioural contract end to end; splitting it hides the sequence being proved.
+          - dupl # Parallel table cases look alike by design.
+          - err113 # Fakes fabricate the failure under test, often carrying a canary that must not leak.
+          - forcetypeassert # A wrong type in a fixture tree panics, which fails the test as plainly as t.Fatal.
+          - gochecknoglobals # Golden tables and corpora are the test's data; nothing mutates them.
+          - gocognit # As cyclop.
+          - goconst # Repeated literals keep table-driven fixtures readable.
+          - gocyclo # As cyclop.
+          - gosec # Tests deliberately exercise paths, URLs and secret-shaped values.
+          - maintidx # Parent tests group related subtests as one readable contract.
+          - nestif # Table cases nest their expectations under the case they belong to.
+      # Local to this project:
+      - path: "internal/adapters/configuration/formats_test\\.go"
+        text: "`lenght` is a misspelling"
+        linters:
+          - misspell # A deliberately malformed configuration key is the input under test.

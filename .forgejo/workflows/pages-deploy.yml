@@ -1,0 +1,124 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# Builds the Hugo landing site (web/) and force-pushes the rendered output to
+# the `pages` branch. Codefloe Pages serves that branch at
+# gommitlint.itiquette.org (custom domain configured via web/static/.domains).
+
+name: Deploy gommitlint.itiquette.org
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - 'assets/logo.png'
+      - 'assets/logo-animated.svg'
+      - 'assets/apple-touch-icon.png'
+      - 'assets/favicon-32.png'
+      - '.forgejo/workflows/pages-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GIT_DEFAULT_HASH: sha256
+
+jobs:
+  deploy:
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+
+      # Checksum-verified install; version + digest pinned in the script
+      # (shared with web-preview).
+      - name: Install Hugo (extended)
+        run: ./.forgejo/scripts/install-hugo.sh
+
+      - name: Mirror brand assets into web/static
+        run: |
+          install -m 0644 assets/logo.png             web/static/logo.png
+          install -m 0644 assets/logo-animated.svg    web/static/logo-animated.svg
+          install -m 0644 assets/apple-touch-icon.png web/static/apple-touch-icon.png
+          install -m 0644 assets/favicon-32.png       web/static/favicon-32.png
+
+      - name: Verify WCAG contrast ratios
+        run: node web/scripts/check-contrast.mjs
+
+      - name: Build site
+        run: hugo --minify --source web --destination ../public
+
+      - name: Install QA tooling
+        run: npm install --prefix /tmp/qa --no-save --silent html-validate@9.7.1
+
+      - name: Validate HTML structure
+        run: /tmp/qa/node_modules/.bin/html-validate --config web/.htmlvalidate.json 'public/**/*.html'
+
+      - name: Verify .domains file is present
+        run: test -s public/.domains
+
+      # Token rides GIT_ASKPASS (never argv/URL — /proc and git errors would
+      # leak it) and is the dedicated pages secret, not the release token.
+      # Mirrors nanolinter's pages-deploy.
+      - name: Deploy to pages branch
+        env:
+          FORGEJO_SERVER: ${{ forgejo.server_url }}
+          PAGES_LOGIN_VALUE: ${{ secrets.PAGES_DEPLOY_TOKEN }}
+          REPO: ${{ forgejo.repository }}
+          SHA: ${{ forgejo.sha }}
+        run: |
+          set -eu
+          pages_login_value="${PAGES_LOGIN_VALUE:?}"
+          unset PAGES_LOGIN_VALUE
+          server=$(node -e '
+          const [rawServer, repository] = process.argv.slice(1);
+          try {
+            const url = new URL(rawServer);
+            const origin = url.origin;
+            const parts = repository.split("/");
+            const cleanOrigin = rawServer === origin || rawServer === origin + "/";
+            const cleanRepository = parts.length === 2 && parts.every((part) =>
+              part.length > 0 && part !== "." && part !== ".." && !/[\s?#]/u.test(part));
+            if (!cleanOrigin || url.protocol !== "https:" || url.username !== "" ||
+                url.password !== "" || url.pathname !== "/" || url.search !== "" ||
+                url.hash !== "" || !cleanRepository) {
+              process.exit(1);
+            }
+            process.stdout.write(origin);
+          } catch {
+            process.exit(1);
+          }
+          ' "${FORGEJO_SERVER:?}" "${REPO:?}") || {
+            printf 'ERROR: invalid Forgejo server origin or repository identity\n' >&2
+            exit 1
+          }
+          remote="${server}/${REPO}.git"
+          askpass=$(mktemp)
+          trap 'rm -f "${askpass}"' EXIT
+          cat >"${askpass}" <<'EOF'
+          #!/bin/sh
+          case "$1" in
+            *Username*) printf '%s\n' x-access-token ;;
+            *Password*) printf '%s\n' "${GIT_PASSWORD}" ;;
+            *) printf '\n' ;;
+          esac
+          EOF
+          chmod 700 "${askpass}"
+          cd public
+          git init -q -b pages
+          git config user.name  "itiquette-ci"
+          git config user.email "ci@itiquette.org"
+          git add -A
+          git commit -qm "deploy: ${SHA:0:8}"
+          git remote add origin "${remote}"
+          GIT_PASSWORD="${pages_login_value}" GIT_ASKPASS="${askpass}" GIT_TERMINAL_PROMPT=0 git push -qf origin pages

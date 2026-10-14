@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+[detect]
+auto = true
+
+[verify]
+# The plan is nanolinter's default for this repository minus the checks below.
+# Every selected check blocks, which is the default policy, except the one
+# `[policy]` names below. Excluding rather than listing means a check
+# nanolinter adds later is adopted, not missed.
+exclude_checks = [
+  # Both already run inside development/golangci-lint/golangci.yml
+  # (`default: all`); running them again only costs time.
+  "go-staticcheck",
+  "go-wsl",
+  # The only XML file in the tree (web/public/sitemap.xml) is a Hugo-generated
+  # artifact, not source.
+  "xml",
+]
+
+# A link's target lives on the internet, not in this repository, so the Links
+# check reports and never fails `nanolinter verify`: a lint result depends only
+# on the tree under review. `just lint-links` is the blocking run.
+[policy]
+warn = ["links"]
+
+# CI prefetches the Go module graph, but the parallel Go checks still compile
+# into a cold build cache. Give those checks explicit first-run headroom.
+[linters.go-vulncheck]
+timeout_secs = 150
+
+[linters.go-vet]
+# A cold one-CPU trusted runner exceeded 150s while the parallel lint plan was
+# compiling the module graph. Keep the bound below the 15-minute job ceiling.
+timeout_secs = 300
+
+[linters.go-golangci]
+timeout_secs = 180
+
+[linters.shell]
+# The complete VM/controller scripts take about 10s in isolation, but exceeded
+# 60s beside the cold Go/SAST checks in the real PR job. Keep the complete check
+# bounded within the job's 15-minute budget.
+timeout_secs = 180
+
+[linters.sast]
+# OpenGrep's community rules scan the full repository and exceed its 90s
+# descriptor default on a cold shared runner.
+timeout_secs = 180
+
+# The shared Renovate preset sets a 7-day minimumReleaseAge; the rule reads
+# neither `extends` nor the top level of the file. Needs a Nanolinter with
+# `opengrep.exclude_rules`; an older one warns about the unknown entry and
+# still reports the finding.
+[linters.sast.settings]
+"opengrep.exclude_rules" = ["package_managers.renovate.renovate-missing-minimum-release-age.renovate-missing-minimum-release-age"]
+
+[linters.shell-format.settings]
+"shfmt.indent" = 2
+
+[linters.iac]
+# KICS loads its complete query bundle before scanning and can exceed the 60s
+# descriptor default while the shared runner is compiling Go checks.
+timeout_secs = 180

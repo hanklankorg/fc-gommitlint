@@ -1,0 +1,154 @@
+= Signature Policy Use Cases
+:relfilesuffix: .adoc
+:up: ../
+
+The `cryptosignature` rule evaluates signature metadata stored on a commit. It
+can require a signature block, recognize GPG and SSH armor, constrain the
+accepted type, and apply policy to public keys in a configured directory.
+
+[IMPORTANT]
+====
+Production validation does not cryptographically verify the signed commit
+payload against a key. It does not derive the signer from the signature,
+authorize that signer, compare the signer with the commit author, or detect
+signature replay. Signature checks and key-directory checks are independent.
+
+When signer authenticity is a security boundary, use `git verify-commit`, protected-branch signature policy, or another cryptographic verifier.
+====
+
+Cryptographic verification also needs independently trusted keys and an explicit
+signer-authorization policy. Accepting a signature from an arbitrary imported
+key does not establish who is authorized to approve a commit.
+
+== Architecture Context
+
+The active validation path creates `CryptoSignatureRule` with optional
+key-provider capabilities. No adapter in that path verifies the commit payload's
+signature against a key. See
+xref:{up}architecture.adoc[Architecture] for package boundaries and runtime
+flow.
+
+== Configure the intended policy
+
+Use `cryptosignature` as the rule ID and `crypto_signature` as the configuration
+key. They are not interchangeable names.
+This complete YAML example requires a recognized signature with complete armor:
+
+[source,yaml]
+----
+gommitlint:
+  rules:
+    enabled: ["cryptosignature"]
+  crypto_signature:
+    required: true
+    verify_format: true
+----
+
+Save the reviewed policy as `signature-policy.yaml` in the intended repository.
+Do not overwrite an existing policy without retaining its required settings.
+If you merge this into a policy with inherited settings, `rules.disabled` can
+still disable the rule. Examine `enabled_rules` before relying on the result.
+
+The following sequence checks configuration health, then evaluates this rule
+for `HEAD`. `--no-ci-detect` prevents a detected PR base from replacing the
+explicit commit selection:
+
+[source,bash]
+----
+gommitlint --config signature-policy.yaml config show --format=json &&
+  gommitlint --config signature-policy.yaml config check --format=json &&
+  gommitlint --config signature-policy.yaml validate --no-ci-detect --ref=HEAD --rule=cryptosignature --format=json
+----
+
+These are metadata-policy checks, not cryptographic verification.
+Configuration health does not evaluate a commit or prove that its key inventory
+contains an eligible key. Review the actual validation result for the selected
+commit. A passing rule is not a signer-authenticity verdict.
+
+== Policy Checks
+
+=== Signature presence
+
+`crypto_signature.required: true` rejects a commit with no signature as
+`GL501`. The default is `false`, so unsigned commits pass this rule.
+Without a required signature, an unsigned commit also skips the type, armor,
+and key-inventory checks. `require_gpg`, `require_ssh`, `verify_format`, and
+`key_directory` do not independently require signature presence.
+
+=== Signature structure and type
+
+When a signature is present, the rule always requires a recognized GPG or SSH
+type. Unknown data produces `GL502`.
+
+`crypto_signature.verify_format: true` also requires complete BEGIN/END armor
+and reports `GL503` for malformed blocks. `require_gpg` and `require_ssh`
+select one accepted type and report `GL504` for the other type.
+The two settings cannot both be true.
+
+These checks establish the shape and declared type of the signature block, not
+its cryptographic validity.
+The armor check looks for BEGIN/END marker lines and body content.
+It does not authenticate a cryptographic signature packet.
+
+=== Key inventory
+
+Setting `crypto_signature.key_directory` enables inventory checks for the
+signature's declared type, after the presence/format/type stages pass.
+The directory must be usable, and matching files must provide at least one
+eligible public key. The same key must satisfy all applicable conditions:
+
+* Its algorithm and size meet the applicable `min_rsa_bits` or `min_ec_bits` requirement
+* For GPG, it is neither expired nor revoked according to the parsed key metadata
+* When `allowed_signers` is non-empty, its fingerprint, email, or full user ID matches an entry.
+
+RSA uses `min_rsa_bits`. ECDSA and Ed25519 use `min_ec_bits`.
+The defaults are 2048 RSA bits and 256 curve bits. A value of `0` selects the
+default, not a disabled strength check.
+The current key-strength policy does not accept other algorithm families.
+These sizes constrain eligible inventory keys, not the key or algorithm
+actually used by a commit signature.
+
+`allowed_signers` has no wildcard syntax and has no effect without
+`key_directory`. Passing this check means an eligible key exists in the
+directory. It does not mean that key produced the commit signature.
+Fingerprint and email comparisons are case-insensitive. Full user IDs are exact
+and case-sensitive. Do not assume an address or key comment independently
+establishes a person's identity.
+
+Inventory success does not certify every file in the directory.
+Unparseable files can be skipped, and one eligible key can satisfy the policy
+despite other weak, expired, revoked, or non-matching keys.
+Keep only reviewed public-key material in a dedicated directory. Private keys
+are not required and should not be exposed to the linter.
+
+For example, a complete SSH signature block plus an unrelated eligible SSH key
+can pass these independent checks. That does not establish that the key signed
+the commit. Conversely, a strong but disallowed key and a weak allowed key do
+not combine into one eligible key.
+
+Directory and inventory failures use `GL505` through `GL507`. `GL508` is
+reserved for adapter-facing verification failures and is not emitted by the
+current production rule path.
+
+On an inventory failure, examine the directory, matching file formats, parsed
+key metadata, and configured constraints. Do not lower strength limits or clear
+`allowed_signers` merely to obtain a passing result.
+If cryptographic authenticity is required, keep the external verifier as a
+separate mandatory gate rather than treating inventory success as a substitute.
+
+== Author Email Policy
+
+The separate `identity` rule compares only the commit author email with
+`identity.allowed_authors`. It supports exact addresses and `*@domain`
+patterns, case-insensitively. It does not inspect commit signatures or
+committer identity. See xref:{up}reference/rules.adoc[Validation Rules].
+Combining `identity` with `cryptosignature` still does not bind the author email
+to the key that signed the commit.
+
+== Hook Use
+
+The `pre-push` hook applies the same `cryptosignature` policy to commits
+introduced by a push. Its use does not expand the rule into cryptographic
+verification. See xref:./hook-lifecycle.adoc[Hook Lifecycle].
+Local hooks are also bypassable. Required server-side or CI authorization must
+not depend solely on a developer's local hook result.

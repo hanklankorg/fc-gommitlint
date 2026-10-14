@@ -1,0 +1,18 @@
+= Gommitlint Documentation
+:description: Git commit message linter with conventional commits, sign-off, and signature policy
+:relfilesuffix: .adoc
+
+Gommitlint validates git commit messages against configurable rules for
+Conventional Commits, DCO sign-off, spelling, author email, and signature
+presence, format, type, and key inventory.
+
+This site is for people using Gommitlint.
+Start with xref:install.adoc[Install], then follow the xref:tutorial.adoc[Tutorial].
+Source, issues, and the documents for people working on Gommitlint itself are in the {repo-base}[itiquette/gommitlint] repository.
+
+The navigation lists every page. Its sections are:
+
+Tutorial:: xref:tutorial.adoc[Validate your first commit] and learn the everyday commands.
+How-to:: Task instructions, from xref:install.adoc[installing] and xref:verify.adoc[verifying a release] to xref:usecases/ci-pipeline.adoc[CI/CD pipelines] and xref:usecases/hook-lifecycle.adoc[Git hooks].
+Reference:: xref:reference.adoc[Commands, configuration, and the rule catalog].
+Concepts:: Why Gommitlint behaves as it does, starting with the xref:architecture.adoc[architecture].

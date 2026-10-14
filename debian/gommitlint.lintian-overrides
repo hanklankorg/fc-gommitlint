@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# Lintian overrides for Go binary characteristics
+
+# Go binaries keep symbols for stack traces and panic output
+gommitlint: unstripped-binary-or-object
+
+# Go PIE binaries are misdetected as shared libraries without prerequisites
+gommitlint: shared-library-lacks-prerequisites
+
+# False positive: "addd" is in the compiled misspell corrections dictionary
+# (github.com/golangci/misspell maps "addd" -> "add"), not a code typo
+gommitlint: spelling-error-in-binary

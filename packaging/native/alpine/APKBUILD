@@ -1,0 +1,89 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# Alpine APKBUILD for gommitlint
+# For building from source for Alpine Linux repositories
+
+# Contributor: Josef Andersson <janderssonse@proton.me>
+# Maintainer: Josef Andersson <janderssonse@proton.me>
+pkgname=gommitlint
+pkgver=0.9.11
+pkgrel=0
+pkgdesc="Git commit message linter and validator"
+url="https://codefloe.com/itiquette/gommitlint"
+arch="x86_64 aarch64"
+license="EUPL-1.2 OR GPL-3.0-or-later"
+depends="git"
+makedepends="go go-md2man gettext bash"
+checkdepends="openssh-keygen"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion
+	$pkgname-zsh-completion
+	$pkgname-fish-completion
+	$pkgname-lang
+	"
+source="$pkgname-$pkgver.tar.gz::https://codefloe.com/itiquette/gommitlint/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname"
+
+export GOFLAGS="$GOFLAGS -trimpath -buildvcs=false"
+export CGO_ENABLED=0
+export GOMODCACHE="$srcdir/go"
+
+build() {
+	local ldflags="-w -X 'main.version=$pkgver' -X 'main.commit=alpine' -X 'main.date=${SOURCE_DATE_EPOCH:-$(date -u +%s)}'"
+
+	# Build main binary (PIE for security hardening, matches goreleaser build)
+	go build -buildmode=pie -tags "netgo osusergo" -ldflags "$ldflags" -o "$pkgname" ./cmd/gommitlint
+
+	# Generate man pages
+	./scripts/docs/manpage.sh
+
+	# Generate shell completions (BINARY_PATH points to the just-built binary)
+	BINARY_PATH="./$pkgname" ./scripts/docs/completions.sh
+
+	# Generate translations
+	./$pkgname translations compile
+}
+
+check() {
+	# The product and the hook scripts it embeds. The repository's own
+	# tooling tests (test/policy and others) need the developer environment
+	# and are not part of what this package ships.
+	go test ./cmd/... ./internal/... ./scripts/hooks/...
+
+	# Make Go module cache writable for abuild cleanup
+	chmod -R u+w "$GOMODCACHE" 2>/dev/null || true
+}
+
+package() {
+	# Binaries
+	install -Dm755 "$pkgname" "$pkgdir"/usr/bin/"$pkgname"
+
+	# Documentation
+	install -Dm644 README.adoc "$pkgdir"/usr/share/doc/"$pkgname"/README.adoc
+	install -Dm644 SECURITY.md "$pkgdir"/usr/share/doc/"$pkgname"/SECURITY.md
+	install -Dm644 CHANGELOG.md "$pkgdir"/usr/share/doc/"$pkgname"/CHANGELOG.md
+
+	# Man pages
+	install -Dm644 generated/manpages/"$pkgname".1.gz "$pkgdir"/usr/share/man/man1/"$pkgname".1.gz
+	install -Dm644 generated/manpages/sv/man1/"$pkgname".1.gz "$pkgdir"/usr/share/man/sv/man1/"$pkgname".1.gz
+
+	# Shell completions
+	install -Dm644 generated/completions/"$pkgname".bash \
+		"$pkgdir"/usr/share/bash-completion/completions/"$pkgname"
+	install -Dm644 generated/completions/"$pkgname".zsh \
+		"$pkgdir"/usr/share/zsh/site-functions/_"$pkgname"
+	install -Dm644 generated/completions/"$pkgname".fish \
+		"$pkgdir"/usr/share/fish/vendor_completions.d/"$pkgname".fish
+
+	# Translations
+	install -Dm644 generated/locale/en/LC_MESSAGES/"$pkgname".mo \
+		"$pkgdir"/usr/share/locale/en/LC_MESSAGES/"$pkgname".mo
+	install -Dm644 generated/locale/sv/LC_MESSAGES/"$pkgname".mo \
+		"$pkgdir"/usr/share/locale/sv/LC_MESSAGES/"$pkgname".mo
+}
+
+sha512sums="
+SKIP
+"

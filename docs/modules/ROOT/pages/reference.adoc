@@ -1,0 +1,52 @@
+= Gommitlint Reference
+:relfilesuffix: .adoc
+
+Technical specifications for gommitlint. For tutorials and examples, see xref:tutorial.adoc[Tutorial].
+
+== Reference sections
+
+* xref:reference/commands.adoc[Commands and Output] — CLI commands, exit codes, environment variables, output formats
+* xref:reference/configuration.adoc[Configuration] — schema, discovery, file formats, worked examples
+* xref:reference/rules.adoc[Validation Rules] — the full rule catalog
+
+== Platform Support
+
+[cols="1,1,1,1,2"]
+|===
+|Platform |amd64 |arm64 |riscv64 |Packages
+
+|GNU/Linux
+|✓
+|✓
+|✓
+|.deb, .rpm, .apk, container
+
+|FreeBSD
+|✓
+|✓
+|-
+|-
+
+|NetBSD
+|✓
+|✓
+|-
+|-
+
+|OpenBSD
+|✓
+|✓
+|✓
+|-
+
+|macOS (cross-compiled, untested, unsupported)
+|-
+|✓
+|-
+|-
+|===
+
+=== Git object format
+
+Gommitlint operates on both SHA-1 and SHA-256 git repositories.
+SHA-256 repositories require shelling out to system `git` because the embedded git library does not support them — see xref:sha256-repositories.adoc[SHA-256 Repositories] for the details.

@@ -1,0 +1,4 @@
+version=4
+opts="filenamemangle=s%(?:.*?)?v?(\d[\d.]*)\.tar\.gz%gommitlint-$1.tar.gz%" \
+  https://codefloe.com/itiquette/gommitlint/tags \
+  (?:.*?/)?v?(\d[\d.]*)\.tar\.gz

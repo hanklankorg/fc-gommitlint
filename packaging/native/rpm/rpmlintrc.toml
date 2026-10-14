@@ -1,0 +1,42 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# rpmlint filter configuration for gommitlint
+# Suppresses expected warnings for Go binary packages
+#
+# Usage: rpmlint -c packaging/native/rpm/rpmlintrc.toml dist/native/*.rpm
+
+Filters = [
+    # Go binaries retain symbols for stack traces and panic output (no debuginfo)
+    "unstripped-binary-or-object",
+
+    # Go binaries are statically linked by design (CGO_ENABLED=0)
+    "statically-linked-binary",
+
+    # False positives: "linter", "validator", "cryptographic" are real English words
+    # used correctly in the package description
+    "spelling-error",
+
+    # EUPL-1.2 OR GPL-3.0-or-later is a valid SPDX dual-license expression;
+    # rpmlint's license database does not include all SPDX identifiers
+    "invalid-license",
+
+    # Standard RPM practice: changelog entries use version-release without %{dist}
+    # expansion (e.g., "0.9.1-1" not "0.9.1-1.fc41")
+    "incoherent-version-in-changelog",
+
+    # Group tag is deprecated in Fedora (since F21) and not used
+    "no-group-tag",
+
+    # BuildRoot tag is not needed for RPM >= 4.6
+    "no-buildroot-tag",
+
+    # Packager is set via rpmbuild macros (~/.rpmmacros), not hardcoded in spec
+    "no-packager-tag",
+
+    # Packages are unsigned in local/CI builds; signatures added for release
+    "no-signature",
+
+    # Man pages use gzip compression (standard); rpmlint may expect bz2 on some distros
+    "manpage-not-compressed",
+]

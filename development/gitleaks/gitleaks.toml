@@ -1,0 +1,26 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Gitleaks configuration for gommitlint.
+#
+# Extend the bundled default ruleset so this file only ADDS an allowlist and does
+# not silently drop gitleaks' built-in secret detectors.
+[extend]
+useDefault = true
+
+# Allowlist: intentional throwaway key-parser fixtures.
+#
+# Signing adapter tests load throwaway RSA private keys to build deterministic
+# key objects at three sizes. The generated material lives only under
+# test/integration/testdata/keys/. Keep the allowlist pinned to that
+# directory rather than broadening it to all test data.
+#
+# The second path is where the same fixtures lived before the test tiers moved.
+# The files are gone from the tree, but the default-branch scan reads history.
+[[allowlists]]
+description = "Intentional throwaway GPG/SSH key-parser fixtures"
+paths = [
+    '''test/integration/testdata/keys/.*''',
+    '''internal/integrationtest/testdata/keys/.*''',
+]

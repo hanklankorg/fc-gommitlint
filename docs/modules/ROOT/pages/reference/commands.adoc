@@ -1,0 +1,916 @@
+= Commands and Output
+:relfilesuffix: .adoc
+:up: ../
+
+CLI surface, exit codes, environment variables, and output formats. For configuration schema and rule definitions, see xref:./configuration.adoc[Configuration] and xref:./rules.adoc[Validation Rules].
+This page describes the current source contract; older releases can differ.
+Examples are alternatives, not one command sequence. Review write destinations and networked operations before using them.
+
+== Commands
+
+=== gommitlint
+
+[cols="1,3"]
+|===
+|Usage |`gommitlint [OPTION...] COMMAND [args...]`
+|===
+
+==== Global Options
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--config FILE`
+|
+|Load defaults plus FILE and its imports; bypass discovered user/project files
+|unset (discovery)
+
+|`--ignore-config`
+|
+|Ignore all configuration files
+|`false`
+
+|`--repo-path PATH`
+|
+|Operate on git repository at PATH
+|current directory
+
+|`--color VALUE`
+|
+|Control colored output: `auto`, `always`, `never`
+|`auto`
+
+|`--quiet`
+|`-q`
+|Suppress successful validation reports and reduce diagnostics; behavior depends on the command
+|`false`
+
+|`--log-level LEVEL`
+|
+|Set logging level: `error`, `warn`, `info`, `debug`, `trace`
+|`info`
+
+|`--theme NAME`
+|
+|Set output color theme (see xref:../output-formats.adoc[Output Formats] for the full list)
+|`default`
+
+|`--help`
+|`-h`
+|Show help
+|
+
+|`--version`
+|
+|Print build version at the root command only
+|
+
+|`--allow-coredumps`
+|
+|Skip best-effort core-dump suppression; host dump policy still applies
+|`false`
+|===
+
+Discovery selects at most one user file and one project file, in YAML/YML/TOML priority order.
+An omitted `--config` does not mean that only `.gommitlint.yaml` is read.
+`--config` and `--ignore-config` conflict; repository/configuration selection does not scope global hook installation or removal.
+Nonempty `NO_COLOR` and `TERM=dumb` override `--color=always`.
+
+==== Commands
+
+[cols="1,3"]
+|===
+|Command |Description
+
+|`validate`
+|Validate commit messages against configured rules
+
+|`config`
+|Configuration operations
+
+|`hook`
+|Manage Git hooks for commit validation
+
+|`doctor`
+|Inspect configuration, hooks, and effective policy
+
+|`man`
+|Render the available authored manual
+
+|`translations`
+|Manage translation catalogs; update/compile operations write files
+
+|`completion`
+|Generate or install shell completions; use `--stdout` for output without installation
+
+|`help`
+|Shows a list of commands or help for one command
+|===
+
+=== gommitlint validate
+
+[cols="1,3"]
+|===
+|Usage |`gommitlint validate [options]`
+|===
+
+==== Input Selection Options
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--base-branch BRANCH`
+|`-b`
+|Validate from a base branch to HEAD; a comma-separated fallback list selects the first existing candidate
+|
+
+|`--count N`
+|`-n`
+|Validate last N commits from HEAD
+|`1`
+
+|`--range RANGE`
+|
+|Validate a supported commit range (e.g., `main..feature`)
+|
+
+|`--ref REF`
+|`-r`
+|Validate specific git REF
+|`HEAD`
+
+|`--message-file FILE`
+|`-f`
+|Read commit message from FILE (use `-` for stdin)
+|
+
+|`--rule RULES`
+|
+|Validate only specific RULES (comma-separated)
+|
+
+|`--exclude-rule RULES`
+|
+|Exclude specific RULES from validation (comma-separated)
+|
+
+|`--ignore-repo-rules`
+|
+|Only run commit message rules, ignore all repository rules
+|`false`
+
+|`--no-ci-detect`
+|
+|Disable automatic CI base-branch and output-format detection
+|`false`
+|===
+
+Outside CI detection, target precedence is message file, base branch, range, ref, then count/default `HEAD`.
+Combining selectors does not mean all are applied; use one intended target mode.
+A detected CI base can take precedence over explicit range/ref/count unless an explicit base branch or message file selects another path.
+Use `--no-ci-detect` when an independently selected range must control validation.
+Message-file validation checks supplied text, not an authenticated commit object.
+
+==== Output Control Options
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--format FORMAT`
+|
+|Output format: `text`, `plain`, `json`, `sarif`, `github`, `gitlab`, `forgejo`, `table`
+|`text`
+
+|`--report-file FILE`
+|
+|Create or truncate FILE for the validation report; `-` selects stdout
+|
+
+|`--rule-help RULE`
+|
+|Show detailed help for specific RULE and exit. Use canonical rule names (same as config rule keys).
+|
+
+|`--verbose`
+|`-v`
+|Increase report detail, at most twice (`-v` or `-vv`).
+Default output shows each finding and its `GLxxx` ID.
+`-v` adds unstated Expected/Actual context and remediation help.
+`-vv` adds full violation context and check catalogs on passing rules.
+|
+|===
+
+`--report-file` is the validation destination flag; `--output` belongs to `config init`, not `validate`.
+Report setup can create directories and truncate an existing file before validation finishes.
+Quiet success can leave no report body; later write or close failures can leave partial output.
+Retain the process status and stderr as well as the report.
+Validation resolves its format from `--format`, then detected CI or the command default; it does not currently use the configuration's `output` field.
+
+==== Rule Help Example
+
+The `--rule-help` flag displays rule documentation with examples and configuration keys:
+
+[source,text]
+----
+$ gommitlint validate --rule-help subject
+
+SUBJECT RULE
+
+Validates commit subject line format, length, and content requirements.
+
+REQUIREMENTS:
+  • Length within configured maximum
+  • No trailing punctuation
+  • Imperative mood when enabled
+  • Case rules when configured
+
+EXAMPLES:
+  ✓ Add user authentication system
+  ✓ Fix memory leak in parser
+  ✗ Added user authentication (past tense)
+  ✗ Fix memory leak. (trailing punctuation)
+
+CONFIGURATION:
+  message.subject.max_length
+  message.subject.case
+  message.subject.require_imperative
+  message.subject.forbid_endings
+  rules.enabled
+  rules.disabled
+----
+
+Available rules: `conventional`, `subject`, `commitbody`, `signoff`, `spell`, `jirareference`, `cryptosignature`, `identity`, `branchahead`, `linearhistory`.
+
+=== gommitlint config
+
+[cols="1,3"]
+|===
+|Usage |`gommitlint config [command [options]]`
+|===
+
+Config-show JSON is an inspection envelope with `schema_version: 1`.
+Config-show YAML is a configuration export under `gommitlint:`, not the same inspection envelope.
+It has no `schema_version`, source graph, or provenance fields.
+Pin the producer version; these formats are not interchangeable.
+Both views use sanitized settings. Review the YAML export as a starting point, not a backup that preserves credentials.
+
+Top-level fields in config-show JSON:
+
+- `config`: resolved settings directly, without another `gommitlint` root
+- `enabled_rules`: enabled rule names
+- `config_source`: display description of the selected load mode/sources
+- `config_sources`: ordered list of sources
+- `source_graph`: configuration inheritance graph
+- `managed_sources`: local managed-source inspection results
+- `provenance`: selected-value provenance
+- `warnings`: config warnings (if any)
+- `schema_version`: schema version number
+
+Abbreviated JSON example (other settings and metadata omitted):
+
+[source,json]
+----
+{
+  "config": {"message": {"subject": {"max_length": 100}}},
+  "warnings": [],
+  "schema_version": 1
+}
+----
+
+Abbreviated YAML export:
+
+[source,yaml]
+----
+gommitlint:
+  message:
+    subject:
+      max_length: 100
+----
+
+==== Subcommands
+
+[cols="1,3"]
+|===
+|Command |Description
+
+|`show`
+|Show effective configuration
+
+|`check`
+|Check configuration health
+
+|`init`
+|Create a configuration template; defaults to `.gommitlint.yaml` in the current directory
+
+|`schema`
+|Print the JSON Schema for the config file
+
+|`sync`
+|Sync managed configuration sources
+|===
+
+`config init --stdout` or `config init -o -` prints instead of writing.
+`--output PATH` / `-o PATH` chooses a destination, and `--preset NAME` selects a built-in preset.
+Existing files require `--force` for replacement; that replaces settings rather than merging them.
+Do not redirect a preview over a configuration you need to retain.
+
+`extends` loads additional local config files before the current file is applied. `managed_sources`
+describes remote config files that are fetched and vendored locally by `gommitlint config sync`.
+Managed source URLs can be declared directly as HTTPS URLs or as `$\{ENV_VAR}` references that are
+resolved only during `gommitlint config sync`.
+Built-in presets are referenced through `extends` using `preset:<name>`.
+
+Preset example:
+
+[source,yaml]
+----
+gommitlint:
+  extends:
+    - preset:conventional
+    - preset:secure
+----
+
+Available presets:
+
+[cols="1,3"]
+|===
+|Preset |Purpose
+
+|`preset:minimal`
+|Low-friction onboarding
+
+|`preset:conventional`
+|Recommended default conventional setup
+
+|`preset:ambitious`
+|Stronger commit quality and structure
+
+|`preset:secure`
+|Signature-metadata, key-inventory, sign-off, and author-email policy; not cryptographic commit authentication
+|===
+
+Managed source example:
+
+These are templates. Replace `<trusted-sha256>` with an independently trusted policy digest before an approved refresh.
+Review source endpoints, credentials, and destination files; the checksum is not independent publisher authentication.
+
+[source,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: https://forge.example/team/policies/raw/tag/v1.2.3/gommitlint.yaml
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+Environment-based source example:
+
+[source,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: ${GOMMITLINT_POLICY_URL}
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+==== config show Options
+
+`config show` includes the effective source graph and selected value provenance in text and JSON, not its YAML export.
+Provenance covers key config values and explicit rule enable/disable
+overrides. Managed source inspection also reports whether a source is direct or environment-based.
+When a setting overrides an earlier value, provenance includes the overridden source and value.
+For environment-based managed sources, output also includes the configured source string and whether
+the last sync resolved it from the environment.
+This is recorded resolution metadata, not proof that the variable is currently set or the remote content is unchanged.
+Provenance also explains why key values and rule states are active.
+For text output, `--view=compact` shows a short summary while `--view=verbose` shows all available
+details.
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--format FORMAT`
+|
+|Output format: `text`, `json`, `yaml`
+|`text`
+
+|`--view VIEW`
+|
+|Text output view: `compact`, `verbose`
+|`verbose`
+|===
+
+==== config check
+
+Checks local configuration health and vendored managed files without fetching upstream policies.
+Inspect both `ok` and the process status; healthy defaults need not be the intended policy.
+Load failures can prevent any structured report from being produced.
+
+The `--format` flag supports `text`, `json`, and `yaml` output, making config health checks easy to
+use in CI and local troubleshooting.
+The `--view` flag controls whether text output is compact or verbose.
+
+Text output groups managed-source issues and includes issue codes plus next-step hints.
+It also includes a managed-source summary block with per-source status and suggested next steps.
+When available, the text output ends with a recommended next command for troubleshooting.
+Machine-readable output includes `recommended_next_command` for the same purpose.
+Unlike config show, config check has an inspection report in both JSON and YAML, without a numeric schema-version field.
+Repair hints are suggestions, not permission to refresh policy or overwrite files.
+
+For a focused troubleshooting workflow and JSON field examples, see xref:{up}config-troubleshooting.adoc[Config Troubleshooting].
+
+Example:
+
+[source,bash]
+----
+gommitlint config check
+gommitlint config check --format=json
+----
+
+==== config schema
+
+Prints the configuration JSON Schema embedded in the selected binary.
+The build's generated-schema checks keep that artifact aligned with its source types; the command does not regenerate it at runtime.
+
+The checked-in schema is at https://codefloe.com/itiquette/gommitlint/raw/branch/main/schemas/gommitlint.schema.json[schemas/gommitlint.schema.json].
+Editor validation depends on its schema association; use the selected binary's emitted schema when matching that version matters.
+
+The schema describes literal settings, not the full effective-policy or filesystem/network contract.
+The file on `main` can differ from an installed release.
+Use `config check` to inspect the merged configuration and local managed-source state.
+
+Example:
+
+[source,bash]
+----
+gommitlint config schema
+gommitlint config schema --compact
+----
+
+These are alternative views. If saving output, use a reviewed destination; shell redirection can truncate a file before Gommitlint starts.
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--compact`
+|
+|Emit single-line JSON instead of indented
+|`false`
+|===
+
+==== config sync Options
+
+Text output uses these status labels:
+
+- `checked`: fetched and verified during `--dry-run` or `--check`
+- `verified`: local vendored file and resolved metadata were already current
+- `synced`: vendored file or resolved metadata was updated
+
+Start troubleshooting with local inspection:
+
+[source,bash]
+----
+gommitlint config show --format=json
+gommitlint config check
+----
+
+For an approved upstream comparison, select the owning file explicitly:
+
+[source,bash]
+----
+gommitlint --config .gommitlint.yaml config sync --check
+----
+
+Both `--check` and `--dry-run` fetch upstream policies and can send configured headers.
+Normal sync can replace destination files and update owning-file metadata; the full refresh is not one transaction.
+These status labels describe synchronization, not independent authentication.
+There is no `config sync --format` option; its result is text.
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--source ID`
+|
+|Sync only the managed source with the matching `id`
+|
+
+|`--dry-run`
+|
+|Fetch and verify sources without writing files
+|`false`
+
+|`--check`
+|
+|Fail if vendored managed sources are out of date
+|`false`
+
+|`--timeout DURATION`
+|
+|Bound each managed-source download; must be positive
+|`10s`
+|===
+
+The timeout applies per source request, not to the entire multi-source command.
+
+=== gommitlint hook
+
+[cols="1,3"]
+|===
+|Usage |`gommitlint hook [command [options]]`
+|===
+
+==== Subcommands
+
+[cols="1,3"]
+|===
+|Command |Description
+
+|`status`
+|Show current local and global Gommitlint Git hook status for a repository
+
+|`install`
+|Install Gommitlint commit-msg and pre-push Git hooks
+
+|`remove`
+|Remove Gommitlint-managed Git hooks while preserving custom hooks
+|===
+
+==== hook install Options
+
+Installation changes future Git behavior without an interactive confirmation.
+Review hook ownership and policy first; do not treat `--force` as a general authorization to replace another tool's hooks.
+Global installation affects user-wide `core.hooksPath`, subject to repository overrides.
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--force`
+|`-f`
+|Replace existing Gommitlint hooks or another global `core.hooksPath`
+|`false`
+
+|`--global`
+|
+|Install hooks globally and configure `core.hooksPath`
+|`false`
+|===
+
+==== hook remove Options
+
+[cols="2,1,3,1"]
+|===
+|Flag |Short |Description |Default
+
+|`--global`
+|
+|Remove global Gommitlint hooks and restore, unset, or preserve `core.hooksPath` as appropriate
+|`false`
+
+|`--dry-run`
+|
+|Preview repository-local hook removal without changing files
+|`false`
+|===
+
+Global removal has no dry-run mode. `--repo-path`, `--config`, and `--ignore-config` do not narrow global hook operations.
+Hook changes can partially complete before failure; see xref:{up}usecases/hook-lifecycle.adoc[Hook Lifecycle] for inspection and recovery.
+`hook status -v` adds local/global details without installing or removing hooks.
+
+=== gommitlint doctor
+
+[cols="1,3"]
+|===
+|Usage |`gommitlint doctor`
+|===
+
+Inspects the current repository without modifying files, reporting the active configuration source,
+Git hook status, and effective hook-install policy. It takes no command-specific flags.
+To inspect another repository, use the global `--repo-path` flag.
+
+== Standard Streams
+
+`gommitlint` separates results from diagnostics so output can be piped and parsed reliably.
+
+*Standard output* carries the selected command's results, including help, configuration inspection, or validation reports.
+Validation normally writes its chosen format there; `--report-file FILE` selects a file, and `--report-file -` selects stdout.
+Setup errors can leave stdout empty, and write failures can leave partial JSON rather than a usable report.
+
+*Standard error* carries logs, usage errors, and diagnostics, including configuration warnings.
+Warnings can also appear in structured reports or CI annotations; the streams are not mutually exclusive inventories.
+Do not parse stderr prose as a stable machine contract or discard it before confirming that a report exists.
+
+A successful parser does not preserve the producer's status automatically.
+Capture both statuses or use the collector in xref:{up}tutorial.adoc#_scripting_and_automation[Scripting and Automation].
+Quiet suppresses successful validation reports, including JSON; it is not a promise that no file or CI summary is written.
+`--log-level` controls logging separately from `-v`/`-vv` report detail, and quiet forces error-level logging.
+
+== Exit Codes
+
+Exit codes use POSIX-style and sysexits-style classes. A basic gate must reject every nonzero status.
+Do not classify every status other than `1` as infrastructure failure: configuration and key-inventory policy have separate codes.
+Exit zero applies to the selected command's contract, not guaranteed execution of every possible rule.
+
+`cmd/gommitlint/main.go` (`resolveExitCode`) owns the process-level mapping.
+`internal/domain/errors.go` classifies validation reasons used by that boundary.
+
+Statuses `128` through `255` are not classified as signals by number alone. When a child process returns one of those statuses, gommitlint preserves it and writes one safe child-failure diagnostic. The silent `128+signal` path applies only when gommitlint's own signal context observed SIGINT, SIGQUIT, or SIGTERM.
+
+[cols="1,4"]
+|===
+|Code |Description
+
+|`0`
+|Selected command succeeded; warnings and skipped coverage can remain
+
+|`1`
+|Validation failures found in commit messages or repository
+
+|`2`
+|Command misuse — bad flags, unknown subcommand, or cancellation without a signal
+
+|`64`
+|`EX_USAGE` — no subcommand supplied (bare `gommitlint` invocation); the concise usage card is written to stderr
+
+|`65`
+|`EX_DATAERR` — malformed input (empty commit message, invalid reference, invalid commit range, `--count` exceeds walk limit)
+
+|`66`
+|`EX_NOINPUT` — a ref, range, or config file the user named on the CLI cannot be found
+
+|`69`
+|`EX_UNAVAILABLE` — not a git repository or git subprocess failed
+
+|`70`
+|`EX_SOFTWARE` - internal failure, including panics that reach the process-boundary recovery handler.
+A bounded private `0600` diagnostic is attempted below `$XDG_STATE_HOME/gommitlint/crash`; output states whether persistence succeeded.
+This does not cover every goroutine panic or fatal process failure.
+
+|`77`
+|`EX_NOPERM` — signing-key directory missing, no eligible keys, or key load failure
+
+|`78`
+|`EX_CONFIG` — invalid or malformed configuration file; repository rules configured without a git repository
+
+|`130`
+|Interrupted by SIGINT (Ctrl-C, 128 + 2)
+
+|`131`
+|Interrupted by SIGQUIT (Ctrl-\, 128 + 3)
+
+|`143`
+|Interrupted by SIGTERM (kill command, 128 + 15)
+|===
+
+== Environment Variables
+
+[cols="2,3,1"]
+|===
+|Variable |Description |Default
+
+|`NO_COLOR`
+|Disable colored output when nonempty, following the https://no-color.org[NO_COLOR standard]
+|unset
+
+|`GOMMITLINT_DEBUG`
+|Enable debug logging in Git hooks
+|unset
+
+|`XDG_CONFIG_HOME`
+|Base directory for user configuration
+|`~/.config`
+
+|`GOMMITLINT_NO_CI_DETECT`
+|Disable automatic CI detection when set to `1`
+|unset
+
+|`GOMMITLINT_ALLOW_COREDUMPS`
+|Boolean source for `--allow-coredumps`; permits skipping suppression, not bypassing host dump policy
+|unset
+
+|`XDG_STATE_HOME`
+|Base directory for private crash diagnostics
+|`~/.local/state`
+
+|`GITHUB_STEP_SUMMARY`
+|Optional absolute destination for a GitHub-compatible job summary; can be overwritten
+|unset
+|===
+
+== Output Formats
+
+Configuration warnings can appear in both diagnostics and reports, depending on the command, format, and quiet setting.
+The examples below are illustrative excerpts, not complete schema or byte-for-byte output fixtures.
+
+=== text (default)
+
+Human-readable colored output. Configuration warnings are printed to stderr before validation results.
+
+[source,text]
+----
+COMMIT [abc1234] feat: add new feature
+  ✓ Commit type
+  ✓ Signature
+  ✓ Sign-off
+  ✓ Spelling
+  ✓ Subject
+  ✗ Commit body - Body too short (5 chars, min: 10)
+
+REPO Branch Ahead - Too many commits ahead of base branch
+
+✗ 2 issue(s) found
+----
+
+==== Configuration provenance
+
+Text output names the configuration in effect on a `Config:` line, placed before
+the final verdict. It appears when it is likely to be needed, not on every run:
+
+* when validation found issues;
+* under `-v` or `-vv`;
+* when configuration came from outside the repository — an explicit `--config`,
+  `--ignore-config`, `--repo-path`, or a global config under `~/.config`.
+
+A clean run using only built-in defaults and the repository's own
+`.gommitlint.yaml` omits this configuration line; that does not mean the entire report is silent.
+`--quiet` suppresses the line in all cases.
+
+Paths are shown relative to the repository, abbreviated with `~` under the home
+directory, and absolute only when the file is genuinely elsewhere. Sources are
+listed highest precedence first, and each source that is not the project's own
+config carries its origin:
+
+[source,text]
+----
+Config: .gommitlint.yaml
+Config: .gommitlint.yaml + ~/.config/gommitlint/settings.yaml (global)
+Config: ci/strict.yaml (--config)
+Config: defaults (no config file found)
+----
+
+JSON and SARIF include source metadata when a report is emitted, rather than only when the human configuration line is shown.
+Entries can include the `defaults` sentinel as well as file paths; they are not all absolute filenames.
+
+=== plain
+
+Machine-readable RFC-4180 CSV. The first field is the record type. Newlines in fields are escaped as `\n`; every other byte, control characters and escape sequences included, passes through unchanged, so plain output is not terminal-safe.
+Records have six columns and no header. Rule rows use `FAIL` when errors are present and `PASS` otherwise; they do not preserve every skip state.
+Use JSON rule statuses when skipped coverage matters, not `grep PASS` or `grep FAIL`.
+The summary record uses: `SUMMARY,<status>,<passed_rules>,<total_rules>,<validated_commits>,<ignored_commits>`.
+Summary fields after the record type are: status, passed rule checks, total rule checks, validated commits, ignored commits.
+
+[source,text]
+----
+COMMIT,abc1234,"feat: add, api",conventional,PASS,
+COMMIT,abc1234,"feat: add, api",commitbody,FAIL,"Body too short: 5\nneeds 10"
+REPO,,,branchahead,PASS,
+SUMMARY,FAIL,5,6,1,0
+----
+
+=== table
+
+Aligned table output for human reading. The summary section reports rule totals and includes a separate commit count line.
+
+=== json
+
+Machine-readable JSON format.
+The native validation document has no numeric schema-version field; do not confuse it with the config-show envelope.
+Summary fields live under `summary` and include `totalCommits`, `validatedCommits`, `ignoredCommits`, `passedCommits`, `failedCommits`, `repositoryFailedRules`, `skippedRepositoryRules`, `repositoryRulesIgnored`, and `failedRules`.
+Commit entries use `type: "commit"` when a hash is available; message-only validation uses `type: "message"` and omits `hash`/`commitDate`.
+Reported configuration warnings appear as structured objects in `warnings`; fatal setup errors can prevent this document from being produced.
+
+[source,json]
+----
+{
+  "timestamp": "2025-01-15T10:30:00Z",
+  "summary": {
+    "failedRules": {"commitbody": 1, "branchahead": 1},
+    "allPassed": false,
+    "repositoryRulesIgnored": false,
+    "totalCommits": 1,
+    "validatedCommits": 1,
+    "ignoredCommits": 0,
+    "passedCommits": 0,
+    "failedCommits": 1,
+    "repositoryFailedRules": 1,
+    "skippedRepositoryRules": 0
+  },
+  "metadata": {
+    "configSources": ["defaults"]
+  },
+  "warnings": [],
+  "commits": [{
+    "author": "User Name <user@example.com>",
+    "commitDate": "2025-01-15T10:30:00Z",
+    "errorCount": 1,
+    "hash": "abc1234567890",
+    "passed": false,
+    "rules": [{
+      "rule": "commitbody",
+      "status": "failed",
+      "message": "Failed",
+      "checks": ["GL304"],
+      "errors": [{
+        "context": {"actual": "5", "expected": "min 10"},
+        "diagnostic": {
+          "id": "GL304",
+          "reason": "body_too_short",
+          "category": "message.body",
+          "summary": "Body must meet the configured minimum length"
+        },
+        "help": "Add more detail to your commit body",
+        "message": "Body too short (5 chars, min: 10)"
+      }]
+    }],
+    "subject": "feat: add new feature",
+    "type": "commit"
+  }],
+  "repository": {
+    "rules": [{
+      "rule": "branchahead",
+      "status": "failed",
+      "checks": ["GL701"],
+      "errors": [{
+        "context": {"ahead": "5", "base": "main"},
+        "diagnostic": {
+          "id": "GL701",
+          "reason": "too_many_commits",
+          "category": "repository.branch",
+          "summary": "Branch must not be too far ahead of the reference"
+        },
+        "message": "Branch is 5 commits ahead of base branch"
+      }]
+    }]
+  }
+}
+----
+
+=== github
+
+GitHub Actions workflow commands format.
+Uses `::group::`, `::error::`, `::warning::`, and `::notice::` workflow commands.
+Summary shows `Repository rules skipped: N` when `--ignore-repo-rules` is used or no repository is available.
+Configuration warnings appear in a `Configuration Warnings` group using `::warning::` annotations.
+
+[source,text]
+----
+::group::Gommitlint Summary
+Validated 1 commit(s)
+Passed: 0, Failed: 1
+Repository failures: 1
+::endgroup::
+::group::Commit #1: abc1234 - feat: add new feature
+::error title=Commit body::Body too short (5 chars, min: 10) [abc1234]
+✗ 1 rule(s) failed
+::endgroup::
+::group::Repository Validation
+::error title=Branch Ahead::Branch is 5 commits ahead of main
+::endgroup::
+::error title=Gommitlint::Validation failed: 1 commit(s) have violations, 1 repository rule(s) failed
+----
+
+For GitHub-compatible output, a nonempty absolute `GITHUB_STEP_SUMMARY` path that passes path checks enables a Markdown summary write.
+The write replaces existing contents rather than appending, and can occur even when quiet suppresses the main successful report.
+Write failure is debug-logged without failing the command; summary presence is not a durable audit or complete-run guarantee.
+The summary includes validation results and configuration warnings where available.
+
+=== gitlab
+
+GitLab CI format with collapsible sections and ANSI color codes.
+Uses `section_start` and `section_end` markers for collapsible job log sections.
+The `\e[0K` escape clears the line, and `\r` returns the cursor to hide markers in rendered output.
+Summary shows `Repository rules skipped: N` when `--ignore-repo-rules` is used or no repository is available.
+Configuration warnings appear in a collapsible `Configuration Warnings` section with yellow `WARNING:` prefix.
+
+[source,text]
+----
+\e[0Ksection_start:1700000000:gommitlint_summary[collapsed=true]\r\e[0KGommitlint Summary
+Validated 1 commit(s)
+Passed: 0, Failed: 1
+Repository failures: 1
+\e[0Ksection_end:1700000000:gommitlint_summary\r\e[0K
+\e[0Ksection_start:1700000000:commit_1[collapsed=true]\r\e[0KCommit #1: abc1234 - feat: add new feature
+\e[31mERROR:\e[0m abc1234 - Commit body: Body too short (5 chars, min: 10)
+\e[31m✗\e[0m 1 rule(s) failed
+\e[0Ksection_end:1700000000:commit_1\r\e[0K
+\e[0Ksection_start:1700000000:repository[collapsed=true]\r\e[0KRepository Validation
+\e[31mERROR:\e[0m Branch Ahead - Branch is 5 commits ahead of main
+\e[0Ksection_end:1700000000:repository\r\e[0K
+
+\e[31m✗ Validation failed: 1 commit(s) have violations, 1 repository rule(s) failed\e[0m
+----
+
+=== forgejo
+
+Alias for `github` format. Forgejo Actions and Gitea Actions use GitHub-compatible workflow commands, producing identical output to the `github` format.

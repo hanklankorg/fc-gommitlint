@@ -1,0 +1,23 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+# Trivy vulnerability ignore file. Every entry MUST be time-bound (expired_at) so
+# it is re-examined, and MUST record why the finding is not actionable here.
+vulnerabilities:
+  # GO-2026-5932 — golang.org/x/crypto/openpgp is unmaintained and unsafe by design.
+  # https://pkg.go.dev/vuln/GO-2026-5932 has no fixed version: the remedy is to
+  # avoid the abandoned openpgp subpackages, not merely bump x/crypto.
+  #
+  # The current Linux CLI dependency graph (netgo,osusergo build tags) contains
+  # no golang.org/x/crypto/openpgp packages. OpenPGP uses the maintained
+  # github.com/ProtonMail/go-crypto fork instead. Other x/crypto packages remain
+  # necessary for SSH and cryptographic primitives.
+  #
+  # At expiry, recheck the advisory, dependency graph and scanner result.
+  # Remove the exception if it no longer suppresses a reported false positive.
+  # If an affected openpgp package is introduced, remove the exception and fix
+  # that dependency; a module version bump alone does not resolve this advisory.
+  - id: GO-2026-5932
+    statement: "Linux CLI uses ProtonMail OpenPGP, not x/crypto/openpgp; no fixed version."
+    expired_at: 2026-12-31

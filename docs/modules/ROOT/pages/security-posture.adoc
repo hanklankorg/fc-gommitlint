@@ -1,0 +1,355 @@
+= Security Posture
+:description: Gommitlint's defensive design — what we harden, what we don't, and how to verify
+:relfilesuffix: .adoc
+
+This page describes Gommitlint's runtime controls, supply-chain controls, and their limits.
+Configured controls are not proof that every invocation or published artifact satisfies them.
+It complements the operational guides:
+
+* xref:verify.adoc[Verify Releases] — *how to verify* what gommitlint publishes
+* xref:reproducible-builds.adoc[Reproducible Builds] - local repeatability checks and their evidence limits
+
+The focus is defensive design and the evidence available for it.
+
+== Why this exists
+
+Authenticated managed sources can place credentials such as `Authorization: Bearer ${POLICY_TOKEN}` in process memory during `config sync`.
+Normal configuration loading uses local vendored copies; refresh, including `--check` and `--dry-run`, can contact upstream servers and send configured headers.
+Runtime hardening reduces some exposure but does not replace credential policy, host isolation, or independent publisher trust.
+
+For a security assessment, distinguish implemented controls, observed test results, and unavailable release evidence.
+
+== Runtime hardening
+
+[cols="2,4", options="header"]
+|===
+| Defense | Scope and limits
+
+| `setrlimit(RLIMIT_CORE, 0)` + `prctl(PR_SET_DUMPABLE, 0)` on Linux
+| Startup attempts to suppress core dumps and, on Linux, restrict access through ptrace-controlled `/proc` files.
+Failure is debug-logged and does not stop startup.
+These controls do not block privileged inspection.
+`--allow-coredumps` or `GOMMITLINT_ALLOW_COREDUMPS=1` skips suppression; it does not override host restrictions to enable dumps.
+
+| Consumed environment variables unset when sync returns
+| Deferred cleanup unsets variables consumed while resolving selected managed sources, including after a later failure.
+Cleanup runs after the selected sync, so sources can share a token.
+It does not erase Linux's initial environment memory, guarantee removal from `/proc/$PID/environ`, affect the parent shell, or revoke credentials.
+
+| `[]byte`-based secret values in the resolver
+| The resolver clears its byte buffers after `Header.Set` copies values into an HTTP request, and during error cleanup.
+Other strings and runtime copies can remain; this is residue minimization, not guaranteed erasure.
+
+| URL metadata sanitization at persistence and display boundaries
+| `settings.SanitizeManagedSourceURL` removes userinfo, query, and fragment from displayed/persisted URL metadata and redacts malformed input.
+The host, explicit port, and path remain visible, including after environment expansion.
+Literal source values remain in the original configuration file.
+
+| HTTPS enforcement for managed sources
+| Source validation requires HTTPS, including for environment-resolved URLs before fetching.
+The fetch helper also rejects plaintext requests with configured headers.
+HTTPS does not independently authenticate the policy publisher or make an attacker-selected HTTPS endpoint safe.
+
+| Cross-host redirect rejection
+| The HTTP client's redirect check rejects a different host or explicit port before sending the redirected request.
+Host comparison ignores case; redirects must retain HTTPS.
+The originally configured endpoint still receives the credentials.
+
+| Forbidden-header validation
+| Configuration validation rejects reserved names `Host`, `Content-Length`, `Transfer-Encoding`, and `Connection`.
+It also rejects empty names and embedded CR/LF characters.
+This rejects specified unsafe header forms, not every HTTP-layer attack.
+
+| Path confinement for `extends:`
+| Discovered project files can import only non-symlink paths within the importing file's directory subtree.
+Global and explicit `--config` sources can import external paths; preset references use the built-in registry.
+This loader permission is not policy authentication or organization-wide enforcement.
+|===
+
+Do not put credentials in URL paths or literal configuration values.
+Review source endpoints and headers before refresh, and use short-lived, narrowly scoped credentials.
+Protect crash dumps before enabling them for diagnosis.
+See xref:reference/configuration.adoc[Configuration Reference] for path checks, refresh behavior, and secret-handling details.
+
+== Supply-chain hardening
+
+IMPORTANT: Rows labeled "future" describe intended forge-ci signer behavior
+whose evidence is currently unavailable. No published Gommitlint release uses
+the current signer, and no authenticated signed forge-ci release carries the
+current workflow. The guarded consumer PR and binary release
+journeys have passed on both Forge Lab roads.
+
+Those historical guarded acceptance results do not authenticate the new Forge CI revision or establish production SLSA evidence.
+The first release job compares protected `FORGE_CI_AUTHENTICATED_COMMIT` with the exact commit pinned in `.forgejo/workflows/release.yml`.
+This records administrator approval; it does not perform cryptographic publication authentication.
+Keep the approval unset until the independent trust prerequisite is satisfied.
+
+[cols="2,4", options="header"]
+|===
+| Mechanism | What it protects against
+
+| `mise minimum_release_age = "7d"` in `.mise.toml`
+| Requests an age delay for supported tool-resolution backends with release-date metadata.
+The configuration explicitly exempts `forgejo:itiquette/gommitlint` and `forgejo:itiquette/nanolinter`.
+This is not a guarantee for every backend or an audit of the selected tool.
+
+| Renovate `minimumReleaseAge: "7 days"` (org-level base config)
+| The inherited Renovate preset requests an age delay for managed updates; actual coverage depends on the manager, metadata, and effective rules.
+The local Alpine rule also disables automerge so a maintainer can align the base image and package pins.
+Age alone does not establish safety or publisher authenticity.
+
+| Digest-pinned container base images
+| `Containerfile` and `Containerfile.alpine` select base-image bytes by digest instead of relying only on mutable tags.
+Build-argument overrides can change the reference.
+A digest identifies bytes; it does not authenticate their publisher or prove that the image is safe.
+
+| Exact-version Alpine apk pins
+| `GIT_VERSION` and `CACERTS_VERSION` constrain directly installed packages.
+A custom Renovate regex manager reads their annotations; this is not an automatic guarantee that pins remain installable.
+Transitive packages can still vary; see xref:reproducible-builds.adoc[Reproducible Builds].
+
+| Buildah/Podman `--timestamp $SOURCE_DATE_EPOCH`
+| Wall-clock timestamps drifting across image builds. The forge-ci Buildah action and local Podman recipes derive the timestamp from `git log -1 --format=%ct`. This removes one source of drift; it is not by itself proof of byte-identical published images.
+
+| Version declarations and `mise.lock`
+| The repository records tool versions and platform-specific download/checksum metadata where available.
+`.mise.toml` does not currently enable `paranoid = true`.
+These files are inputs to tool verification, not proof that every local installation used them or that every publisher was authenticated.
+
+| REUSE metadata checks
+| `reuse lint` checks declared licensing and copyright metadata.
+Passing this check does not prove legal compliance for every downstream use or redistribution.
+
+| Future forge-ci signing contract (evidence unavailable)
+| The intended signer would use Cosign for the checksum manifest, SBOMs, provenance, and container images; the authenticated manifest would cover archives and packages. GPG would sign only `.deb`, `.rpm`, and `.apk` package sidecars. No published release currently provides this evidence under the current key; see xref:verify.adoc[Verify Releases].
+
+| Future forge-ci SLSA Provenance v1.0 contract (evidence unavailable)
+| The unreleased signer source targets a signed in-toto Statement with the `https://slsa.dev/provenance/v1` predicate. This is source-level design, not available release evidence.
+
+| Future CycloneDX SBOM generation through syft (evidence unavailable)
+| The unreleased workflow targets per-artifact SBOMs for binary archives, source archives, and packages, plus image-scoped CycloneDX attestations. No published current-signer artifact set is available to inspect.
+
+| Future SLSA + SBOM image referrers (evidence unavailable)
+| The signer source targets SLSA Provenance and image SBOM registry referrers via `cosign attest`. No published Gommitlint release currently provides them under the current key. See xref:verify.adoc#kubernetes-admission-applicability[Kubernetes admission applicability].
+
+| Deterministic-build controls and a local repeat-build check
+| Build drift in the standard host binary. The current check does not prove published GoReleaser or container parity; see xref:reproducible-builds.adoc[Reproducible Builds] for the evidence boundary.
+|===
+
+== Why the future signer design is key-based
+
+The current unreleased forge-ci source configures **key-based** Cosign signing
+(`--key env://COSIGN_KEY`) rather than keyless Fulcio signing. The keyless flow
+requires an OIDC token from an issuer Sigstore Fulcio trusts; Codefloe/Forgejo is
+not currently such an issuer. The ci-policy key does not authenticate the
+historical `forgejo-ci` signer generation.
+
+These are intended properties, not currently available release evidence:
+
+* **The delivery layer defaults to no public transparency log.** Public Rekor uploads require the workflow's explicit `transparency-log: public` input; a signature alone does not prove log inclusion.
+* **One Cosign key would sign the future flow's blobs, attestations, and images.** GPG package sidecars would use a separate key.
+* **The signing key is intended to be organization-scoped** and stored as a CI secret. The trust root and
+  rotation procedure are owned by `itiquette/ci-policy` under `keys/` and
+  `docs/trust-flow.md`; the release workflow binds the key to a digest written
+  out at its signer call. Its `CODEOWNERS` assigns review to `@hanklank`;
+  enforcement also depends on forge permissions and branch-protection settings.
+
+The xref:verify.adoc#kubernetes-admission-applicability[release-verification guide] owns Gommitlint's admission prerequisites.
+
+== Threats we explicitly do *not* defend against
+
+Runtime controls do not address every attacker capability or host-level exposure.
+
+[cols="2,4", options="header"]
+|===
+| Threat | Why it's out of scope
+
+| Memory inspection permitted by the host, including privileged debugger access
+| Linux non-dumpable state can restrict ordinary same-UID inspection when successfully applied.
+It is not a barrier against an attacker who can bypass those kernel checks or compromise the process itself.
+
+| Hypervisor-level memory snapshots
+| A malicious or compromised hypervisor reads guest RAM directly, bypassing all guest-kernel protections. No defense possible from user space.
+
+| Hibernation file contents
+| Hibernation dumps the whole RAM image to disk before sleeping. A user-space CLI cannot prevent the host from persisting it.
+
+| Go GC-window in-memory residue
+| HTTP requests and the Go runtime can retain secret copies outside the resolver's byte buffers.
+Closing a response or running garbage collection does not guarantee immediate erasure.
+Treat a token exposed in a process dump as compromised.
+
+| Compromised upstream package registries
+| A trusted checksum can consistently identify malicious content; it is not a code audit.
+Module checksums, registry signatures, and Gommitlint artifact signatures address different trust boundaries.
+Reviewing dependencies and their provenance remains necessary even when integrity checks pass.
+
+| Side-channel attacks (timing, cache)
+| Gommitlint uses Go cryptographic libraries but does not provide a separate process-wide side-channel isolation layer.
+Library protections do not establish constant-time behavior for the whole application.
+|===
+
+Apply host-level controls where the threat requires them, including swap/hibernation policy, execution isolation, and restricted credential access.
+A rootless container or private package mirror does not alone establish those guarantees.
+Use short-lived credentials supported by the policy server and review the isolation and dependency-trust boundaries separately.
+
+== Verification surface
+
+Implemented properties below have local checks. Future release-signing rows are
+explicitly unavailable and must not be treated as verification procedures for a
+published release.
+
+The table is an evidence index, not a command sequence.
+Repeat-build checks execute repository code and replace build outputs; review their prerequisites in the linked guide first.
+Configuration inspection is not a test of host memory-isolation policy.
+
+[cols="2,3,2", options="header"]
+|===
+| Property | How to check | Where documented
+
+| Local repeat-build determinism
+| `just verify-reproducible`
+| xref:reproducible-builds.adoc[Reproducible Builds]
+
+| Rebuild parity with a published release
+| `just verify-rebuild <version>` on the release tag; the checksum manifest it compares against must be authenticated separately
+| xref:reproducible-builds.adoc[Reproducible Builds]
+
+| Future current-signer release artifact signatures
+| Unavailable: no published release uses the current signer
+| xref:verify.adoc[Verify Releases]
+
+| Future current-signer GPG package sidecars
+| Unavailable: no authenticated fingerprint and package set exist for this signer generation
+| xref:verify.adoc[Verify Releases]
+
+| Future current-signer container signatures
+| Unavailable: no published image uses the current signer
+| xref:verify.adoc[Verify Releases]
+
+| Future current-signer SBOM authenticity
+| Unavailable: no published current-signer SBOM bundle exists
+| xref:verify.adoc[Verify Releases]
+
+| REUSE metadata conformance
+| `reuse lint`
+| https://reuse.software/[REUSE]
+
+| Declared tool inputs
+| Inspect versions, resolved URLs, checksums, and installation evidence; `mise doctor` alone does not authenticate installed bytes
+| `.mise.toml` and `mise.lock`
+
+| Best-effort hardening diagnostics
+| Inspect the startup path and its debug diagnostic on suppression failure; absence of a message is not a hardening attestation
+| this page + xref:reference/configuration.adoc[Configuration Reference]
+|===
+
+== Reporting a vulnerability
+
+See link:{repo-base}/SECURITY.md[SECURITY.md] in the repo root for the private reporting channel and disclosure policy.
+
+== Related upstream specifications
+
+* https://slsa.dev/[SLSA Build L3] — the target release shape isolates signing
+  keys in the `itiquette/forge-ci` signer workflow; the operational blocker and exact ownership
+  are documented below.
+* https://www.bestpractices.dev/[OpenSSF Best Practices] — passing badge pending; tracked at the project level
+* https://openssf.org/projects/scorecard/[OpenSSF Scorecard] — automated scoring of the practices on this page
+
+== Target SLSA Build L3 by cross-repo + file-level + job-level isolation
+
+NOTE: The caller and pinned workflow are aligned, and guarded real-backend
+acceptance has passed. Production release remains blocked by the absence of an
+authenticated signed forge-ci release carrying the current workflow. The ownership and invariants below describe the required release shape;
+no current SLSA Build L3 Gommitlint release evidence is available.
+
+The target release flow spans two repositories. Gommitlint would own the
+untrusted build; forge-ci would own the prepare workflow and the signer
+workflow with its internal sign/promote/publish privilege split:
+
+[cols="2,2,3,3", options="header"]
+|===
+| Repository / file | Job | What it does | Secrets in env
+
+| gommitlint — `.forgejo/workflows/release.yml`
+| `preflight`
+| Verify the Codefloe token before anything is prepared
+| The packages token only.
+
+| `itiquette/forge-ci` — `.forgejo/workflows/prepare-release.yml`
+| `coordinates`, `prepare`
+| Check required secrets for presence before checkout; admit the request only as an annotated tag at the head of `main`; render and sign the changelog commit; derive and create the final release tag once from the immutable request
+| The presence check sees only whether each secret is configured. The prepare action receives the SSH signing key and no token.
+
+| gommitlint — `.forgejo/workflows/release.yml`
+| `build-and-release`
+| Build binaries, archives, packages, SBOMs, and images; upload the unsigned `dist/` hand-off
+| Build, registry, and rate-limit tokens only. **No Cosign or GPG signing key.**
+
+| `itiquette/forge-ci` — `.forgejo/workflows/sign-and-publish-release.yml`
+| `coordinates`, `sign`, `promote`, `publish`, `cleanup`
+| Verify the hand-off; sign files and images; promote image tags; publish the Forgejo release; remove candidate tags
+| The machine-readable `workflow-call-secrets-contract` header owns the complete interface. Signing keys enter only `sign`, the registry token enters `sign`/`promote`/`cleanup`, and the release-API token enters only `publish`.
+|===
+
+The `sign-and-publish` job in `release.yml` is a one-block `uses:` invocation of
+the forge-ci workflow with an explicit `secrets:` hand-off. The call site
+shows the exact pin, the caller-side mapping, the signer image by digest and
+the digest of the Cosign public key. The reusable workflow's
+`workflow-call-secrets-contract` header is the authority for the required keys.
+The key and the signer image are ci-policy's, whose `CODEOWNERS` assigns its
+signing-critical paths to `@hanklank`.
+
+*Why the required shape isolates provenance signing*: artifact-building code in
+`build-and-release` (GoReleaser, the Go compiler, forge-ci build actions, and
+project scripts) has no Cosign or GPG key. The forge-ci workflow's
+machine-readable secret-contract header and the caller's explicit `secrets:`
+mapping define what enters the separately privileged signer.
+
+*Integrity across the boundary*: forge-ci's `upload-dist` action owns the
+canonical unsigned `dist/` digest and artifact upload. The caller passes that
+digest to `sign-and-publish-release.yml`; the signer downloads the artifact,
+runs `forge-ci release validate-dist`, and then
+`forge-ci release files validate --unsigned` over the manifest the build
+declared, before signing. The exact file-set rules are owned by forge-ci's
+`docs/publishing.md`.
+
+*Toolchain owner*: `itiquette/forge-ci/.forgejo/actions/setup-toolchain/action.yml`
+owns trusted-job tool installation and cache isolation. It has no signing-key
+input. Consumers receive changes only when they update their immutable
+forge-ci pin.
+
+Key separation and a matching hand-off digest do not make a submitted binary safe.
+Authentic provenance can describe malicious source or dependencies; consumers still need to inspect subjects, inputs, and builder identity.
+The workflow's static isolation checks are not SLSA certification or independent verification of the runner.
+
+*Additional compromise paths to assess*:
+
+. Unauthorized changes to the reusable workflows or their dependencies in `itiquette/forge-ci`, or to the key or signer image in `itiquette/ci-policy`.
+. Changes to the consumer's workflow, secret mapping, or pinned reference.
+. Runner compromise that exposes job credentials or changes execution, without necessarily changing repository-secret settings.
+. Compromise of the signing key in storage or during use.
+
+*Defense-in-depth target: L3-invariant check configured for pull requests*
+
+The exact-SHA `itiquette/forge-ci/.forgejo/actions/check-l3-isolation` source is
+designed to invoke the checksum-verified `forge-ci validate isolation`
+command. It checks:
+
+. `build-and-release` (inline in `release.yml`) has zero references to any signing-key secret.
+. A prepare job with steps of its own references signing secrets only before its checkout; Gommitlint's is the reusable workflow, which has none.
+. The sign call site is pinned and enumerates the required signing secrets.
+. Release tag/SHA outputs and the `dist-digest` hand-off reach the signer.
+. Every forge-ci reference in the workflow directory uses one pin, and each reusable-workflow call passes it again as `forge-ci-sha`.
+
+The pull-request workflow is configured to invoke this check. The old
+shell validator was deleted after validation moved into the shared engine. There
+is no supported local shell replacement. `just verify-full` runs all available
+local pre-release checks without claiming L3 evidence; the separate
+`just verify-l3-isolation` command fails closed if invoked.
+
+*Residual surface beyond cross-repo*: keyless signing via Sigstore Fulcio
+(eliminating the long-lived RELEASE_COSIGN_PRIVATE_KEY entirely) requires Sigstore's
+public Fulcio trusting Codefloe's OIDC issuer, outside this repository's control.
+Keyless signing would still require trusted builder identity and workflow isolation.
+Key rotation and cross-repository isolation are planned controls, not current release evidence.

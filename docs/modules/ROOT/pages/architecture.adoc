@@ -1,0 +1,890 @@
+= Architecture
+:relfilesuffix: .adoc
+
+*Architectural Influences:*
+
+These resources inform the architecture and CLI conventions used below.
+They are design references, not evidence of conformance or security certification.
+
+* *https://arc42.org/[arc42]* - The numbered structure used for this architecture document.
+* *https://jmgarridopaz.github.io/content/articles.html[Hexagonal Architecture]* - Juan Manuel Garrido de Paz's articles on Ports and Adapters. They inform the separation of domain logic from Git, filesystem, and CLI concerns.
+* *https://clig.dev/[CLI Guidelines]* - Conventions for help text, errors, exit codes, and flags.
+* *https://owasp.org/www-project-secure-coding-practices-quick-reference-guide/stable-en/[OWASP Secure Coding Practices]* - Input validation, error handling, and safe defaults.
+* *https://best.openssf.org/[OpenSSF Best Practices]* - Security practices for free software projects. Covers dependency management, reproducible builds, and handling vulnerabilities responsibly.
+
+== 1. Introduction and Goals
+
+Gommitlint validates Git commit messages against configurable rules.
+It runs as a CLI tool, Git hook, or in CI/CD pipelines.
+
+=== Quality Goals
+
+These are design goals, not benchmark results or guarantees for every invocation.
+
+|===
+| Priority | Goal | Motivation
+
+| 1
+| Correctness
+| Validation rules must produce accurate, deterministic results
+
+| 2
+| Usability
+| Clear error messages guide developers to fix issues
+
+| 3
+| Extensibility
+| New rules registered through the catalogue and factory without redesigning validation coordination
+
+| 4
+| Performance
+| Sub-second validation for typical repositories
+
+| 5
+| Portability
+| One binary with in-process SHA-1 repository access. SHA-256 repository access requires system Git
+|===
+
+=== Stakeholders
+
+|===
+| Role | Expectation
+
+| Developer
+| Clear feedback on commit message issues
+
+| Team
+| Consistent commit standards across team
+
+| CI/CD Pipeline
+| Machine-readable output, proper exit codes
+
+| Contributor
+| Understandable codebase for adding rules
+|===
+
+== 2. Constraints
+
+|===
+| Constraint | Background
+
+| Go 1.27.2+
+| The module's `go` directive is the toolchain authority (see `go.mod`)
+
+| Two repository adapters
+| go-git for SHA-1 repositories. A detected SHA-256 format selects system Git at runtime
+
+| Unix conventions
+| stdout for results, stderr for logs
+
+| XDG compliance
+| Config in `$XDG_CONFIG_HOME/gommitlint/`
+|===
+
+The repository opener attempts object-format detection through system Git.
+A detection error, empty result, or unrecognized format falls back to go-git. This fallback is not proof of SHA-1 format.
+See xref:sha256-repositories.adoc[SHA-256 Repositories] for adapter and distribution limits.
+
+=== Default Configuration Policy
+
+Product defaults are defined in `settings.NewDefault`.
+See xref:reference/configuration.adoc[Configuration] for the user-facing
+defaults and override rules.
+
+== 3. Context and Scope
+
+=== System Context
+
+[,text]
+----
+                              ┌──────────────────┐
+                              │    Git Hooks     │
+                              │   commit-msg     │
+                              │    pre-push      │
+                              └────────┬─────────┘
+                                       │
+┌────────────┐                ┌────────▼────────┐                ┌────────────┐
+│            │   CLI/Hook     │                 │    stdout      │            │
+│ Developer  │───────────────▶│   Gommitlint    │───────────────▶│  Terminal  │
+│            │                │                 │                │            │
+└────────────┘                │                 │                └────────────┘
+                              │                 │
+┌────────────┐                │                 │                ┌────────────┐
+│   CI/CD    │───────────────▶│                 │───────────────▶│   JSON/    │
+│  Pipeline  │   validate     │                 │   --format     │ Annotations│
+└────────────┘                └────────┬────────┘                └────────────┘
+                                       │
+                              ┌────────▼────────┐
+                              │      Git        │
+                              │   Repository    │
+                              └─────────────────┘
+----
+
+=== External Interfaces
+
+==== Primary I/O
+
+|===
+| Interface | Technology | Purpose | Direction
+
+| Git Repository
+| go-git or system Git
+| Commits, branches, refs
+| In
+
+| Config Files
+| koanf
+| YAML/TOML settings
+| In
+
+| stdout
+| text/plain/JSON/table/SARIF/CI annotations
+| Validation results
+| Out
+
+| stderr
+| zerolog
+| Diagnostics, logs
+| Out
+
+| stdin
+| io.Reader
+| Commit message (`-f -`)
+| In
+
+| Exit codes
+| 0/1/2/64/65/66/69/70/77/78 and signal-derived codes
+| Status to shell/CI
+| Out
+|===
+
+==== Filesystem
+
+|===
+| Path | Purpose
+
+| `.gommitlint.{yaml,yml,toml}`
+| Project configuration
+
+| `$XDG_CONFIG_HOME/gommitlint/settings.*`
+| User configuration
+
+| `<git-common-dir>/hooks/{commit-msg,pre-push}`
+| Local hook scripts; linked worktrees share the main repository's common directory
+
+| `$XDG_CONFIG_HOME/git/git-hooks/`
+| Global hook dispatcher; defaults to `~/.config/git/git-hooks/` when `XDG_CONFIG_HOME` is unset
+
+| Key directory (`*.gpg`, `*.asc`, `*.pub`)
+| Optional public-key inventory policy
+|===
+
+==== Environment Variables
+
+|===
+| Variable | Purpose
+
+| `XDG_CONFIG_HOME`
+| User config directory
+
+| `HOME`
+| Fallback for XDG
+
+| `NO_COLOR`
+| Disable colored output
+
+| `TERM`
+| Terminal detection
+
+| `GOMMITLINT_DEBUG`
+| Debug mode in hooks
+
+| `GOMMITLINT_HOOK_MISSING`
+| Hooks fail closed when the installed binary cannot be resolved; set to
+  `skip` explicitly to allow one unvalidated Git operation
+|===
+
+==== Signature and Key Libraries
+
+|===
+| Library | Purpose
+
+| ProtonMail/go-crypto
+| OpenPGP key parsing and metadata; a verifier implementation exists outside the active rule path
+
+| golang.org/x/crypto
+| SSH key parsing and metadata; a verifier implementation exists outside the active rule path
+|===
+
+The production `cryptosignature` rule does not invoke the verifier
+implementation. It checks signature presence, armor, type, and an independent
+eligible-key inventory. It does not authenticate the signer or detect replay.
+
+==== Signals
+
+|===
+| Signal | Exit Code | Action
+
+| SIGINT
+| 130
+| Request cooperative cancellation
+
+| SIGTERM
+| 143
+| Request cooperative cancellation
+
+| SIGQUIT
+| 131
+| Request cooperative cancellation
+|===
+
+These signal-derived codes apply through the process boundary's error-precedence rules, not as an unconditional override of every error.
+Cleanup is best effort. Unrecovered panics, fatal runtime failures, and abrupt termination can bypass normal cleanup.
+See xref:cli-conventions.adoc[CLI Conventions] for the exact exit-code precedence.
+
+==== Output Formats
+
+|===
+| Format | Use Case
+
+| `text`
+| Human-readable (default)
+
+| `plain`
+| Six-column headerless CSV with the record type in the first column
+
+| `json`
+| Machine processing
+
+| `github`
+| GitHub Actions annotations
+
+| `gitlab`
+| GitLab CI format
+
+| `forgejo`
+| Forgejo Actions
+
+| `table`
+| Human-readable tabular output
+
+| `sarif`
+| SARIF 2.1.0 for code-scanning tools
+|===
+
+Normal configuration loading uses local managed-source copies. Only explicit `config sync` refreshes those sources.
+This is not OS-enforced network isolation. System Git inherits its environment and configuration.
+Validation can also write reports and a CI step summary. Offline source resolution does not mean a read-only process.
+
+== 4. Solution Strategy
+
+=== Hexagonal Architecture
+
+Gommitlint implements the Ports and Adapters pattern (Hexagonal Architecture)
+as defined by Alistair Cockburn.
+The core coordinates business rules through interfaces and dependency functions instead of importing concrete Git or CLI adapters.
+That separation makes dependencies replaceable. It does not make every core call pure or independent of host state.
+
+==== The Hexagon
+
+The application core consists of `internal/app` and `internal/domain`.
+Dependencies point inward from adapters through application services to the
+domain. Inside the core:
+
+* Use-case coordination in `internal/app/validation` and `internal/app/hooks`
+* Rule logic and domain models in `internal/domain`
+* Domain types (Commit, ValidationError, ValidationResult)
+* Port interfaces and dependency functions consumed by the core
+* No adapter or third-party framework imports in the current core packages
+
+Core validation calls the supplied logger and repository capabilities.
+Application services also call injected readers, rule builders, and clocks. The default validation clock is `time.Now`.
+Within the domain, worker selection reads `runtime.GOMAXPROCS`, and relative-path checks use `filepath.Abs`.
+The latter can depend on the current working directory.
+The intended boundary is explicit coordination and isolated effects, not a universal absence of effects or ambient state.
+
+==== Actors
+
+Actors are external entities that interact with the application:
+
+*Driver Actors* (left side - trigger interactions):
+
+* Developer running CLI
+* Git hooks (commit-msg, pre-push)
+* CI/CD pipelines
+* Test harnesses
+
+*Driven Actors* (right side - application calls them):
+
+* Git repository (provides commits)
+* Configuration files (provides settings)
+* Filesystem (provides keys)
+* Spell checker (provides corrections)
+
+==== Ports
+
+Ports are interfaces at the application-core boundary, defined by the package
+that consumes them:
+
+*Driver Ports* (API - how actors use the application):
+
+* `validation.Service.Validate(ctx, request) → Report`
+* Hook lifecycle operations on `hooks.Service` and pre-push introduced-commit
+  selection in `hooks.SelectPrePushCommits`
+
+*Driven Ports* (SPI - what the application needs):
+
+* `Repository` - commit retrieval, branch analysis
+* `Logger` - diagnostic output
+* `KeyProvider` - key file access
+* `SpellChecker` - text correction
+* `validation` dependency functions - repository opening, rule building, and message reading
+* `hooks.Store` and hook dependency functions - filesystem and Git configuration operations
+
+==== Adapters
+
+Adapters translate between technology and ports:
+
+*Driver Adapters* (use driver ports):
+
+* `adapters/cli` - urfave/cli framework → application services
+* Test adapters - test cases → validation functions
+
+*Driven Adapters* (implement driven ports):
+
+* `adapters/git` - go-git library → Repository interface
+* `adapters/gitcli` - system Git CLI → Repository interface for SHA-256 repositories
+* `adapters/signing` - public-key parsing and metadata for the active rule; also contains a verifier not wired into production validation
+* `adapters/logging` - zerolog → Logger interface
+* `adapters/spell` - golangci/misspell → SpellChecker interface
+* `adapters/configuration` - koanf → config file loading
+* `adapters/output` - formatters → text/plain/JSON/GitHub/GitLab/Forgejo/table/SARIF output
+
+==== Architecture Diagram
+
+The diagrams are schematic, not exact Go declarations or a complete execution trace.
+The error model below names the current fields and distinguishes diagnostic metadata from formatter-generated help.
+
+[,text]
+----
+           DRIVER SIDE                              DRIVEN SIDE
+    (actors trigger interaction)            (application triggers interaction)
+
+
+    ┌───────────────────┐                      ┌───────────────────┐
+    │    Developer      │                      │   Git Repository  │
+    │    CI/CD          │                      │ (go-git / Git CLI)│
+    │    Git Hooks      │                      └─────────┬─────────┘
+    └─────────┬─────────┘                                │
+              │                                          │
+              ▼                                          ▼
+    ┌───────────────────┐                      ┌───────────────────┐
+    │  Driver Adapters  │                      │  Driven Adapters  │
+    │                   │                      │                   │
+    │  • CLI (urfave)   │                      │  • Git Adapter    │
+    │  • Test Harness   │                      │  • Signing        │
+    │                   │                      │  • Logging        │
+    └─────────┬─────────┘                      └─────────┬─────────┘
+              │                                          ▲
+              │ uses                          implements │
+              ▼                                          │
+    ╔═══════════════════════════════════════════════════════════════╗
+    ║                    APPLICATION CORE                          ║
+    ║             (internal/app → internal/domain)                 ║
+    ║                                                               ║
+    ║  ┌─────────────────────────┐    ┌─────────────────────────┐  ║
+    ║  │    Driver Ports (API)   │    │   Driven Ports (SPI)    │  ║
+    ║  │                         │    │                         │  ║
+    ║  │  validation.Service     │    │  Repository             │  ║
+    ║  │  .Validate(ctx, req)    │    │  KeyProvider            │  ║
+    ║  │  hooks.Service          │    │  Logger                 │  ║
+    ║  │  .Install/Remove/Status │    │  SpellChecker           │  ║
+    ║  └─────────────────────────┘    └─────────────────────────┘  ║
+    ║                                                               ║
+    ║  ┌─────────────────────────────────────────────────────────┐ ║
+    ║  │                    Domain Logic                         │ ║
+    ║  │                                                         │ ║
+    ║  │  Rule interfaces: CommitRule, RepositoryRule            │ ║
+    ║  │  ValidateCommit(commit, rules, config, logger)          │ ║
+    ║  │  ValidateCommits(ctx, commits, validationContext)       │ ║
+    ║  │                                                         │ ║
+    ║  │  Types: Commit, ValidationError, ValidationResult       │ ║
+    ║  └─────────────────────────────────────────────────────────┘ ║
+    ║                                                               ║
+    ╚═══════════════════════════════════════════════════════════════╝
+----
+
+==== Dependency Direction
+
+All dependencies point inward toward the domain:
+
+[,text]
+----
+Adapters ──────────────▶ Application ──────────────▶ Domain
+ (I/O and frameworks)    (use-case coordination)    (business rules and ports)
+
+• Adapters may depend on application and domain packages
+• Application services may depend on domain packages, never adapters
+• Domain packages depend on neither application nor adapters
+----
+
+In the *Configurable Dependency Pattern*, domain or application consumers define interfaces (ports).
+At startup, the composition root (CLI) injects concrete implementations (adapters).
+`adapters/cli` wires the command dependencies, while `cmd/gommitlint` owns the process lifecycle.
+Two focused construction packages also import sibling adapters: `adapters/repository` selects go-git or system Git, and `adapters/rulefactory` builds rules with signing and stemming capabilities.
+The depguard rules in `development/golangci-lint/golangci.yml` name these composition exceptions.
+
+Driven adapters may import application-owned contracts and their request/result types; importing a consumer's port does not reverse the runtime dependency.
+Validation and hook ports stay beside their consumers in `app/validation` and `app/hooks`.
+Other adapter-to-adapter imports are limited to the explicitly shared support packages: `fileops` (bounded file reads), `filesystem` (path/discovery helpers), `gitrefs` (reference construction), and `output` (report writers).
+Keep new exceptions cohesive and documented in the rule rather than introducing a general shared-ports package.
+
+Import guards check package dependencies, not individual effects.
+Gommitlint's current core does not need `net/http` or `syscall`, so its local guards reject those imports; standard-library types or constants alone are not network or system-call execution.
+Review the actual responsibility before adapting these rules for another consumer.
+Add layers when policy, coordination, and external mechanisms need separate owners, rather than counting external dependencies.
+
+Package tests follow their owners: validation and hook workflows beside application code; Git, signing, configuration, and filesystem behavior beside adapters.
+Repository-wide workflow and launcher contracts live in `test/policy`; cross-package scenarios in `test/integration`; public binary scenarios in `test/blackbox`.
+Policy tests run with ordinary untagged tests; integration and black-box scenarios retain their existing build tags and guarded execution tiers.
+Tests are organized by responsibility and execution tier, not parallel hexagonal layers.
+
+==== Why No `ports/` Directory?
+
+Following Go's idiomatic approach, ports are defined where they are consumed:
+
+* `internal/domain/commit.go` defines the repository capability interfaces
+* `internal/domain/rules/interfaces.go` defines `KeyProvider` and `SpellChecker`
+* `internal/app/validation/service.go` defines validation dependency function types
+* `internal/app/hooks/service.go` defines `Store` and hook dependency function types
+
+This follows Go's principle: *"Accept interfaces, return structs."*
+The domain or application consumer defines the interface it needs, not the provider.
+See <<_adr_7_consumer_defined_interfaces,ADR-7>> for rationale.
+
+==== Benefits Realized
+
+|===
+| Benefit | How Gommitlint Achieves It
+
+| *Testability*
+| Domain tested with mock adapters (in-memory git, fake spellcheck)
+
+| *Flexibility*
+| Multiple output formats without changing validation logic
+
+| *Maintainability*
+| Change go-git version without touching domain
+
+| *Technology agnostic*
+| Current domain packages import only the standard library and other domain packages, not third-party libraries or adapters
+|===
+
+=== Key Architectural Principles
+
+|===
+| Principle | Implementation
+
+| Pure functions
+| Keep rule decisions deterministic for fixed inputs. Validation can call effectful dependencies, including the logger
+
+| Value semantics
+| Prefer returned values. Go structs, slices, and maps are not inherently immutable
+
+| Explicit dependencies
+| Inject operational dependencies. Package-level error values and compiled patterns still exist
+
+| Interface segregation
+| Small, focused interfaces (Repository, Logger, etc.)
+
+| Consumer-defined interfaces
+| Domain or application consumers define what they need. Adapters provide it
+|===
+
+For example, `ValidationError.WithContextMap` copies the context map before adding entries.
+In contrast, `NewCommitWithSignaturePayload` retains the supplied byte slice. Copying the containing struct does not copy that slice's backing array.
+Callers must preserve ownership rather than assume deep immutability.
+
+== 5. Building Block View
+
+=== Level 1: Package Structure
+
+[,text]
+----
+┌─────────────────────────────────────────────────────────────────────┐
+│                           gommitlint                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  cmd/gommitlint/                    Process boundary and composition│
+│                                                                     │
+│  internal/                                                          │
+│  ├── adapters/                      External system interfaces      │
+│  │   ├── ci/                        CI environment detection         │
+│  │   ├── cli/                       Command parsing, app flow       │
+│  │   ├── configuration/             Configuration discovery/loading │
+│  │   ├── fileops/                   Secure file mutation            │
+│  │   ├── filesystem/                Bounded filesystem access       │
+│  │   ├── git/                       Repository access (go-git)      │
+│  │   ├── gitcli/                    Repository access (system Git)  │
+│  │   ├── gitrefs/                   Git reference construction      │
+│  │   ├── i18n/                      Message localization            │
+│  │   ├── logging/                   Structured logging              │
+│  │   ├── messagefile/               Message-file and stdin input    │
+│  │   ├── output/                    Result formatting               │
+│  │   ├── repository/                Repository adapter selection    │
+│  │   ├── rulefactory/               Rule instantiation              │
+│  │   ├── security/                  Operating-system hardening      │
+│  │   ├── signal/                    Operating-system signals        │
+│  │   ├── signing/                   OpenPGP and SSH key handling     │
+│  │   ├── spell/                     Spell checking (misspell)       │
+│  │   └── stemming/                  Snowball word stemming          │
+│  │                                                                  │
+│  ├── app/                            Use-case coordination           │
+│  │   ├── hooks/                      Hook lifecycle services         │
+│  │   └── validation/                 Validation services             │
+│  │                                                                  │
+│  └── domain/                         Pure business logic             │
+│      ├── diagnostics/               Stable diagnostic vocabulary    │
+│      ├── rulecatalog/               Rule and check metadata         │
+│      ├── rules/                     Validation rule implementations │
+│      ├── settings/                  Configuration types             │
+│      └── core files                 Types, ports, orchestration      │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+----
+
+=== Level 1: Building Blocks
+
+|===
+| Building Block | Responsibility
+
+| *cmd/gommitlint*
+| CLI composition, process lifecycle, panic recovery, and exit-code boundary
+
+| *adapters/cli*
+| urfave/cli commands, dependency wiring
+
+| *adapters/configuration*
+| Configuration file discovery and koanf parsing
+
+| *adapters/git*
+| go-git wrapper implementing Repository interface
+
+| *adapters/gitcli*
+| System-Git implementation for SHA-256 repositories
+
+| *adapters/repository*
+| Object-format-aware selection of the repository implementation
+
+| *adapters/output*
+| Formatters (text, plain, JSON, GitHub, GitLab, Forgejo, table, SARIF)
+
+| *adapters/signing*
+| OpenPGP and SSH key parsing for active key policy; verifier code is not wired into the production rule
+
+| *adapters/spell*
+| Spell checking via golangci/misspell
+
+| *app/hooks*
+| Git hook installation, removal, status, and global hook coordination
+
+| *app/validation*
+| Validation target and use-case coordination
+
+| *adapters/rulefactory*
+| Rule instantiation from config
+
+| *adapters/signal*
+| Operating-system signal handling for SIGINT, SIGQUIT, and SIGTERM
+
+| *domain/rules*
+| Individual CommitRule implementations
+
+| *domain/settings*
+| Config struct, defaults, validation
+
+| *domain*
+| Core types: Commit, ValidationError, interfaces
+|===
+
+=== Level 2: Domain (Whitebox)
+
+[,text]
+----
+┌─────────────────────────────────────────────────────────────────────┐
+│                         internal/domain                             │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  Interfaces (ports):                                                │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐ │
+│  │   Repository    │  │     Logger      │  │    KeyProvider      │ │
+│  │ GetCommit()     │  │ Debug/Info/...  │  │ LoadGPG/SSHKeys()   │ │
+│  │ GetCommitRange()│  │                 │  │                     │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────────┘ │
+│                                                                     │
+│  Types:                                                             │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐ │
+│  │     Commit      │  │ ValidationError │  │  ValidationResult   │ │
+│  │ Hash, Message   │  │ Rule, Code, Msg │  │ Commit, Errors      │ │
+│  │ Author, Sig     │  │ Context, Help   │  │                     │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────────┘ │
+│                                                                     │
+│  Functions:                                                         │
+│  ┌─────────────────────────────────────────────────────────────┐   │
+│  │ ValidateCommit(commit, rules, config, logger) → Result      │   │
+│  │ ValidateCommits(ctx, commits, context) → []Result           │   │
+│  └─────────────────────────────────────────────────────────────┘   │
+│                                                                     │
+│  rules/                                                             │
+│  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌───────────┐  │
+│  │ SubjectRule  │ │Conventional  │ │ SignoffRule  │ │  ...more  │  │
+│  │              │ │ CommitRule   │ │              │ │           │  │
+│  └──────────────┘ └──────────────┘ └──────────────┘ └───────────┘  │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+----
+
+== 6. Runtime View
+
+=== Scenario 1: CLI Validation
+
+[,text]
+----
+┌──────┐      ┌─────┐      ┌──────┐      ┌──────────┐      ┌────────┐
+│ User │      │ CLI │      │Config│      │Validation│      │ Output │
+└──┬───┘      └──┬──┘      └──┬───┘      └────┬─────┘      └───┬────┘
+   │             │            │               │                │
+   │ validate    │            │               │                │
+   │────────────▶│            │               │                │
+   │             │            │               │                │
+   │             │ load       │               │                │
+   │             │───────────▶│               │                │
+   │             │            │               │                │
+   │             │   config   │               │                │
+   │             │◀───────────│               │                │
+   │             │            │               │                │
+   │             │ get commits from Git       │                │
+   │             │───────────────────────────▶│                │
+   │             │            │               │                │
+   │             │            │  validate     │                │
+   │             │            │  each commit  │                │
+   │             │            │──────────────▶│                │
+   │             │            │               │                │
+   │             │            │    results    │                │
+   │             │◀───────────┼───────────────│                │
+   │             │            │               │                │
+   │             │            │               │    format      │
+   │             │────────────┼───────────────┼───────────────▶│
+   │             │            │               │                │
+   │   stdout    │            │               │                │
+   │◀────────────│            │               │                │
+   │             │            │               │                │
+----
+
+=== Scenario 2: Git Hook Execution
+
+[,text]
+----
+┌──────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│ Git  │     │commit-msg│     │Gommitlint│     │  Rules   │
+└──┬───┘     └────┬─────┘     └────┬─────┘     └────┬─────┘
+   │              │                │                │
+   │ commit       │                │                │
+   │─────────────▶│                │                │
+   │              │                │                │
+   │              │ validate       │                │
+   │              │ --message-file │                │
+   │              │───────────────▶│                │
+   │              │                │                │
+   │              │                │ apply rules    │
+   │              │                │───────────────▶│
+   │              │                │                │
+   │              │                │    errors      │
+   │              │                │◀───────────────│
+   │              │                │                │
+   │              │  exit code     │                │
+   │              │◀───────────────│                │
+   │              │                │                │
+   │ allow/block  │                │                │
+   │◀─────────────│                │                │
+   │              │                │                │
+----
+
+== 7. Deployment View
+
+Gommitlint has no server or daemon. Each invocation is a short-lived CLI
+process that reads configuration and repository data, prints results, and
+exits. SHA-1 repositories are read in process through go-git. SHA-256
+repositories go through system Git.
+
+=== Runtime contexts
+
+Local developer workstation::
+Users run `gommitlint validate` directly or through installed Git hooks.
+State is not confined to the repository's `.git` directory or configuration files.
+Selected report paths, user-wide hooks, managed-source copies, CI summaries, and crash reports can use other locations.
+Hook installation and removal are separate filesystem and Git-configuration mutations, not validation-only operations.
+
+CI/CD runner::
+A pinned binary release executed against a fetched repository. SHA-1 repositories
+use the go-git adapter. SHA-256 repositories use the system-Git adapter, chosen
+at runtime from the detected object format. Exit codes drive the build verdict.
+Structured output feeds downstream reporting.
+
+=== External dependencies at runtime
+
+* The Git repository under inspection, accessed through read operations in the selected adapter. This is not a filesystem sandbox.
+* System Git for SHA-256 repositories.
+* Optional GPG/SSH public-key material from `crypto_signature.key_directory` for independent key-inventory policy. It is not bound to the commit signature.
+* Only explicit `config sync` fetches configured managed sources, including in its check and dry-run modes. Ordinary loads use local copies.
+* System Git uses the inherited environment and Git configuration. Its process is not an isolated runtime.
+
+=== Distribution
+
+The current unreleased workflow targets a Cosign-signed checksum manifest,
+Cosign-signed image/evidence artifacts, and GPG distro-package sidecars.
+Historical releases used the signer stored in their tagged workflow and must
+not be attributed to the current ci-policy key. Signer ownership, missing
+historical trust routes, and verification are documented in
+xref:verify.adoc[Verifying Gommitlint Artifacts].
+
+== 8. Crosscutting Concepts
+
+=== Configuration Resolution
+
+[,text]
+----
+Discovery: defaults ──▶ XDG global config ──▶ project config
+Explicit:  defaults ──▶ --config file and its imports
+Ignored:   defaults only
+----
+
+`--config` bypasses discovered global and project files. Runtime flags are
+applied after the selected load mode.
+Discovery selects at most one user file and one project file, not every supported extension.
+Project settings can override user settings. The user file is not an enforced policy floor.
+Explicit-file and defaults-only modes bypass discovered configuration.
+
+See xref:usecases/config-resolution.adoc[Config Resolution Use Case] for details.
+
+=== Rule Activation Priority
+
+. *Explicitly disabled* → Never runs
+. *Explicitly enabled* → Runs when not explicitly disabled; this opts into default-disabled rules
+. *Default disabled* (3 rules: jirareference, identity, linearhistory) → Skips unless enabled
+. *Default enabled* (7 rules) → Runs unless disabled
+
+Check-level activation is a separate layer. `checks.enabled` can activate its parent rule, while `checks.disabled` filters diagnostics after execution.
+An explicit parent-rule disable still vetoes activation.
+Allowed fixup/squash/amend commits, or disabling GL901, can skip all commit rules, including signature and identity checks.
+Repository rules can still fail. An enabled rule is not proof that every selected commit was checked by it.
+
+=== Error Model
+
+`ValidationError` contains `Rule`, `Diagnostic`, `Message`, and `Context`.
+It does not contain top-level `Code` or `Help` fields:
+
+* *Rule*: Which rule failed
+* *Diagnostic*: Public `ID`, internal `Reason`, `Category`, and `Summary`
+* *Message*: Human-readable description
+* *Context*: Key-value details (expected/actual)
+* *Help*: Formatter-generated guidance, not a stored `ValidationError` field. Human output detail depends on verbosity
+
+=== Output Streams
+
+Following Unix conventions:
+
+* *stdout*: Results (validation output, config display)
+* *stderr*: Diagnostics (logs, system errors)
+
+== 9. Architectural Decisions
+
+=== ADR-1: Hexagonal Architecture
+
+*Decision*: Domain at the center with pure business logic, application services
+for use-case coordination, and adapters at the edges for I/O.
+
+Dependencies point from adapters to application services to domain packages.
+Domain and application packages do not import adapters.
+
+=== ADR-2: Pure Logic and Value Semantics
+
+*Decision*: Keep validation deterministic, pass dependencies explicitly, and
+return new values instead of mutating shared state. I/O remains in adapters or
+application orchestration.
+
+This is the design intent. Core port calls, host-dependent helpers, and shallow slice/map copies need explicit review under this policy.
+
+=== ADR-3: Two-Phase Hook Validation
+
+*Decision*: Run message rules in `commit-msg` before the commit exists. Run the
+signature metadata policy in `pre-push` over the commits introduced by the
+push. The latter does not add cryptographic signer verification.
+
+See xref:usecases/hook-lifecycle.adoc[Hook Lifecycle Use Case] for details.
+
+=== ADR-4: Two Rule Interface Types
+
+*Decision*: `CommitRule` receives commit data; `RepositoryRule` receives Git
+context. Message-file validation can therefore run without a repository, while
+`branchahead` remains repository-scoped.
+
+=== ADR-5: Exit Code Classification
+
+*Decision*: Separate validation, usage, input, environment, software,
+permission, and configuration failures using POSIX and BSD `sysexits.h`
+conventions. The process mapping is owned by `resolveExitCode` in
+`cmd/gommitlint/main.go`. `internal/domain/errors.go` classifies validation
+reasons.
+
+The full numeric contract lives in xref:cli-conventions.adoc[CLI Conventions].
+
+=== ADR-6: Bounded Untrusted Input
+
+*Decision*: Use bounded input handling rather than assume repositories and configuration are small or trusted.
+The go-git range walk (`commitsInRange`, used for `--range` and branch-ahead counts) loads at most 100,000 commit objects.
+Like `git rev-list from..to`, it walks newest first and stops once no remaining commit can belong to the range, so the bound covers the requested range and its boundary rather than the depth of the history.
+Committer dates that run backwards can make it include a commit a full ancestry walk would exclude, as git's own walk can.
+This threshold applies to that walk, not every repository traversal or the system-Git adapter.
+
+Configuration parsing caps each input file at 1 MiB. Imports have a separate nesting-depth limit.
+These limits are independent of `--count`. They are not whole-process CPU, elapsed-time, or memory budgets.
+
+=== ADR-7: Consumer-Defined Interfaces
+
+*Decision*: Define minimal interfaces in the domain or application package that
+consumes them. Adapters satisfy those interfaces directly. There is no shared
+`ports/` package, wrapper type, or adapter base class. This keeps dependency
+direction visible in package imports and avoids provider-owned abstractions.
+
+== 10. Use Case Documentation
+
+Detailed scenarios are documented separately:
+
+|===
+| Use Case | Description | Architecture Link
+
+| xref:usecases/ci-pipeline.adoc[CI Pipeline]
+| GitHub/GitLab/Jenkins integration
+| Runtime View
+
+| xref:usecases/commit-range-validation.adoc[Commit Range]
+| PR and branch validation
+| Git Adapter
+
+| xref:usecases/config-resolution.adoc[Config Resolution]
+| Discovery and precedence
+| Configuration Adapter
+
+| xref:usecases/cross-repository.adoc[Cross-Repository]
+| Multi-repo patterns
+| Configuration
+
+| xref:usecases/crypto-verification.adoc[Signature Policy]
+| Signature metadata and key inventory
+| Signing Adapter
+
+| xref:usecases/hook-lifecycle.adoc[Hook Lifecycle]
+| Install and execution
+| CLI Commands
+|===

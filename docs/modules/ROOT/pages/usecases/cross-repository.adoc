@@ -1,0 +1,311 @@
+= Cross-Repository Patterns
+:relfilesuffix: .adoc
+:up: ../
+
+These patterns apply Gommitlint consistently across an organization's repositories.
+They use existing features, not built-in cross-repository orchestration.
+Use an authenticated, pinned Gommitlint release and approved local checkouts.
+The scripts require Bash; validation and aggregation also require `jq` and `mktemp`.
+
+== Pattern 1: Shared Configuration Templates
+
+Create reusable configuration templates for different repository types.
+Review templates and their dependencies before adoption.
+`rules.enabled` adds rules; it does not disable other default-enabled rules.
+Use `rules.disabled` for explicit exclusions and examine the effective configuration.
+
+=== Template Structure
+
+[,text]
+----
+org-standards/
+├── templates/
+│   ├── frontend.gommitlint.yaml
+│   ├── backend.gommitlint.yaml
+│   └── library.gommitlint.yaml
+└── README.md
+----
+
+=== Frontend Template
+
+[,yaml]
+----
+# frontend.gommitlint.yaml
+gommitlint:
+  conventional:
+    scopes: ["component", "router", "store", "ui"]
+    types: ["docs", "feat", "fix", "refactor", "style", "test"]
+  rules:
+    enabled:
+      - conventional
+      - subject
+  message:
+    subject:
+      max_length: 72
+----
+
+=== Backend Template
+
+[,yaml]
+----
+# backend.gommitlint.yaml
+gommitlint:
+  conventional:
+    scopes: ["api", "auth", "db", "service"]
+    types: ["docs", "feat", "fix", "perf", "refactor", "test"]
+  rules:
+    enabled:
+      - conventional
+      - signoff
+      - subject
+  message:
+    subject:
+      max_length: 72
+----
+
+=== Library Template
+
+[,yaml]
+----
+# library.gommitlint.yaml
+gommitlint:
+  conventional:
+    types: ["docs", "feat", "fix", "refactor", "test"]
+  rules:
+    enabled:
+      - conventional
+      - signoff
+      - subject
+  message:
+    subject:
+      max_length: 50
+----
+
+== Pattern 2: XDG User Configuration
+
+Developers can set personal defaults for invocations that use configuration discovery.
+An explicit `--config` skips XDG discovery.
+The following example creates a new user configuration and refuses existing settings files.
+If a settings file already exists, merge the intended changes manually.
+
+[,bash]
+----
+(
+set -eu
+umask 077
+config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+case "$config_home" in
+  /*) ;;
+  *) printf '%s\n' 'Use an absolute configuration directory' >&2; exit 2 ;;
+esac
+mkdir -p "$config_home/gommitlint"
+for extension in yaml yml toml; do
+  settings="$config_home/gommitlint/settings.$extension"
+  if [ -e "$settings" ] || [ -L "$settings" ]; then
+    printf 'Existing settings: %s\n' "$settings" >&2
+    exit 1
+  fi
+done
+set -C
+cat > "$config_home/gommitlint/settings.yaml" << 'EOF'
+gommitlint:
+  spell:
+    locale: "US"
+  message:
+    subject:
+      max_length: 72
+EOF
+gommitlint --config "$config_home/gommitlint/settings.yaml" config check
+)
+----
+
+Project configuration overrides corresponding values, not necessarily the entire user configuration.
+Invalid discovered configuration can produce warnings while defaults remain active.
+Use `config check` as a health gate, not only `config show`.
+
+== Pattern 3: CI Pipeline Validation
+
+=== Forgejo Actions Workflow Template (Codefloe)
+
+Use the xref:./ci-pipeline.adoc#_forgejo_actions[Forgejo Actions workflow] and its runner prerequisites.
+It uses a pre-provisioned trusted binary, pinned checkout action, and explicit event commit IDs.
+Do not replace it with an unreviewed action revision or interpolate event values into shell command text.
+Use `--no-ci-detect` with an explicit range so that a detected PR base cannot replace the intended selection.
+
+GitLab installation and credential handling are deployment-specific. Use the
+xref:./ci-pipeline.adoc#_gitlab_ci[GitLab CI guidance] rather than copying a
+generic job that assumes an unauthenticated, preinstalled executable.
+
+== Pattern 4: Multi-Repository Validation Script
+
+Pass each intended checkout root as a separate argument.
+The script does not recursively discover repositories or change their history.
+Each checkout must contain an approved `.gommitlint.yaml` and available commit history.
+The explicit configuration excludes personal XDG defaults.
+
+This example selects up to ten commits from each checkout's `HEAD`.
+It is not a complete-history, PR-range, or organization-wide compliance gate.
+The wrapper treats zero validated commits as insufficient coverage.
+Review ignored commits and repository-rule results separately.
+
+Each run creates a private results directory and records the expected repository count.
+Numbered files avoid collisions between repositories with the same basename.
+Keep the printed directory even when the script fails; reports and diagnostics can contain sensitive information.
+
+[,bash]
+----
+#!/usr/bin/env bash
+# validate-all-repos.sh
+set -eu
+umask 077
+if [ "$#" -eq 0 ]; then
+  printf '%s\n' 'Usage: validate-all-repos.sh CHECKOUT [CHECKOUT ...]' >&2
+  exit 2
+fi
+results_dir=$(mktemp -d "${TMPDIR:-/tmp}/gommitlint-results.XXXXXXXX")
+results_dir=$(cd "$results_dir" && pwd -P)
+printf 'Results directory: %s\n' "$results_dir"
+printf '%s\n' "$#" > "$results_dir/expected-count"
+status=0
+index=0
+for repo_path in "$@"; do
+  index=$((index + 1))
+  report="$results_dir/$index.stdout"
+  entry="$results_dir/$index.json"
+  code=0
+  if (
+    cd -- "$repo_path" || exit 2
+    if { [ ! -d .git ] && [ ! -f .git ]; } || [ ! -f .gommitlint.yaml ]; then
+      printf '%s\n' 'Expected a checkout root with .gommitlint.yaml' >&2
+      exit 2
+    fi
+    gommitlint --config "$PWD/.gommitlint.yaml" config check >&2 || exit
+    gommitlint --config "$PWD/.gommitlint.yaml" validate \
+      --no-ci-detect --count=10 --format=json
+  ) > "$report" 2> "$results_dir/$index.stderr"; then
+    code=0
+  else
+    code=$?
+  fi
+  jq -n --arg repository "$repo_path" --argjson exitCode "$code" --rawfile output "$report" '
+    {repository: $repository, exitCode: $exitCode,
+     report: (try ($output | fromjson) catch null)}
+    | .passed = (.exitCode == 0 and (try (
+        .report.summary.allPassed == true and
+        (.report.summary.validatedCommits | type == "number" and . > 0) and
+        (.report.commits | type == "array")
+      ) catch false))
+  ' > "$entry"
+  if ! jq -e '.passed' "$entry" > /dev/null; then status=1; fi
+done
+exit "$status"
+----
+
+`exitCode` records each checkout's command status or local precondition failure.
+`passed` is the wrapper's additional report and coverage test, not full schema validation.
+Missing or malformed JSON fails. The report must also contain the fields tested above.
+The wrapper format is not Gommitlint's native JSON schema or signed evidence.
+If interrupted, the recorded count lets aggregation detect an incomplete run.
+
+== Pattern 5: Repository Onboarding
+
+Run this script from the intended checkout root after reviewing the selected template.
+It refuses existing project configuration and does not install hooks.
+If a post-copy check fails, the new file remains for inspection; the script does not roll back changes.
+
+[,bash]
+----
+#!/usr/bin/env bash
+# setup-gommitlint.sh
+set -eu
+umask 077
+TEMPLATE="${1:-backend}"
+TEMPLATES_DIR="${TEMPLATES_DIR:-$HOME/org-standards/templates}"
+case "$TEMPLATE" in
+  frontend|backend|library) ;;
+  *) printf '%s\n' 'Select frontend, backend, or library' >&2; exit 2 ;;
+esac
+[ -d .git ] || [ -f .git ] || exit 2
+for extension in yaml yml toml; do
+  config=".gommitlint.$extension"
+  if [ -e "$config" ] || [ -L "$config" ]; then
+    printf 'Existing configuration: %s\n' "$config" >&2
+    exit 1
+  fi
+done
+template="$TEMPLATES_DIR/$TEMPLATE.gommitlint.yaml"
+test -f "$template"
+gommitlint --config "$template" config check
+(set -C; cat -- "$template" > .gommitlint.yaml)
+gommitlint --config "$PWD/.gommitlint.yaml" config check
+gommitlint --config "$PWD/.gommitlint.yaml" config show
+----
+
+Relative `extends` paths can change meaning after copying a template.
+Review the resulting configuration before accepting it as repository policy.
+For optional hook installation, follow xref:./hook-lifecycle.adoc[Git Hook Lifecycle].
+That procedure covers existing hooks, `core.hooksPath`, and removal limits.
+
+== Configuration Inheritance
+
+Gommitlint does not fetch an implicit organization-wide cross-repository
+configuration. XDG user configuration supplies local defaults, a repository's
+`.gommitlint.yaml` overrides those defaults, and explicit CLI flags override the
+corresponding effective values.
+Configure managed organization policy explicitly through `managed_sources`.
+Refresh it with `config sync`.
+See xref:{up}reference/configuration.adoc[Configuration].
+This supports:
+
+. *Organization defaults* in XDG user config
+. *Project-specific overrides* in `.gommitlint.yaml`
+. *CI-specific flags* on command line
+
+These layers apply during discovery. Explicit `--config` uses defaults plus the selected root and its configured dependencies.
+It does not merge discovered XDG or project files.
+See xref:./config-resolution.adoc[Configuration Resolution] for field-specific merge and warning behavior.
+
+== Isolation Properties
+
+Separate invocations select repositories independently; they do not create a security sandbox.
+XDG files, templates, vendored policy, key directories, and process environment can be shared inputs.
+Validation does not refresh managed sources; the explicit `config sync` command fetches those sources.
+Do not infer network isolation from that configuration-loading behavior.
+
+For repeatable validation decisions, retain the binary version, effective configuration, selected commit IDs, and relevant external inputs.
+JSON reports contain timestamps and can contain localized messages; byte-identical output is not guaranteed.
+
+== Aggregating Results
+
+Run this script against the private directory printed by `validate-all-repos.sh`.
+It requires the recorded number of wrapper files and fails if any entry did not pass.
+An empty or incomplete inventory is an error, not successful validation.
+
+[,bash]
+----
+#!/usr/bin/env bash
+# aggregate-results.sh
+set -eu
+RESULTS_DIR="${1:?Supply the results directory from validate-all-repos.sh}"
+expected=$(< "$RESULTS_DIR/expected-count")
+[[ "$expected" =~ ^[1-9][0-9]*$ ]] || exit 2
+shopt -s nullglob
+results=("${RESULTS_DIR}"/[0-9]*.json)
+(( ${#results[@]} == expected )) || exit 1
+jq -e -s --argjson expected "$expected" '
+  if length != $expected then error("Incomplete repository inventory") else . end
+  | {repositories: ., allPassed: all(.[]; .passed == true)}
+  | if .allPassed then . else ., error("Repository validation failed or was incomplete") end
+' "${results[@]}"
+----
+
+With a complete set of parseable wrapper objects, a failing aggregate is printed before a nonzero exit status.
+Preserve that status in CI. A successful aggregate proves only the wrapper's selected checks, not compliance or repository security.
+
+== Best Practices
+
+. *Version control templates* - Keep organization templates in a shared repository
+. *Use XDG for user defaults* - Personal preferences that don't override project settings
+. *Automate with CI* - Enforce standards through pipeline validation
+. *JSON output for automation* - Use `--format=json` for scripted processing
+. *Document standards* - Include README with configuration templates explaining rules

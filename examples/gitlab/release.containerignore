@@ -1,0 +1,10 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+
+# Context for Containerfile.release only: package tools, never consumer sources,
+# generated products, local credential material, or image archives.
+*
+!.mise.toml
+!mise.lock
+!tools/go.mod
+!tools/go.sum

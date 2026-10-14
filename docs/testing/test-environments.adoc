@@ -1,0 +1,372 @@
+= Explicit test environments
+
+The recipe selects the test tier and execution environment.
+`test`, `verify`, `verify-fix` and `verify-full` do not start containers or VMs.
+Preparation, execution and cleanup are separate commands.
+
+`just test-vm-clean-downloads` removes only `.test-vms/downloads/`, taking the
+existing locks for every supported target so media cannot be removed during
+preparation or a run. It preserves prepared images and `.test-vms/results/`.
+Use `test-vm-clean TARGET` separately to remove prepared images. Both cleanup
+commands are no-ops when no VM state exists and need no hypervisor or network.
+
+Stop distribution preparation/test jobs before running
+`test-container-clean-distributions`; this older recording path has no active-job
+lock. Cleanup refuses symlinked cache paths. Its product-free regression is
+`bash scripts/testing/test-clean-containers.sh`.
+
+For the contributor command sequences on Linux and macOS, see
+link:../contributing/development.md#testing-in-different-environments[Testing in different environments]
+in the development guide.
+
+== Start here: what runs, and where?
+
+For everyday changes, start with `just test`. It runs the usual unit tests and
+saved fuzz examples in your current environment, without starting a container or
+virtual machine. If you are already inside a container or VM, that is the current
+environment too.
+
+The longer command names let you choose two things:
+
+* *What to test:* `unit` checks individual pieces of code; `integration` checks
+  larger in-process scenarios; `blackbox` runs the command-line program as a user
+  would. `combined` runs integration and black-box tests together.
+* *Where to test:* `native` runs here; `container` runs in a prepared Linux
+  container; `vm` runs in a disposable virtual machine with its own operating
+  system. `container-on-macos` runs Linux containers inside a Linux VM on an
+  Apple Silicon Mac. Its guest is fixed, so these recipes take no VM target argument.
+
+For example, `just test-unit-container` asks for unit tests in Linux containers.
+`just test-blackbox-vm freebsd-amd64` asks for CLI tests in a FreeBSD VM.
+A Linux container on a Mac still tests Linux behavior, not macOS behavior.
+
+Each test job starts with a `Test job` banner naming its selected suites,
+execution environment and host OS/architecture. Combined jobs explicitly name
+integration and black-box tests. Once a container starts, `Test runtime` reports
+its actual OS, architecture and distribution. VM banners name the requested guest
+OS/architecture and hypervisor; the guest report confirms the platform after boot.
+
+Use `just help RECIPE` (or `just --usage RECIPE`) for argument help without
+running the selected job. Native VM recipes also print this help and stop when
+the target is omitted. For example:
+
+[source,sh]
+----
+just help test-unit-vm
+just help test-combined-container-matrix
+----
+
+Recipes with fixed choices list them in the help's `pattern` field, separated by
+`|` (meaning "or"). A typo such as `just test-unit-vm asdf` is rejected with those
+choices before any VM starts. Paths, name filters and forwarded Go/tool options
+are described in the help rather than restricted to an artificial list.
+
+=== Prepare once, then run tests
+
+An _image_ is the starting environment that a container or VM is created from.
+Preparation sets up the required tools and dependencies and can use the network.
+Choose it explicitly with `test-container-prepare` or `test-vm-prepare`.
+For a VM, name the target: `just test-vm-prepare openbsd-amd64`. The command reads
+the checked-in _profile_ (image version, checksum and setup method), obtains the
+image and configures the guest. You do not need to write a profile or SSH keys.
+An optional profile argument is available for an existing custom development image.
+
+With the controller tools installed, a first run on x86-64 Linux is:
+
+[source,sh]
+----
+just test-vm-prepare openbsd-amd64
+just test-combined-vm openbsd-amd64
+----
+
+On an Apple Silicon Mac, select native macOS tests or Linux containers explicitly:
+
+[source,sh]
+----
+just test-vm-prepare macos-arm64
+just test-blackbox-vm macos-arm64
+
+just test-vm-prepare linux-arm64
+just test-unit-container-on-macos
+----
+
+Once prepared, select the test command you need. A missing or outdated image is
+an error, not permission to download a replacement automatically. Container test
+execution is offline, although Gommitlint's host-side Go build/module preparation
+can still use the network. VM test builds and execution use prepared dependencies
+with external networking disabled.
+
+=== What happens during a VM test?
+
+. Start a temporary copy of the prepared image.
+. Check the guest's actual operating system and architecture, then copy the source.
+. Disable external networking and compile the selected tests inside the guest.
+. Run the tests as an unprivileged user, with native source and executables read-only.
+. Keep the logs and result, then stop and remove the temporary guest.
+
+The prepared image is kept for another run; `just test-vm-clean TARGET` removes it.
+A nonzero exit status means the command failed. The command prints where its logs
+are stored so you can inspect the failure.
+
+The controller itself also has tests using fake QEMU, Tart and transport commands.
+These check things such as wrong-platform refusals, exit codes and cleanup without
+starting a real VM. Passing those checks, or successfully cross-compiling a binary,
+does not mean the tests have passed on a real BSD or macOS guest.
+
+== Commands
+
+[cols="2,3",options="header"]
+|===
+|Command |Purpose
+|`test-container-prepare` |Prepare the existing Linux sandbox image
+|`test-unit-container` |Run only unit tests in Linux containers
+|`test-blackbox-container` |Run the existing Linux CLI suite
+|`test-vm-prepare TARGET [PROFILE.json]` |Fetch/bootstrap a pinned guest and prepare its project dependencies
+|`test-unit-vm TARGET` |Compile and run native unit tests in a fresh guest
+|`test-blackbox-vm TARGET` |Compile and run the native CLI suite in a fresh guest
+|`test-unit-container-on-macos` |Run Linux unit containers inside a prepared Tart Linux guest
+|`test-blackbox-container-on-macos` |Run the Linux sandbox CLI suite inside that guest
+|`test-matrix-container-on-macos [names...]` |Run the existing Linux distribution matrix inside that guest
+|`test-vm-clean TARGET` |Remove a prepared image, refusing an active target
+|===
+
+Gommitlint additionally provides `test-race-vm`, `test-integration-vm`,
+`test-combined-vm` and `test-combined-container-on-macos`.
+Combined means integration plus black-box, without the unit suite.
+VM unit tests use ordinary Go unit execution; race instrumentation is selected
+explicitly with `test-race-vm` and fails when the native toolchain cannot provide it.
+Container recipes retain their existing race and sandbox contracts.
+
+== Targets and prerequisites
+
+* `freebsd-amd64`, `freebsd-arm64`, `openbsd-amd64`, `openbsd-arm64`,
+  `netbsd-amd64`, `netbsd-arm64`: QEMU on Linux/KVM or macOS/HVF.
+* `macos-arm64`, `linux-arm64`: Tart on Apple Silicon.
+  The controller requires macOS 26 or newer for host-only networking at startup.
+* Guest and controller architectures must match. There is no automatic emulation
+  or fallback to another kernel.
+* Controllers need Bash, Git, jq, tar, curl, a SHA-256 utility and GNU `timeout`
+  (`gtimeout` on a Mac), plus the selected hypervisor. QEMU also needs OpenSSH
+  (`ssh`, `ssh-keygen`, `ssh-keyscan`), xz/gzip and SHA-512 support for NetBSD.
+* Automatic FreeBSD/OpenBSD setup uses `xorriso`. OpenBSD/NetBSD setup uses
+  Python 3's standard-library HTTP server, bound to loopback for that prep only.
+* ARM QEMU needs the firmware shipped by QEMU/Homebrew or `qemu-efi-aarch64`.
+  Host tools are checked with install guidance; preparation does not install host packages.
+
+If a command reports an architecture mismatch, use the matching target and image:
+an x86-64 machine uses `amd64` targets; an ARM64 machine uses `arm64` targets.
+For example, on x86-64 prepare `openbsd-amd64` and run
+`just test-combined-vm openbsd-amd64`. Testing `openbsd-arm64` specifically needs
+an ARM64 controller. The error prints the appropriate preparation/run commands;
+the checked-in profile selects the matching image automatically.
+
+== Automatic preparation
+
+FreeBSD's native nuageinit consumes command strings in the NoCloud seed. Setup
+generates SSH host keys before validation and disables the image's automatic
+first-boot upgrade/reboot to retain the selected base release. NetBSD uses a
+per-connection Python metadata relay that propagates HTTP EOF, and IPv4-only
+bootstrap networking. NetBSD boot completion and TLS trust setup precede package
+installation. The controller rechecks SSH after guest setup and streams metadata
+HTTP requests as well as package and console output. Prepared
+NetBSD/amd64 boots use the serial console. The relay's product-free regression
+is `python3 scripts/testing/test-vm-metadata.py`.
+
+`scripts/testing/profiles.json` is the image authority shared in shape with Nanolinter:
+
+* FreeBSD 15.1 uses official cloud-init QCOW2 images and a generated seed CD.
+* OpenBSD 7.9 uses its official install ISO and unattended installer. Verified
+  installation sets and the generated answers are served from a temporary local directory.
+  The official `SHA256.sig` is fetched alongside the release; the guest installer
+  verifies the set list and archives with the release key bundled in the ISO.
+* NetBSD 11.0 uses official disk images and their existing cloud initialization,
+  supplied with a temporary local metadata endpoint through QEMU guest forwarding.
+* macOS Tahoe and Ubuntu use digest-pinned Cirrus Labs Tart images. These are
+  Tart's upstream images, not images published by Apple or Ubuntu.
+
+QEMU downloads are checksum-verified and cached under `.test-vms/downloads/`.
+Setup creates only VM disk files (64 GiB virtual capacity), generates a dedicated
+SSH key, and records the freshly booted guest's SSH host key on its loopback forward.
+Subsequent SSH connections enforce that key. No host disk or personal SSH identity is used.
+
+Guest setup installs Bash, sudo, Git, jq, GNU utilities, gettext and signing tools.
+The unprivileged project adapter installs the exact Go version from `go.mod`,
+verifying its archive against Go's HTTPS release metadata, then downloads module dependencies.
+The shared controller keeps the backend/OS setup separate from these Go commands.
+
+The controller creates an unprivileged `tester` account when necessary.
+An existing account must be unprivileged and have no unrestricted passwordless
+sudo. The persistent test home and dependency caches live under
+`/var/itiquette-vm/home`; per-run source and artifacts live under `/var/tmp`.
+Linux guest setup installs rootless Podman prerequisites and pinned mise;
+preparation then uses the existing project recipes to install tools and record test images.
+The checked-in Linux profile selects Debian; each selected
+pinned image must offer ARM64; an unavailable architecture fails preparation.
+There is no x86 emulation or automatic omission of distributions.
+
+Repeated preparation reuses a ready image only when the profile, bootstrap scripts,
+toolchain/dependency files and project adapter still match. A test run refuses stale
+inputs. Use `test-vm-clean TARGET` and prepare again after changing those inputs.
+Preparation has bounded download, bootstrap and dependency phases and can take
+longer than the 30-minute test-execution limit.
+
+== Custom development images (optional)
+
+Pass a second argument only to import an existing development image instead of
+the repository profile. It must provide Bash 4+, sudo, Git, jq, curl, GNU utilities,
+a C toolchain and the native tools needed by the tests.
+Keep custom profiles and test identities outside Git, under the
+ignored `.test-vms/profiles/` directory. Replace every placeholder below with
+the identity/checksum of an image you prepared and reviewed.
+
+.QEMU example
+[source,json]
+----
+{
+  "image": "/absolute/freebsd-dev.qcow2",
+  "sha256": "<64-character image SHA-256>",
+  "ssh_user": "root",
+  "ssh_key": "/absolute/test-only-id_ed25519",
+  "ssh_host_key": "ssh-ed25519 <base64 public host key>",
+  "serial": "/dev/ttyu0"
+}
+----
+
+Use a standalone QCOW2 image, without backing files or external data files.
+ARM QEMU profiles also require absolute `firmware` and its `firmware_sha256`.
+The `serial` value must name the guest's first emulated serial character device;
+OpenBSD/NetBSD images commonly use `/dev/tty00` instead of FreeBSD's `/dev/ttyu0`.
+The dedicated SSH identity is used only for controller transport. Agent forwarding,
+ambient SSH configuration and ambient known-host files are disabled.
+
+.Tart example
+[source,json]
+----
+{
+  "image": "ghcr.io/your-org/macos-dev@sha256:<64-character OCI digest>"
+}
+----
+
+Preparation may pull this exact digest and fetch locked dependencies.
+Runs clone the prepared local image and never pull or provision implicitly.
+QEMU uses a disposable overlay of the checksummed prepared disk.
+Tart uses a private project-owned `TART_HOME`, copy-on-write clones, and disables
+automatic pruning of other images.
+
+.Tart Linux example
+[source,json]
+----
+{
+  "image": "ghcr.io/your-org/linux-dev@sha256:<64-character OCI digest>",
+  "distributions": ["debian-13"]
+}
+----
+
+`distributions` is a required, nonempty list of names from `test/distribution/images`
+for `linux-arm64`. The sandbox is prepared along with those selected images.
+`test-matrix-container-on-macos` without names runs that recorded selection; explicit
+names select prepared images and fail if their recording is missing or stale.
+
+== Execution boundary
+
+The controller checks host/guest architecture and reads the actual guest kernel
+before transferring source. It captures current tracked files and new non-ignored
+files, rejecting symlinks, special files and escaping paths; Git administration,
+VM state and common credential paths are excluded.
+
+Before build/test execution the guest controller disables non-loopback interfaces.
+Tart continues over its virtio guest-agent channel; QEMU continues reporting over
+the serial console. Thus SSH or host-only networking is not mistaken for an offline
+test boundary. Preparation remains the explicit network-enabled phase.
+
+Native compilation and execution are separate phases. Tests run as `tester`;
+source and checksummed executables become root-owned/read-only before execution.
+VMs have two virtual CPUs, 4 GiB RAM, a 30-minute run deadline and bounded startup.
+Native test execution disables core dumps and limits open files to 1024 and
+processes to 512; the base image must permit these limits for `tester`.
+Linux container-in-VM modes keep the outer workspace writable because the existing
+Podman launchers own their private snapshots and read-only product mounts.
+
+Gommitlint uses each platform's `script(1)` syntax, native process-state queries,
+and the guest RAM bound where Linux's per-process address-space limit is absent.
+On macOS, a root-owned, VM-only helper installs public fixture CAs into the guest's
+system keychain; certificate verification is not disabled.
+
+These are native-platform results, not a substitute for the existing Linux release
+gate or its human approvals. Missing tools/capabilities and failed assertions fail
+the run; compilation and mocked controller checks do not establish a guest pass.
+The controller contract tests use inert hypervisors/transports and run with
+`go test ./test/policy`; they do not require or start a real VM.
+
+== Results and cleanup
+
+Native Go guests print product and per-package harness compilation stages;
+`go build -v` shows dependencies as they compile. Test executables run with
+`-test.v`, so individual test starts, passes, failures and skips appear live,
+including during integration and black-box runs. A cold compiler can still have
+quiet intervals. Harnesses receive pipes, as with `go test`, while their output
+streams to the serial console. QEMU test execution uses 115200 baud and a
+character-budgeted log reader to keep up with verbose suites.
+Adapter changes participate in the preparation key: if a
+prepared image is reported stale, clean and prepare that target again.
+
+The terminal announces each controller phase and streams guest console, package
+setup and test output. Every 15 seconds it reports elapsed time and how long the
+guest logs have been quiet. A waiting message describes the controller's state;
+it does not claim a silent guest is making progress. `phase.txt` retains the last
+controller phase. Terminal control bytes are removed from the live display;
+the original logs remain available for diagnosis.
+
+`.test-vms/results/RUN/` retains controller metadata and guest logs, including target,
+backend, action, selected tier, image reference, source archive SHA-256, guest
+identity and exit status. The log directory is printed before slow preparation
+work, and failures repeat it. Early failures retain the available metadata even
+when no guest was started.
+Guest mutation happens only in a disposable overlay/clone. Exit and signal handlers
+stop the owned VM, bootstrap file server and console reader, and remove temporary
+state; cleanup failure fails the command. Bootstrap logs are kept with the other logs.
+A target lock refuses concurrent preparation, execution or deletion of that target.
+After an abrupt controller kill, inspect and stop the recorded VM before removing
+a stale lock. There is no automatic adoption of an already-running machine.
+
+Dependency/toolchain/image changes require explicit cleanup and preparation again.
+VM images, logs, records and keys are ignored build/test state, never source assets.
+Cleaning a target keeps verified downloads available for a later preparation.
+
+=== Container preparation messages
+
+`just test-container-prepare` can print Podman's "no systemd user session"
+warning because the launcher deliberately uses a private runtime directory and
+clears `DBUS_SESSION_BUS_ADDRESS`. The image build explicitly selects cgroupfs;
+the surrounding image operations can print the fallback warning. These messages
+alone do not require enabling lingering on the host.
+
+Debian's `debconf` can also report falling back to its noninteractive frontend
+because the build has no terminal. A successful exit with `sandbox image recorded`
+confirms preparation completed. Next run `just test-unit-container`, then
+`just test-combined-container` if it passes. Test execution has CPU, memory and
+process limits; successful image preparation alone does not establish that those
+limits work on the host.
+
+=== Container test progress
+
+Container runs announce image verification/loading, source snapshotting,
+dependency preparation, compilation, test execution and cleanup. Loading imports
+the prepared local archive into private Podman storage; it does not rebuild the
+image. Go can be quiet during cold compilation, before the first test starts.
+
+Unit, integration, black-box and distribution suites print test names and results
+by default. For quieter unit or integration output, pass `-v=false`, for example
+`just test-unit-container -v=false`. Phase messages remain visible on stderr.
+
+=== If a command fails
+
+* *Missing controller tool:* install the named tool on the host, then retry.
+* *No prepared VM:* run `just test-vm-prepare TARGET` first.
+* *Stale, corrupt or missing prepared image:* run `just test-vm-clean TARGET`,
+  then prepare again. The verified download cache is reused.
+* *Invalid custom profile:* correct the named file or field and retry that same
+  command. Omitting the profile argument deliberately selects the repository default.
+* *Guest startup or setup failure:* inspect `console.log`, `transport.log` and
+  `bootstrap.log` in the printed directory. Test output is in `console.log` for
+  QEMU or `test.log` for Tart; `result.txt` records the controller/test status.

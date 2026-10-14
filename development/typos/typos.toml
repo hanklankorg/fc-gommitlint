@@ -1,0 +1,119 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+# typos config — https://github.com/crate-ci/typos
+#
+# This project is a spell- / imperative-mood-checker; many of its tests and
+# rule implementations contain deliberate misspellings as fixtures, training
+# data, or stemming roots. The exclusions below codify which "typos" are
+# intentional and must not be auto-corrected.
+
+[default.extend-words]
+# Stemming roots used by the imperative-mood rule. The Snowball stemmer
+# emits "updat" from "updated/updating/updates" and "delet" from
+# "deleted/deleting" — these are correct stems, not misspellings.
+updat = "updat"
+delet = "delet"
+
+# "unparseable" is the spelling used throughout the codebase and is
+# accepted English (typos prefers "unparsable").
+unparseable = "unparseable"
+
+# The spell rule's help text demonstrates a misspelling on purpose.
+teh = "teh"
+
+# Swedish fixtures assert on the localized output: "som" is an ordinary
+# Swedish word and KONFIGURATION is the translated heading.
+som = "som"
+konfiguration = "konfiguration"
+
+# "fpr" is the field name in `gpg --with-colons` output (fingerprint).
+# Documented in the contributor packaging guide.
+fpr = "fpr"
+
+# "intoto" is the filename-friendly form of the in-toto attestation
+# framework (https://in-toto.io/). Appears in SLSA provenance filenames
+# like `slsa-provenance.intoto.json` and the type URI prefix
+# `https://in-toto.io/Statement/v1`.
+intoto = "intoto"
+
+# Debian bug-control header and a Forgejo token's externally defined secret name.
+Debbugs = "Debbugs"
+FO = "FO"
+
+# Appears inside a fixture SSH public key (base64 payload).
+ENEW = "ENEW"
+
+# Intentional invalid inputs in tests / help-text typo examples. These
+# strings would never legitimately appear as English words elsewhere; the
+# blast radius of allowing them globally is negligible.
+subjet = "subjet"
+hte = "hte"
+hlep = "hlep"
+lenght = "lenght"
+
+# golangci-lint linter names that read as misspellings. They surface now
+# that the golangci config lives at development/golangci-lint/golangci.yml — a non-hidden
+# path typos scans, unlike the former dotfile .golangci.yml.
+decorder = "decorder"
+importas = "importas"
+
+[default.extend-identifiers]
+# "testWordUpdat" / "testWordTeh" name the stemming/spell-check test fixtures.
+testWordUpdat = "testWordUpdat"
+testWordTeh = "testWordTeh"
+
+[files]
+extend-exclude = [
+    # Third-party verbatim license text.
+    "LICENSES/",
+
+    # Fixture data: PGP/SSH keys, locale catalogs, generated artifacts. The
+    # base64 payloads occasionally form English-looking substrings.
+    "test/integration/testdata/",
+    "locale/",
+
+    # Third-party template files copied verbatim.
+    "templates/",
+
+    # Historical changelog entries derived from past commit messages —
+    # cannot rewrite history just to satisfy a spell checker.
+    "CHANGELOG.md",
+
+    # Files whose entire purpose is to enumerate misspellings:
+    #
+    # - spell rule + adapter test corpora (mispelled/recieve/seperate/... data)
+    # - imperative rule test corpora (updat/teh/... stemming inputs)
+    # - typo→command suggestion table (the file IS a typo dictionary)
+    # - imperative stem→imperative dictionary
+    # - error-formatting test message constants that include "teh" / "Teh"
+    "internal/adapters/spell/misspelladapter_test.go",
+    "internal/domain/rules/spell_test.go",
+    "internal/domain/rules/imperative_test.go",
+    "internal/domain/rules/imperative.go",
+    "internal/domain/rules/test_constants_external_test.go",
+    "internal/adapters/output/test_constants_test.go",
+    "internal/adapters/output/errorformatting_test.go",
+    "cmd/gommitlint/suggestions.go",
+
+    # Debian package metadata: lintian-overrides comments reference the
+    # offending words verbatim ("addd") to explain why lintian shouldn't
+    # flag them in the binary.
+    "debian/gommitlint.lintian-overrides",
+]
+
+# Inline ignores for short flags / regex alternations that look like words.
+[default]
+extend-ignore-re = [
+    # OpenBSD's verbatim installer prompt highlights the shortcut in "(I)nstall".
+    "\\(I\\)nstall",
+    # `rpmbuild -ba` (build all) — the -ba flag is part of rpmbuild's CLI.
+    "rpmbuild -ba",
+    # `[s|S]upport` and similar in git-cliff template regexes.
+    "\\[[a-zA-Z]\\|[a-zA-Z]\\][a-z]+",
+    # Help text and code examples that show typos on purpose, marked with
+    # a trailing `// typos:disable-line` comment. (Some files we can't
+    # fully exclude because they have non-fixture content too.)
+    ".*// typos:disable-line.*",
+]

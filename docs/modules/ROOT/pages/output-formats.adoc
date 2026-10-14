@@ -1,0 +1,186 @@
+= Output Formats and Themes
+
+Control validation output with verbosity, format, and color settings.
+See xref:cli-conventions.adoc[CLI Conventions] for streams and exit codes, and xref:reference/configuration.adoc[Configuration] for persisted settings.
+
+Use a trusted, pinned Gommitlint release in the intended checkout with an approved configuration.
+The examples below select `HEAD` and disable CI detection so that a detected PR base cannot change the target.
+For wider coverage, select an explicit range using xref:usecases/commit-range-validation.adoc[Commit Range Validation].
+Run one format or verbosity alternative at a time.
+
+== Progressive Verbosity
+
+[source,bash]
+----
+# Default
+gommitlint validate --no-ci-detect --ref HEAD --format=text
+
+# Technical details
+gommitlint validate --no-ci-detect --ref HEAD --format=text -v
+
+# Guidance
+gommitlint validate --no-ci-detect --ref HEAD --format=text -vv
+----
+
+At most two verbose flags are accepted. Quiet mode overrides verbose output.
+`--quiet` also suppresses successful validation reports in machine-readable formats, including JSON and SARIF.
+Do not use quiet mode when a consumer requires a report after every completed validation.
+
+== Formats
+
+[source,bash]
+----
+# Human-readable text
+gommitlint validate --no-ci-detect --ref HEAD --format=text
+
+# CSV records for scripting
+gommitlint validate --no-ci-detect --ref HEAD --format=plain
+
+# Machine-readable JSON
+gommitlint validate --no-ci-detect --ref HEAD --format=json
+
+# SARIF 2.1.0 for security dashboards and result aggregation
+gommitlint validate --no-ci-detect --ref HEAD --format=sarif
+
+# Table format (structured output)
+gommitlint validate --no-ci-detect --ref HEAD --format=table
+
+# CI/CD formats
+gommitlint validate --no-ci-detect --ref HEAD --format=forgejo   # Forgejo
+gommitlint validate --no-ci-detect --ref HEAD --format=github   # GitHub Actions
+gommitlint validate --no-ci-detect --ref HEAD --format=gitlab   # GitLab CI
+----
+
+An explicit `--format` overrides CI-selected output.
+Text is the command default; automatic CI detection can choose a platform format instead.
+The CLI rejects unsupported format names rather than silently falling back.
+GitHub and Forgejo formats emit workflow commands; GitLab format is not a JSON validation report.
+
+Plain output is CSV with six columns and no header. Column meanings depend on the record type:
+
+[source,text]
+----
+COMMIT,sha,subject,rule,status,message
+REPO,,,rule,status,message
+SUMMARY,status,passed_rules,total_rules,validated_commits,ignored_commits
+----
+
+The record type is inside the CSV row, not a prefix outside it.
+Use a CSV parser for quoted commas and quotes; do not split rows on commas manually.
+Embedded line breaks in fields become literal `\n` text.
+Every other byte of a field, including control characters and escape sequences from commit text, passes through unchanged, so plain output is not terminal-safe: feed it to a CSV parser, never to a terminal.
+Plain rule rows use `FAIL` when errors exist and `PASS` otherwise; use JSON to distinguish skipped rules.
+
+Do not use `grep FAIL` as a validation gate.
+A subject can contain `FAIL`, and no match makes `grep` fail even when validation succeeded.
+Without pipeline status handling, a matching line can also hide Gommitlint's failure code.
+Prefer JSON fields for selecting failed rules, and retain the process status separately.
+
+=== Retain a JSON report
+
+Validation reports go to stdout by default; ordinary diagnostics go to stderr.
+Setup, usage, or internal failures can occur before any report exists.
+`--report-file PATH` redirects the report, creates missing parent directories, and can truncate an existing file.
+Use a new private directory instead of reusing an evidence path.
+
+This Bash example requires `jq` and `mktemp`.
+It preserves Gommitlint's exit status and fails an otherwise successful run if the required JSON shape is absent.
+The displayed JSON is a projection; the complete report and diagnostics remain in the printed directory.
+
+[source,bash]
+----
+(
+  set -eu
+  umask 077
+  report_dir=$(mktemp -d "${TMPDIR:-/tmp}/gommitlint-output.XXXXXXXX")
+  printf 'Report directory: %s\n' "$report_dir"
+  validation_status=0
+  gommitlint validate --no-ci-detect --ref HEAD --format=json \
+    > "$report_dir/report.json" 2> "$report_dir/diagnostics.log" || validation_status=$?
+  printf '%s\n' "$validation_status" > "$report_dir/validate.exit"
+  if ! jq -e -s '
+    if length != 1 then error("Expected one validation report") else .[0] end
+    | if (.summary.allPassed | type == "boolean") and
+         (.commits | type == "array") and (.repository.rules | type == "array")
+      then {allPassed: .summary.allPassed,
+        failedCommits: [.commits[] | select(.passed == false)],
+        repositoryFailures: [.repository.rules[] | select(.status == "failed")]}
+      else error("Unsupported validation report shape") end
+  ' "$report_dir/report.json"; then
+    printf '%s\n' 'Report processing failed; inspect retained diagnostics' >&2
+    if [ "$validation_status" -eq 0 ]; then validation_status=1; fi
+  fi
+  exit "$validation_status"
+)
+----
+
+The shape test is not full schema or coverage validation.
+Inspect `summary.validatedCommits`, ignored commits, repository-rule results, and warnings before claiming complete policy coverage.
+A valid JSON document or empty SARIF findings list is not proof of successful validation.
+Retain the original command status as a required CI result even when report processing succeeds.
+Treat reports and diagnostics as potentially sensitive artifacts.
+
+== Example Output
+
+The text view is intended for local terminal use.
+The table view gives a compact summary, but its layout is not a substitute for a machine-readable schema.
+
+image::output-formats.png[Default text output and table output examples]
+
+== Diagnostic IDs
+
+Validation report errors carry stable `GLxxx` check IDs.
+Default text output keeps messages concise; verbose text output (`-v`) shows the public check ID.
+It does not expose the internal reason/category metadata shown in JSON.
+CLI setup and recovery errors are diagnostics, not necessarily report entries.
+
+[source,text]
+----
+Check ID: GL102
+----
+
+JSON places commit-rule results under `commits[].rules[]` and repository-rule results under `repository.rules[]`.
+Each rule error has a nested `diagnostic` object.
+This example is one rule result, not a complete validation report:
+
+[source,json]
+----
+{
+  "rule": "subject",
+  "status": "failed",
+  "checks": ["GL101", "GL102"],
+  "errors": [{
+    "diagnostic": {
+      "id": "GL102",
+      "reason": "subject_too_long",
+      "category": "message.subject",
+      "summary": "Subject must fit the configured length"
+    },
+    "message": "Subject too long",
+    "context": {"actual": "120", "expected": "100"}
+  }]
+}
+----
+
+Plain, table, GitHub/Forgejo, GitLab, and summary rendering prefix messages with `[GLxxx]` when a check ID is available.
+Summary rendering is internal output support, not an accepted `validate --format=summary` option.
+Use diagnostic IDs and structured status fields instead of matching localized message text.
+The JSON validation envelope has no numeric schema-version field; pin and test the producer release used by automation.
+
+== Themes
+
+[source,bash]
+----
+# Select a color theme (default keeps existing colors)
+gommitlint --theme=dracula validate --no-ci-detect --ref HEAD --format=text
+
+# Light themes
+gommitlint --theme=gruvbox-light validate --no-ci-detect --ref HEAD --format=text
+----
+
+Themes affect supported human-oriented rendering, not JSON field names or validation policy.
+Color defaults to TTY detection; `--color=always` and `--color=never` request explicit behavior.
+A nonempty `NO_COLOR` or `TERM=dumb` disables color even with `--color=always`.
+An unsupported theme is rejected; selecting a theme does not force color output.
+
+Available themes: default, dracula, gruvbox-dark, gruvbox-light, tokyonight, tokyonight-day, everforest-dark, everforest-light, nord, catppuccin-mocha, catppuccin-latte, onedark, solarized-dark, solarized-light.

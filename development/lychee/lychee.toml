@@ -1,0 +1,18 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+timeout = 10
+max_retries = 1
+accept = ["200..=299", "429"]
+
+# The canonical Forge hides these endpoints from anonymous clients with 404.
+# Secretless pull-request jobs cannot distinguish that from a broken URL.
+exclude = [
+  "^https://codefloe\\.com/itiquette/gommitlint(?:/issues)?$",
+]
+
+exclude_path = [
+  "(^|/)CHANGELOG\\.md$",
+  "(^|/)web/layouts(/|$)",
+]

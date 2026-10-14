@@ -1,0 +1,76 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+name: Web Preview
+# Build the Hugo landing site and run the same QA the deploy workflow runs
+# (contrast + html-validate). No push to `pages`; the rendered `public/` is
+# uploaded as a workflow artifact so reviewers can download and preview before
+# merge.
+#
+# Scoped to web inputs via `paths:` so it only runs on PRs that actually touch
+# the site (Forgejo path filters are workflow-level, not per-job — hence its own
+# file rather than a job in pullrequest.yml). The mirror step copies the brand
+# assets listed below, so changes to those must also retrigger the preview.
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - web/**
+      - assets/logo.png
+      - assets/logo-animated.svg
+      - assets/apple-touch-icon.png
+      - assets/favicon-32.png
+      - .forgejo/workflows/web-preview.yml
+permissions:
+  contents: read
+env:
+  GIT_DEFAULT_HASH: sha256
+jobs:
+  web-preview:
+    name: Web Preview (landing site)
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+
+      # Checksum-verified install; version + digest pinned in the script
+      # (shared with pages-deploy).
+      - name: Install Hugo (extended)
+        run: ./.forgejo/scripts/install-hugo.sh
+
+      - name: Mirror brand assets into web/static
+        run: |
+          install -m 0644 assets/logo.png             web/static/logo.png
+          install -m 0644 assets/logo-animated.svg    web/static/logo-animated.svg
+          install -m 0644 assets/apple-touch-icon.png web/static/apple-touch-icon.png
+          install -m 0644 assets/favicon-32.png       web/static/favicon-32.png
+
+      - name: Verify WCAG contrast ratios
+        run: node web/scripts/check-contrast.mjs
+
+      - name: Build site
+        run: hugo --minify --source web --destination ../public
+
+      - name: Install QA tooling
+        run: npm install --prefix /tmp/qa --no-save --silent html-validate@9.7.1
+
+      - name: Validate HTML structure
+        run: /tmp/qa/node_modules/.bin/html-validate --config web/.htmlvalidate.json 'public/**/*.html'
+
+      - name: Upload rendered site as preview artifact
+        # v3-node20 like every other artifact step in the estate (platform
+        # quirk #4: v4 changes layout/hidden-file handling).
+        uses: https://code.forgejo.org/forgejo/upload-artifact@97a0fba1372883ab732affbe8f94b823f91727db # v3-node20
+        with:
+          name: web-preview-${{ forgejo.event.pull_request.number }}
+          path: public
+          retention-days: 7

@@ -1,0 +1,263 @@
+= Reproducible Builds
+:description: Gommitlint's deterministic-build controls, local repeat-build check, and current parity limits
+:relfilesuffix: .adoc
+:reproducibility-note: https://codefloe.com/itiquette/docs/src/branch/main/development/notes/reproducible-go-builds.adoc
+
+Gommitlint's release configuration removes known sources of build drift. Two
+local recipes check it, at different strengths:
+
+* `just verify-reproducible` runs the whole GoReleaser build twice in one
+  checkout and requires every binary archive, source archive, and
+  `.deb`/`.rpm`/`.apk` package to be byte-identical. It needs no tag and can run
+  without network when all build dependencies are available; it does not enforce
+  offline execution. It is the check `just verify-full` runs.
+* `just verify-rebuild <version>` rebuilds a released tag and compares the
+  result with that release's published checksum manifest. It is the stronger
+  result, because the published side was produced by a different machine.
+
+Neither authenticates anything, and neither covers SBOMs or containers. This
+page documents the configured determinism controls, what each recipe proves,
+and the parity evidence that is still missing.
+This page owns Gommitlint's exact configuration, commands, outputs, and limits.
+
+== Status by artifact
+
+[cols="2,2,3", options="header"]
+|===
+| Artifact | Current evidence | Built by
+
+| `gommitlint` binary (PIE, Linux amd64/arm64)
+| Compared inside its archive and packages by both recipes
+| GoReleaser
+
+| `gommitlint` binary (no-PIE, macOS / BSDs / RISC-V)
+| Compared inside its archive by both recipes
+| GoReleaser
+
+| Musl-PIE binaries (for Alpine container)
+| Deterministic flags configured; no committed parity result. Built outside GoReleaser, so absent from `checksums.txt` and from both recipes
+| Release workflow (`go build` directly)
+
+| `+*-src.tar.gz+` source archive
+| Whole-archive bytes compared by both recipes
+| GoReleaser
+
+| `+*.tar.gz+` binary archives (binary + LICENSE + docs + manpage + completions)
+| Member timestamps and ownership pinned to the commit; whole-archive bytes compared by both recipes
+| GoReleaser
+
+| `.deb` / `.rpm` / `.apk` system packages
+| Entry timestamps pinned to the commit; whole-package bytes compared by both recipes
+| nfpm via GoReleaser
+
+| `gommitlint.1.gz` manpage
+| Deterministic gzip mode configured
+| `scripts/docs/manpage.sh` (`gzip -n`)
+
+| `changelog.gz` (nfpm package changelog)
+| Deterministic gzip mode configured
+| `just generate-changelog-gz` (`gzip -n`)
+
+| `+*.sbom.json+` (CycloneDX SBOMs via syft)
+| *Not reproducible*: syft stamps every document with a fresh serial number and timestamp. Excluded from both recipes
+| GoReleaser
+
+| Distroless container (`gcr.io/distroless/base-debian13:nonroot`)
+| Base digest and timestamps pinned; no independent published-image parity check
+| `Containerfile` — base is digest-pinned, single `COPY`
+
+| Alpine container (`alpine:3.24`)
+| Top-level inputs pinned, but historical rebuilds depend on retained Alpine packages
+| `Containerfile.alpine` — base digest-pinned + `git` / `ca-certificates` versions pinned
+
+| OCI image manifest timestamps
+| Commit-derived in current local and release builders
+| Buildah in the forge-ci image action; Podman in `just build-image-multi`
+
+| Cosign bundles
+| *Not reproducible* by design
+| Cosign
+
+| GPG package `.sig` sidecars
+| *Not reproducible* by design
+| GPG through the forge-ci signer
+|===
+
+== Determinism controls
+
+These controls remove known nondeterministic inputs; they are not, by
+themselves, an independent release-parity result.
+
+*Go binary compilation* (`scripts/build/build-cross-platform.sh`, `.goreleaser.yaml`) uses `-trimpath`, `-buildvcs=false`, `-w`, `-buildid=`, `CGO_ENABLED=0`, and the fixed `netgo`/`osusergo` tags.
+Version, commit, and date are injected through `-X main.X=...` linker flags.
+`-trimpath` removes local paths, `-buildvcs=false` disables automatic VCS stamping, `-w` strips DWARF information, and `-buildid=` clears the Go build ID.
+`CGO_ENABLED=0` disables cgo; identical flags alone do not eliminate target, toolchain, or injected-metadata differences.
+
+The local builder derives version text from `git describe --tags --dirty --always`.
+Tags, available history, and tracked changes can therefore change the version without changing `HEAD`.
+Its date uses `SOURCE_DATE_EPOCH` when set, otherwise the commit timestamp when available.
+Without usable Git metadata, it can fall back to wall-clock time and `dev`/`unknown` metadata.
+The GoReleaser path instead uses its resolved version, full commit, and commit timestamp.
+
+*Archive packaging* (`.goreleaser.yaml`):
+
+* Binary timestamps: `builds[].mod_timestamp: "{{ .CommitTimestamp }}"`.
+* Archive members: `archives[].builds_info` and every `archives[].files[].info` use `mtime: "{{ .CommitDate }}"`, owner `root`, and group `root`.
+* nFPM package metadata: `nfpms[].mtime: "{{ .CommitDate }}"`.
+* Source and modules: `gomod.proxy: false` and a `go mod verify` before hook.
+
+Archive/package mtimes require RFC3339Nano `{{ .CommitDate }}`, not the integer `{{ .CommitTimestamp }}` used for binary timestamps.
+GoReleaser 2.18.2 or newer is required for `builds_info` to reach binary archive members.
+These settings normalize member ownership and implicit package directories as well as file timestamps.
+`gomod.proxy: false` selects the checked-out source tree; Go still resolves dependencies according to `GOPROXY` and `GOSUMDB`.
+`go mod verify` validates module-cache consistency, not source authentication or reproduction.
+
+*Gzipped files*:
+
+* Manpages and the compressed changelog use `gzip -n` to omit the source filename and mtime from gzip headers.
+
+*Container base images and layers*:
+
+* Both Containerfiles declare digest-pinned base images. Build-argument overrides can select different inputs; record the effective arguments.
+* Alpine's `GIT_VERSION` and `CACERTS_VERSION` pin top-level packages, not the complete transitive package set or repository indexes.
+* Dependency-update tooling proposes new pins. Updating a pin changes the build input; it does not preserve historical packages.
+* The forge-ci Buildah action and local Podman recipe receive a timestamp from
+  `git log -1 --format=%ct`, so layer creation metadata derives from the source
+  commit rather than wall-clock time. Other image inputs can still prevent
+  historical byte parity, as described below.
+
+== Repeating the build locally
+
+Use an approved checkout with Git, Bash, `just`, `cmp`, GoReleaser, and the
+pinned Go toolchain available. Both recipes run the release build, which
+executes repository and dependency build code and can download modules unless
+the environment prevents network access.
+Record the Go version, the GoReleaser version, the source revision and tags,
+and the relevant environment before comparing results.
+`GOFLAGS`, workspace configuration, `SOURCE_DATE_EPOCH`, and available module
+caches can also affect the build.
+
+[WARNING]
+====
+Both recipes run `goreleaser --clean`, which deletes `dist/`, and both first
+run `just generate`, which rewrites `generated/`, `debian/copyright`, and
+`schemas/gommitlint.schema.json`.
+`verify-reproducible` also removes any previous `bin/.repro-first` and
+`bin/.repro-second` trees before building.
+Preserve previous evidence before running either again, use a dedicated
+checkout, and avoid concurrent source, tag, configuration, or output changes
+during the comparison.
+====
+
+=== Same-checkout repeat build
+
+`just verify-reproducible` runs the full GoReleaser build twice into
+`bin/.repro-first` and `bin/.repro-second`, then compares every
+`+*.tar.gz+`, `.deb`, `.rpm`, and `.apk` byte for byte:
+
+[,text]
+----
+✓ 21 release files identical across two builds
+----
+
+SBOMs are skipped, for the reason in the status table above. `checksums.txt`
+is not compared directly: it is derived from the files that are compared, and
+a released manifest additionally lists the SBOMs.
+
+A mismatch names each differing file, keeps both trees, and prints their
+paths. Inspect one with diffoscope before another run deletes them:
+
+[,bash]
+----
+diffoscope bin/.repro-first/<file> bin/.repro-second/<file>
+----
+
+Install `diffoscope` through an approved process if it is unavailable.
+Matching same-environment builds are repeatability evidence, not independent
+reproduction or source authentication: one checkout, one Go toolchain, one
+GoReleaser version.
+
+If comparison regresses, inspect:
+
+* Build invocations missing `-trimpath` or `-buildvcs=false`.
+* Linker metadata using wall-clock time instead of the source commit timestamp.
+* Archive file entries missing the shared `info` metadata.
+* Gzip invocations missing `-n`.
+* Generators inserting the current date into file contents.
+
+=== Parity with a published release
+
+`just verify-rebuild <version>` checks out nothing itself: run it with HEAD on
+the release tag. It rebuilds the tag with GoReleaser and compares every
+rebuilt `+*.tar.gz+`, `.deb`, `.rpm`, and `.apk` with that file's row in the
+release's `checksums.txt`.
+
+[,bash]
+----
+git checkout v0.9.12
+just verify-rebuild 0.9.12
+----
+
+By default the manifest is downloaded from the release page. That copy is
+*not* authenticated, so a match is a reproducibility result and not an
+authenticity one. Authenticate a manifest first through
+xref:verify.adoc[Verify Releases] and pass it instead, from a path outside
+`dist/`:
+
+[,bash]
+----
+just verify-rebuild 0.9.12 ~/verified/gommitlint_0.9.12_checksums.txt
+----
+
+Because the published side was produced by a different machine, a match is
+stronger evidence than the same-checkout repeat build. It still depends on
+matching the release's Go and GoReleaser versions; record both.
+
+Tags released before `.goreleaser.yaml` gained its archive and package mtime
+keys cannot match. Their archives and packages carry the release runner's
+wall-clock timestamps and numeric uid/gid, which no rebuild can reproduce.
+The musl binaries and the container images are outside `checksums.txt`, so
+they are outside this comparison as well.
+
+Authentication and reproducibility are separate properties. Do not cite
+either recipe as evidence that a published release is authentic.
+
+== Known caveats
+
+=== Cosign signatures are intentionally unique
+
+Verify Gommitlint's bundles against the independently trusted ci-policy public key with `cosign verify-blob`, following xref:verify.adoc[Verify Releases].
+Signature and transparency-log material are not reproducible build output; verify the bundle rather than comparing two bundles for byte equality.
+
+=== Alpine transitive apk dependencies
+
+`Containerfile.alpine` pins the top-level packages (`git`, `ca-certificates`),
+but their transitive dependencies come from whatever the Alpine repository
+currently serves for v3.24. Those dependencies can rotate as repository updates
+are published, so the pins do not establish historical byte parity.
+
+Historical Alpine rebuilds need an approved snapshot that retains indexes, package bytes, and required dependency versions.
+An index alone is insufficient if its packages disappear.
+Assess https://snapshot.alpinelinux.org/[snapshot.alpinelinux.org] or a retained mirror before relying on it for historical evidence.
+The distroless Containerfile avoids package installation during image assembly, but still depends on the selected base and copied binary.
+
+=== Alpine package repository GC
+
+Alpine mirrors can remove old package versions.
+A rebuild requiring `git=2.52.0-r0` fails if that version is no longer available from the configured repository.
+Updating the pin can restore a current build, but it changes the historical inputs being tested.
+Retain the required package snapshot or original image rather than presenting an updated build as an exact historical reproduction.
+
+== Related upstream specifications
+
+The optional link:{reproducibility-note}[Reproducible Go builds] background note collects the general method and upstream Reproducible Builds, SOURCE_DATE_EPOCH, and SLSA specifications.
+Gommitlint's release-isolation design and current operational blocker remain in xref:security-posture.adoc[Security Posture].
+
+== See also
+
+* xref:security-posture.adoc[Security Posture] — defensive design beyond reproducibility (secret handling, container hardening)
+* xref:verify.adoc[Verify Releases] — full verification recipe for binaries, archives, SBOMs, and packages
+* xref:architecture.adoc[Architecture] — system design context
+* `.goreleaser.yaml` — the canonical release configuration
+* `just verify-reproducible` — the same-checkout repeat build
+* `just verify-rebuild <version>` — parity with a published release

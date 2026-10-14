@@ -1,0 +1,47 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+
+# Build separately from a reviewed Containerfile.ci image. The resulting digest
+# is an input to the local release trial; no pipeline builds its own job image.
+ARG CHECK_IMAGE
+FROM ${CHECK_IMAGE}
+
+# This is the trusted, privileged full-release job image, using fresh pod-local
+# Buildah storage. It must run only inside Forge Lab's full-release wrapper.
+# hadolint ignore=DL3002
+USER 0:0
+ARG BUILDAH_VERSION="1.39.3+ds1-1+b7"
+ARG FUSE_OVERLAYFS_VERSION="1.14-1+b1"
+ARG NETAVARK_VERSION="1.14.0-2"
+ARG CRUN_VERSION="1.21-1"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        buildah="${BUILDAH_VERSION}" \
+        fuse-overlayfs="${FUSE_OVERLAYFS_VERSION}" \
+        netavark="${NETAVARK_VERSION}" \
+        crun="${CRUN_VERSION}" \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/gommitlint-release
+COPY .mise.toml mise.lock ./
+COPY tools/go.mod tools/go.sum ./tools/
+# The base intentionally ignores caller configs. Select the reviewed lock only
+# while building this image, then expose installed executables on the fixed PATH.
+# go-md2man is pinned by tools/go.mod and authenticated by tools/go.sum.
+# hadolint ignore=DL3062
+RUN export MISE_OVERRIDE_CONFIG_FILENAMES=/opt/gommitlint-release/.mise.toml \
+    && mise trust /opt/gommitlint-release/.mise.toml \
+    && mise install --locked aqua:goreleaser/goreleaser aqua:anchore/syft aqua:aquasecurity/trivy \
+    && install -m 0755 "$(mise which goreleaser)" /usr/local/bin/goreleaser \
+    && install -m 0755 "$(mise which syft)" /usr/local/bin/syft \
+    && install -m 0755 "$(mise which trivy)" /usr/local/bin/trivy \
+    && GOBIN=/usr/local/bin go install -C tools github.com/cpuguy83/go-md2man/v2
+
+# GoReleaser removes Mise settings from SBOM subprocesses. Resolve the pinned
+# executables directly, independently of any checkout's tool configuration.
+ENV PATH="/usr/local/bin:${PATH}"
+RUN env -i HOME=/tmp PATH="${PATH}" syft version \
+    && env -i HOME=/tmp PATH="${PATH}" goreleaser --version \
+    && env -i HOME=/tmp PATH="${PATH}" trivy --version
+
+WORKDIR /tmp

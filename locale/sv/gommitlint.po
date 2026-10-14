@@ -1,0 +1,5220 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+msgid ""
+msgstr ""
+"Project-Id-Version: gommitlint\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2025-01-29\n"
+"Last-Translator: The Gommitlint Authors\n"
+"Language-Team: Swedish\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: internal/adapters/cli/commands/removehook.go:464
+msgid ""
+"\n"
+"Configuration:\n"
+msgstr ""
+"\n"
+"Konfiguration:\n"
+
+#: internal/adapters/cli/commands/removehook.go:303
+msgid ""
+"\n"
+"Custom hook preview (first %d line):\n"
+msgid_plural ""
+"\n"
+"Custom hook preview (first %d lines):\n"
+msgstr[0] ""
+"\n"
+"Förhandsvisning av anpassad krok (första %d raden):\n"
+msgstr[1] ""
+"\n"
+"Förhandsvisning av anpassad krok (första %d raderna):\n"
+
+#: internal/adapters/cli/commands/installhook.go:238
+msgid ""
+"\n"
+"How it works:\n"
+msgstr ""
+"\n"
+"Så fungerar det:\n"
+
+#: internal/adapters/cli/commands/installhook.go:245
+#: internal/adapters/cli/commands/removehook.go:319
+#: internal/adapters/cli/commands/removehook.go:341
+#: internal/adapters/cli/commands/removehook.go:423
+msgid ""
+"\n"
+"Next steps:\n"
+msgstr ""
+"\n"
+"Nästa steg:\n"
+
+#: internal/adapters/cli/commands/removehook.go:409
+msgid ""
+"\n"
+"No global hooks found to remove\n"
+"\n"
+msgstr ""
+"\n"
+"Hittade inga globala krokar att ta bort\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:420
+msgid ""
+"\n"
+"No gommitlint hooks found to remove\n"
+"\n"
+msgstr ""
+"\n"
+"Hittade inga gommitlint-krokar att ta bort\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:263
+msgid ""
+"\n"
+"Nothing to remove\n"
+msgstr ""
+"\n"
+"Inget att ta bort\n"
+
+#: internal/adapters/cli/commands/removehook.go:392
+msgid ""
+"\n"
+"Other files kept in the global hooks directory:\n"
+msgstr ""
+"\n"
+"Andra filer som behölls i den globala krokkatalogen:\n"
+
+#: internal/adapters/cli/commands/installhook.go:218
+msgid ""
+"\n"
+"Plugins installed:\n"
+msgstr ""
+"\n"
+"Installerade tillägg:\n"
+
+#: cmd/gommitlint/suggestions.go:65
+msgid ""
+"\n"
+"Run 'gommitlint --help' for more information\n"
+msgstr ""
+"\n"
+"Kör 'gommitlint --help' för mer information\n"
+
+#: internal/adapters/cli/commands/removehook.go:329
+msgid ""
+"\n"
+"Would remove:\n"
+msgstr ""
+"\n"
+"Skulle ta bort:\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:241
+msgid "      Modified: %s\n"
+msgstr "      Ändrad: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:237
+msgid "      Path: %s\n"
+msgstr "      Sökväg: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:251
+msgid "      Preview: %s\n"
+msgstr "      Förhandsvisning: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:245
+msgid "      Size: %d bytes\n"
+msgstr "      Storlek: %d byte\n"
+
+#: internal/adapters/cli/commands/removehook.go:449
+msgid "    • %s\n"
+msgstr "    • %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:100
+msgid "  ! Git runs hooks from %s; local entries under %s are inactive\n"
+msgstr "  ! Git kör krokar från %s; lokala poster under %s är inaktiva\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:130
+msgid "  %s %-12s %s\n"
+msgstr "  %s %-12s %s\n"
+
+#: internal/adapters/output/textformatter.go:106
+msgid "  %s checked:\n"
+msgstr "  %s kontrollerade:\n"
+
+#: internal/adapters/cli/commands/doctor.go:106
+msgid "  - %-12s %s\n"
+msgstr "  - %-12s %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:120
+msgid "  - %-12s not installed\n"
+msgstr "  - %-12s inte installerad\n"
+
+#: internal/adapters/cli/commands/doctor.go:147
+#: internal/adapters/cli/commands/doctor.go:151
+msgid "  - install hooks: gommitlint hook install\n"
+msgstr "  - installera hookar: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/doctor.go:99
+msgid "  - no hook directory found\n"
+msgstr "  - ingen hook-katalog hittades\n"
+
+#: internal/adapters/cli/commands/doctor.go:140
+msgid "  - review config warnings: gommitlint config check\n"
+msgstr "  - granska konfigurationsvarningar: gommitlint config check\n"
+
+#: internal/adapters/cli/commands/doctor.go:123
+msgid "  - sign-off required: %s\n"
+msgstr "  - signering krävs: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:124
+msgid "  - signature required: %s\n"
+msgstr "  - signatur krävs: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:125
+msgid "  - test command: %s\n"
+msgstr "  - testkommando: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:155
+msgid "  - validate commits: gommitlint validate\n"
+msgstr "  - validera incheckningar: gommitlint validate\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:111
+msgid "  No hooks directory found\n"
+msgstr "  Hittade ingen krokkatalog\n"
+
+#: internal/adapters/cli/commands/removehook.go:395
+msgid "  • %s\n"
+msgstr "  • %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:215
+#: internal/adapters/cli/commands/installhook.go:222
+msgid "  • %s: %s\n"
+msgstr "  • %s: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:240
+msgid ""
+"  • A global core.hooksPath disables per-repository .git/hooks (husky, "
+"lefthook, ...)\n"
+msgstr ""
+"  • En global core.hooksPath stänger av .git/hooks per arkiv (husky, "
+"lefthook, ...)\n"
+
+#: internal/adapters/cli/commands/removehook.go:295
+msgid "  • Action: Would refuse removal\n"
+msgstr "  • Åtgärd: skulle vägra borttagning\n"
+
+#: internal/adapters/cli/commands/removehook.go:292
+msgid "  • Action: Would remove\n"
+msgstr "  • Åtgärd: skulle ta bort\n"
+
+#: internal/adapters/cli/commands/installhook.go:243
+msgid "  • Add more tools by placing scripts in *.d/ directories\n"
+msgstr "  • Lägg till fler verktyg genom att lägga skript i *.d/-kataloger\n"
+
+#: internal/adapters/cli/commands/installhook.go:239
+msgid "  • All repositories now use these global hooks\n"
+msgstr "  • Alla kodförråd använder nu dessa globala krokar\n"
+
+#: internal/adapters/cli/commands/removehook.go:323
+#: internal/adapters/cli/commands/removehook.go:345
+msgid "  • Check hook status: gommitlint hook status\n"
+msgstr "  • Kontrollera krokstatus: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/removehook.go:547
+#: internal/adapters/cli/commands/removehook.go:552
+msgid "  • Check status: gommitlint hook status\n"
+msgstr "  • Kontrollera status: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/installhook.go:242
+msgid "  • Dispatcher pattern allows multiple tools to coexist\n"
+msgstr "  • Förmedlarmönstret låter flera verktyg samexistera\n"
+
+#: internal/adapters/cli/commands/removehook.go:330
+msgid "  • File: %s\n"
+msgstr "  • Fil: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:230
+msgid "  • Git config 'core.hooksPath' already pointed here: %s\n"
+msgstr "  • Git config 'core.hooksPath' pekade redan hit: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:473
+msgid "  • Git config 'core.hooksPath' left unchanged\n"
+msgstr "  • Git config 'core.hooksPath' lämnad oförändrad\n"
+
+#: internal/adapters/cli/commands/removehook.go:471
+msgid "  • Git config 'core.hooksPath' restored to: %s\n"
+msgstr "  • Git config 'core.hooksPath' återställd till: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:232
+#: internal/adapters/cli/commands/installhook.go:235
+msgid "  • Git config 'core.hooksPath' set to: %s\n"
+msgstr "  • Git config 'core.hooksPath' satt till: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:468
+msgid "  • Git config 'core.hooksPath' unset\n"
+msgstr "  • Git config 'core.hooksPath' avaktiverad\n"
+
+#: internal/adapters/cli/commands/removehook.go:288
+msgid "  • Hook exists: %s (%d byte)\n"
+msgid_plural "  • Hook exists: %s (%d bytes)\n"
+msgstr[0] "  • Kroken finns: %s (%d byte)\n"
+msgstr[1] "  • Kroken finns: %s (%d byte)\n"
+
+#: internal/adapters/cli/commands/removehook.go:335
+msgid "  • Impact: Commit messages will no longer be automatically validated\n"
+msgstr ""
+"  • Påverkan: incheckningsmeddelanden valideras inte längre automatiskt\n"
+
+#: internal/adapters/cli/commands/removehook.go:333
+msgid ""
+"  • Impact: Configured signature validation will no longer run automatically "
+"before pushes\n"
+msgstr ""
+"  • Påverkan: konfigurerad signaturvalidering körs inte längre automatiskt "
+"före push\n"
+
+#: internal/adapters/cli/commands/installhook.go:246
+msgid "  • Inspect a repository: gommitlint doctor\n"
+msgstr "  • Inspektera ett kodförråd: gommitlint doctor\n"
+
+#: internal/adapters/cli/commands/installhook.go:286
+msgid "  • Inspect setup: gommitlint doctor\n"
+msgstr "  • Inspektera installationen: gommitlint doctor\n"
+
+#: internal/adapters/cli/commands/removehook.go:411
+msgid "  • Install globally: gommitlint hook install --global\n"
+msgstr "  • Installera globalt: gommitlint hook install --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:551
+msgid "  • Install hooks: gommitlint hook install\n"
+msgstr "  • Installera krokar: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/removehook.go:412
+#: internal/adapters/cli/commands/removehook.go:425
+msgid "  • Install locally: gommitlint hook install\n"
+msgstr "  • Installera lokalt: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/installhook.go:271
+msgid "  • Installed: %s\n"
+msgstr "  • Installerad: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:241
+msgid ""
+"  • Keep per-repository hooks where needed: git config core.hooksPath .git/"
+"hooks\n"
+msgstr ""
+"  • Behåll hookar per arkiv där det behövs: git config core.hooksPath .git/"
+"hooks\n"
+
+#: internal/adapters/cli/commands/removehook.go:320
+msgid "  • Keep the custom hook, or remove it manually after review\n"
+msgstr ""
+"  • Behåll den anpassade kroken eller ta bort den manuellt efter granskning\n"
+
+#: internal/adapters/cli/commands/removehook.go:343
+msgid "  • Proceed with removal: gommitlint hook remove\n"
+msgstr "  • Fortsätt med borttagning: gommitlint hook remove\n"
+
+#: internal/adapters/cli/commands/removehook.go:338
+msgid "  • Recovery: Can reinstall with 'gommitlint hook install'\n"
+msgstr "  • Återställning: kan installeras om med 'gommitlint hook install'\n"
+
+#: internal/adapters/cli/commands/removehook.go:424
+msgid "  • Reinstall globally: gommitlint hook install --global\n"
+msgstr "  • Installera om globalt: gommitlint hook install --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:546
+msgid "  • Reinstall: gommitlint hook install\n"
+msgstr "  • Installera om: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/removehook.go:321
+msgid "  • Remove manually if needed: rm -- %s\n"
+msgstr "  • Ta bort manuellt vid behov: rm -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:244
+msgid "  • Remove with: gommitlint hook remove --global\n"
+msgstr "  • Ta bort med: gommitlint hook remove --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:469
+msgid "  • Repositories now use local .git/hooks/ again\n"
+msgstr "  • Kodförråden använder nu lokala .git/hooks/ igen\n"
+
+#: internal/adapters/cli/commands/installhook.go:285
+msgid "  • Status: gommitlint hook status\n"
+msgstr "  • Visa status: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/installhook.go:247
+msgid "  • Test after reviewing that repository's active config\n"
+msgstr "  • Testa efter att ha granskat kodförrådets aktiva konfiguration\n"
+
+#: internal/adapters/cli/commands/installhook.go:284
+msgid "  • Test: %s\n"
+msgstr "  • Testa: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:294
+msgid "  • Type: custom hook (not installed by gommitlint)\n"
+msgstr "  • Typ: anpassad krok (inte installerad av gommitlint)\n"
+
+#: internal/adapters/cli/commands/removehook.go:291
+msgid "  • Type: gommitlint hook\n"
+msgstr "  • Typ: gommitlint-krok\n"
+
+#: internal/adapters/cli/commands/removehook.go:322
+#: internal/adapters/cli/commands/removehook.go:344
+msgid "  • View current hook: cat -- %s\n"
+msgstr "  • Visa aktuell krok: cat -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:248
+msgid "  • View dispatchers: ls -la -- %s\n"
+msgstr "  • Visa förmedlare: ls -la -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:251
+msgid "  • View plugins: ls -la -- %s\n"
+msgstr "  • Visa tillägg: ls -la -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:280
+msgid "  • commit-msg: message rules from active config\n"
+msgstr "  • commit-msg: meddelanderegler från aktiv konfiguration\n"
+
+#: internal/adapters/cli/commands/installhook.go:281
+msgid "  • pre-push: signature checks only when configured\n"
+msgstr "  • pre-push: signaturkontroller endast när det är konfigurerat\n"
+
+#: internal/adapters/output/textformatter.go:234
+msgid " - %s"
+msgstr " - %s"
+
+#: internal/adapters/output/textformatter.go:230
+msgid " in %d commit"
+msgid_plural " in %d commits"
+msgstr[0] " i %d incheckning"
+msgstr[1] " i %d incheckningar"
+
+#: internal/adapters/output/summaryformatter.go:68
+msgid ""
+"## ✅ %s: All Checks Passed\n"
+"\n"
+msgstr ""
+"## ✅ %s: Alla kontroller godkända\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:72
+msgid ""
+"## ❌ %s: %d Commit Failed\n"
+"\n"
+msgid_plural ""
+"## ❌ %s: %d Commits Failed\n"
+"\n"
+msgstr[0] ""
+"## ❌ %s: %d incheckning misslyckades\n"
+"\n"
+msgstr[1] ""
+"## ❌ %s: %d incheckningar misslyckades\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:70
+msgid ""
+"## ❌ %s: Validation Failed\n"
+"\n"
+msgstr ""
+"## ❌ %s: Validering misslyckades\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:128
+msgid "### Commits"
+msgstr "### Incheckningar"
+
+#: internal/adapters/output/summaryformatter.go:161
+msgid "### Failed Commits Details"
+msgstr "### Detaljer för misslyckade incheckningar"
+
+#: internal/adapters/output/summaryformatter.go:189
+msgid "### Repository Validation"
+msgstr "### Kodförrådsvalidering"
+
+#: internal/adapters/output/summaryformatter.go:168
+msgid ""
+"#### `%s` - %s\n"
+"\n"
+msgstr ""
+"#### `%s` - %s\n"
+"\n"
+
+#: internal/adapters/output/textformatter.go:448
+msgid "#%d"
+msgstr "#%d"
+
+#: internal/adapters/output/reportview.go:51
+#: internal/adapters/output/reportview.go:52
+#: internal/adapters/output/textformatter.go:68
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d incheckning"
+msgstr[1] "%d incheckningar"
+
+#: internal/adapters/output/reportview.go:53
+#: internal/adapters/output/textformatter.go:72
+msgid "%d ignored"
+msgid_plural "%d ignored"
+msgstr[0] "%d ignorerad"
+msgstr[1] "%d ignorerade"
+
+#: internal/adapters/output/textformatter.go:221
+#: internal/adapters/output/textformatter.go:67
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] "%d fel"
+msgstr[1] "%d fel"
+
+#: internal/adapters/output/reportview.go:55
+#: internal/adapters/output/textformatter.go:180
+msgid "%d repository rule skipped"
+msgid_plural "%d repository rules skipped"
+msgstr[0] "%d kodförrådsregel hoppades över"
+msgstr[1] "%d kodförrådsregler hoppades över"
+
+#: internal/adapters/output/textformatter.go:105
+#: internal/adapters/output/textformatter.go:195
+msgid "%d rule"
+msgid_plural "%d rules"
+msgstr[0] "%d regel"
+msgstr[1] "%d regler"
+
+#: internal/adapters/output/reportview.go:54
+msgid "%d warning"
+msgid_plural "%d warnings"
+msgstr[0] "%d varning"
+msgstr[1] "%d varningar"
+
+#: internal/adapters/cli/commands/errors.go:346
+#: internal/adapters/cli/commands/validate_execute.go:283
+msgid "%s"
+msgstr "%s"
+
+#: internal/adapters/output/gitlabformatter.go:146
+#: internal/adapters/output/gitlabformatter.go:151
+msgid "%s\n"
+msgstr "%s\n"
+
+#: internal/adapters/output/gitlabformatter.go:194
+msgid "%s %d rule failed\n"
+msgid_plural "%s %d rules failed\n"
+msgstr[0] "%s %d regel misslyckades\n"
+msgstr[1] "%s %d regler misslyckades\n"
+
+#: internal/adapters/output/gitlabformatter.go:103
+#: internal/adapters/output/gitlabformatter.go:135
+msgid "%s %s\n"
+msgstr "%s %s\n"
+
+#: internal/adapters/output/gitlabformatter.go:131
+msgid "%s %s - %s\n"
+msgstr "%s %s - %s\n"
+
+#: internal/adapters/output/gitlabformatter.go:186
+msgid "%s %s - %s: %s\n"
+msgstr "%s %s - %s: %s\n"
+
+#: cmd/gommitlint/completion_command.go:709
+msgid "%s %s completion at %s"
+msgstr "%s %s-komplettering i %s"
+
+#: internal/adapters/cli/commands/validate_output.go:144
+#: internal/adapters/cli/commands/validate_output.go:179
+#: internal/adapters/cli/commands/validate_output.go:200
+#: internal/adapters/cli/commands/validate_output.go:97
+msgid "%s '%s'"
+msgstr "%s '%s'"
+
+#: internal/adapters/output/gitlabformatter.go:192
+msgid "%s All rules passed\n"
+msgstr "%s Alla regler godkända\n"
+
+#: internal/adapters/output/warningformatting_messages.go:110
+msgid ""
+"%s has insecure permissions (group-writable); loaded anyway. Run 'chmod g-w "
+"%s' to silence this warning."
+msgstr ""
+"%s har osäkra rättigheter (gruppskrivbar); läses in ändå. Kör 'chmod g-w %s' "
+"för att tysta varningen."
+
+#: internal/adapters/cli/commands/errors.go:68
+msgid "%s hook installation failed: %s"
+msgstr "installationen av %s-hooken misslyckades: %s"
+
+#: internal/adapters/cli/commands/removehook.go:170
+msgid "%s hook removal failed"
+msgstr "borttagningen av %s-hooken misslyckades"
+
+#: internal/adapters/cli/commands/removehook.go:434
+msgid "%s hook:"
+msgstr "%s-krok:"
+
+#: internal/adapters/cli/commands/installhook.go:270
+#: internal/adapters/cli/commands/removehook.go:493
+msgid "%s hook:\n"
+msgstr "%s-hook:\n"
+
+#: internal/adapters/output/summaryformatter.go:81
+msgid "%s | **Repo Failed:** %d"
+msgstr "%s | **Kodförråd misslyckades:** %d"
+
+#: internal/adapters/output/textformatter.go:286
+msgid "%s ×%d"
+msgstr "%s ×%d"
+
+#: internal/adapters/output/reportview.go:94
+msgid "%s, %d repository rule failed"
+msgid_plural "%s, %d repository rules failed"
+msgstr[0] "%s, %d kodförrådsregel misslyckades"
+msgstr[1] "%s, %d kodförrådsregler misslyckades"
+
+#: internal/adapters/output/warningformatting_messages.go:94
+msgid ""
+"%s: 'gommitlint:' value is not a mapping, so the file is ignored — its "
+"contents must be a YAML/TOML object"
+msgstr ""
+"%s: värdet för 'gommitlint:' är inte en mappning, så filen ignoreras — "
+"innehållet måste vara ett YAML/TOML-objekt"
+
+#: internal/adapters/output/warningformatting_messages.go:92
+msgid ""
+"%s: top-level 'gommitlint:' key is missing, so the file is ignored — wrap "
+"your settings under a 'gommitlint:' mapping"
+msgstr ""
+"%s: toppnyckeln 'gommitlint:' saknas, så filen ignoreras — placera dina "
+"inställningar under en 'gommitlint:'-mappning"
+
+#: internal/adapters/output/warningformatting_messages.go:71
+msgid ""
+"%s: unknown key 'gommitlint.%s' will be ignored (check spelling or remove)"
+msgstr ""
+"%s: okänd nyckel 'gommitlint.%s' ignoreras (kontrollera stavning eller ta "
+"bort)"
+
+#: internal/adapters/output/errorformatting_messages.go:612
+msgid "'%s' appears to be misspelled"
+msgstr "'%s' verkar vara felstavat"
+
+#: internal/adapters/output/errorformatting_messages.go:526
+#: internal/adapters/output/errorformatting_messages.go:532
+msgid "'%s' does not follow conventional format"
+msgstr "'%s' följer inte konventionellt incheckningsformat"
+
+#: internal/adapters/output/errorformatting_messages.go:275
+msgid "'%s' is a gerund (use '%s')"
+msgstr "'%s' är en gerundform (använd '%s')"
+
+#: internal/adapters/output/warningformatting_messages.go:32
+msgid "'%s' is not a valid commit SHA in ignore_commits, skipping it"
+msgstr ""
+"'%s' är inte en giltig inchecknings-SHA i ignore_commits, hoppar över den"
+
+#: internal/adapters/output/errorformatting_messages.go:492
+msgid "'%s' is not a valid commit type. Use one of: %s"
+msgstr "'%s' är inte en giltig incheckningstyp. Använd en av: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:575
+msgid "'%s' is not a valid scope"
+msgstr "'%s' är inte ett giltigt omfång"
+
+#: internal/adapters/output/errorformatting_messages.go:564
+msgid "'%s' is not a verb"
+msgstr "'%s' är inte ett verb"
+
+#: internal/adapters/output/errorformatting_messages.go:507
+msgid "'%s' is not valid — use one of: %s"
+msgstr "'%s' är ogiltig — använd en av: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:264
+msgid "'%s' is past tense (use '%s')"
+msgstr "'%s' är dåtid (använd '%s')"
+
+#: internal/adapters/output/errorformatting_messages.go:286
+msgid "'%s' is third person (use '%s')"
+msgstr "'%s' är tredje person (använd '%s')"
+
+#: internal/adapters/cli/commands/config_show_text.go:128
+#: internal/adapters/cli/commands/config_show_text.go:191
+#: internal/adapters/cli/commands/config_show_text.go:232
+#: internal/adapters/cli/commands/config_show_text.go:277
+#: internal/adapters/cli/commands/config_show_text.go:361
+msgid "(none)"
+msgstr "(ingen)"
+
+#: internal/adapters/output/textformatter.go:76
+msgid ")"
+msgstr ")"
+
+#: internal/adapters/cli/commands/removehook.go:233
+msgid "* Dry-run mode: showing what would be removed"
+msgstr "* Testkörning: visar vad som skulle tas bort"
+
+#: internal/adapters/output/summaryformatter.go:97
+msgid "**Config Sources:**"
+msgstr "**Konfigurationskällor:**"
+
+#: internal/adapters/output/summaryformatter.go:87
+msgid "**Config Warnings:**"
+msgstr "**Konfigurationsvarningar:**"
+
+#: internal/adapters/output/summaryformatter.go:77
+msgid "**Validated:** %s | **Ignored:** %d | **Passed:** %d | **Failed:** %d"
+msgstr ""
+"**Validerade:** %s | **Ignorerade:** %d | **Godkända:** %d | "
+"**Misslyckade:** %d"
+
+#: internal/adapters/output/textformatter.go:290
+msgid "+%d more"
+msgstr "+%d till"
+
+#: internal/adapters/output/textformatter.go:199
+#: internal/adapters/output/textformatter.go:73
+msgid ", %s"
+msgstr ", %s"
+
+#: internal/adapters/output/textformatter.go:93
+msgid "- %s: %d failure\n"
+msgid_plural "- %s: %d failures\n"
+msgstr[0] "- %s: %d fel\n"
+msgstr[1] "- %s: %d fel\n"
+
+#: internal/adapters/output/summaryformatter.go:173
+#: internal/adapters/output/summaryformatter.go:193
+msgid "- **%s**: %s\n"
+msgstr "- **%s**: %s\n"
+
+#: internal/adapters/cli/commands/config_check.go:296
+#: internal/adapters/cli/commands/config_check.go:320
+#: internal/adapters/cli/commands/config_check.go:366
+msgid "- none"
+msgstr "- inga"
+
+#: internal/adapters/cli/commands/validate_setup.go:202
+msgid "--%s contains unknown rule(s): %s"
+msgstr "--%s innehåller okända regler: %s"
+
+#: internal/adapters/cli/commands/validate_setup.go:147
+msgid "--%s value %q contains no rule names"
+msgstr "--%s-värdet %q innehåller inga regelnamn"
+
+#: internal/adapters/cli/commands/removehook.go:76
+msgid "--global and --dry-run cannot be used together"
+msgstr "--global och --dry-run kan inte användas tillsammans"
+
+#: internal/adapters/cli/commands/config_init.go:122
+msgid "--stdout and --output are mutually exclusive"
+msgstr "--stdout och --output kan inte användas tillsammans"
+
+#: internal/adapters/cli/commands/config.go:232
+msgid "--timeout must be a positive duration"
+msgstr "--timeout måste vara en positiv varaktighet"
+
+#: internal/adapters/cli/commands/removehook.go:312
+msgid "... (%d more line)\n"
+msgid_plural "... (%d more lines)\n"
+msgstr[0] "... (%d rad till)\n"
+msgstr[1] "... (%d rader till)\n"
+
+#: internal/adapters/output/githubformatter.go:107
+#: internal/adapters/output/githubformatter.go:126
+msgid "::error title=%s::%s\n"
+msgstr "::error title=%s::%s\n"
+
+#: internal/adapters/output/githubformatter.go:133
+msgid "::error title=%s::%s [%s]\n"
+msgstr "::error title=%s::%s [%s]\n"
+
+#: internal/adapters/output/githubformatter.go:61
+msgid "::group::%s Summary\n"
+msgstr "::group::%s Sammanfattning\n"
+
+#: internal/adapters/output/githubformatter.go:86
+msgid "::group::Commit #%d: %s - %s\n"
+msgstr "::group::Incheckning nr %d: %s - %s\n"
+
+#: internal/adapters/output/githubformatter.go:75
+msgid "::group::Configuration Warnings\n"
+msgstr "::group::Konfigurationsvarningar\n"
+
+#: internal/adapters/output/githubformatter.go:102
+msgid "::group::Repository Validation\n"
+msgstr "::group::Kodförrådsvalidering\n"
+
+#: internal/adapters/output/githubformatter.go:120
+msgid "::notice title=%s::All commit validation rules passed\n"
+msgstr "::notice title=%s::Alla regler för incheckningsvalidering godkända\n"
+
+#: internal/adapters/output/githubformatter.go:78
+msgid "::warning::%s\n"
+msgstr "::warning::%s\n"
+
+#: internal/adapters/output/errorformatting_messages.go:347
+msgid "A body line is longer than the configured width"
+msgstr "En rad i brödtexten är längre än den konfigurerade bredden"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "AUTHOR"
+msgstr "FÖRFATTARE"
+
+#: internal/adapters/cli/commands/installhook.go:279
+msgid "Active policy:\n"
+msgstr "Aktiv policy:\n"
+
+#: internal/adapters/output/errorformatting.go:275
+#: internal/adapters/output/textformatter.go:771
+#: internal/adapters/output/textformatter.go:797
+msgid "Actual: %s"
+msgstr "Aktuellt: %s"
+
+#: internal/adapters/cli/commands/errors.go:245
+msgid ""
+"Add 'gommitlint validate --message-file \"$1\"' to that hook manager's "
+"commit-msg hook"
+msgstr ""
+"Lägg till 'gommitlint validate --message-file \"$1\"' i den hook-hanterarens "
+"commit-msg-hook"
+
+#: internal/adapters/output/helpregistry.go:204
+msgid ""
+"Add DCO sign-off line: 'Signed-off-by: Your Real Name "
+"<your.email@domain.com>'"
+msgstr ""
+"Lägg till DCO-signeringsrad: 'Signed-off-by: Ditt Riktiga Namn "
+"<din.epost@example.com>'"
+
+#: internal/adapters/output/helpregistry.go:242
+msgid "Add JIRA reference like 'Refs: PROJ-123' in the body"
+msgstr "Lägg till en JIRA-referens som 'Refs: PROJ-123' i brödtexten"
+
+#: internal/adapters/output/helpregistry.go:239
+msgid "Add JIRA ticket to subject (e.g., 'PROJ-123: description')"
+msgstr "Lägg till JIRA-ärende i ämnesraden (t.ex. 'PROJ-123: beskrivning')"
+
+#: internal/adapters/output/helpregistry.go:236
+msgid "Add a JIRA ticket reference like 'PROJ-123' to your commit message"
+msgstr "Lägg till en JIRA-referens som 'PROJ-123' i incheckningsmeddelandet"
+
+#: internal/adapters/output/helpregistry.go:173
+msgid "Add a blank line after the subject, followed by a detailed description"
+msgstr ""
+"Lägg till en tom rad efter ämnesraden, följt av en utförlig beskrivning"
+
+#: internal/adapters/output/helpregistry.go:194
+msgid "Add a detailed description before the sign-off line"
+msgstr "Lägg till en utförlig beskrivning före signeringsraden"
+
+#: internal/adapters/output/helpregistry.go:107
+msgid "Add a meaningful description explaining what the commit does"
+msgstr "Lägg till en meningsfull beskrivning av vad incheckningen gör"
+
+#: internal/adapters/output/helpregistry.go:49
+msgid "Add a non-empty subject line"
+msgstr "Lägg till en icke-tom ämnesrad"
+
+#: internal/adapters/cli/commands/translations_errors.go:163
+msgid "Add a regular %s.po file under a real locale directory"
+msgstr "Lägg till en vanlig %s.po-fil under en verklig språkkatalog"
+
+#: internal/adapters/output/helpregistry.go:313
+msgid "Add eligible public keys to the key directory"
+msgstr "Lägg till godtagbara publika nycklar i nyckelkatalogen"
+
+#: internal/adapters/output/helpregistry.go:180
+msgid "Add more detail to the commit body"
+msgstr "Lägg till fler detaljer i brödtexten"
+
+#: internal/adapters/output/helpregistry.go:320
+msgid "Add valid %s public keys to the key directory"
+msgstr "Lägg till giltiga publika %s-nycklar i nyckelkatalogen"
+
+#: internal/adapters/output/helpregistry.go:317
+msgid "Add valid %s public keys to the key directory — keys rejected: %s"
+msgstr ""
+"Lägg till giltiga publika %s-nycklar i nyckelkatalogen — nycklar avvisade: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:518
+msgid "Allow fixup commits: %t"
+msgstr "Tillåt fixup-incheckningar: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:418
+msgid "Allow multi-scope: %t"
+msgstr "Tillåt flera omfång: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:411
+msgid "Allow signoff only: %t"
+msgstr "Tillåt enbart sign-off: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:459
+msgid "Allowed authors: %v"
+msgstr "Tillåtna författare: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:461
+msgid "Allowed authors: (any)"
+msgstr "Tillåtna författare: (alla)"
+
+#: internal/adapters/cli/commands/config_show_text.go:440
+msgid "Allowed signers: %v"
+msgstr "Tillåtna undertecknare: %v"
+
+#: internal/adapters/output/errorformatting_messages.go:319
+msgid "Author '%s' is not in the allowed list"
+msgstr "Författaren '%s' finns inte i listan över tillåtna"
+
+#: internal/adapters/output/errorformatting_messages.go:322
+msgid "Author is not in the allowed list"
+msgstr "Författaren finns inte i listan över tillåtna"
+
+#: internal/adapters/cli/commands/validate_output.go:145
+msgid "Available --color values: %s"
+msgstr "Tillgängliga värden för --color: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:181
+msgid "Available --log-level values: %s"
+msgstr "Tillgängliga värden för --log-level: %s"
+
+#: cmd/gommitlint/suggestions.go:59
+msgid "Available commands:\n"
+msgstr "Tillgängliga kommandon:\n"
+
+#: internal/adapters/cli/commands/validate.go:238
+#: internal/adapters/cli/commands/validate.go:246
+msgid "Available rules:"
+msgstr "Tillgängliga regler:"
+
+#: cmd/gommitlint/completion_command.go:765
+msgid "Available shells: %s"
+msgstr "Tillgängliga skal: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:98
+msgid "Available themes: %s"
+msgstr "Tillgängliga teman: %s"
+
+#: internal/adapters/cli/commands/errors.go:193
+msgid "Backup custom hook: cp %s %s.backup"
+msgstr "Säkerhetskopiera anpassad krok: cp %s %s.backup"
+
+#: internal/adapters/output/errorformatting_messages.go:297
+msgid "Body contains only sign-off lines"
+msgstr "Brödtexten innehåller endast signeringsrader"
+
+#: internal/adapters/output/errorformatting_messages.go:126
+msgid "Body has no JIRA reference"
+msgstr "Brödtexten saknar JIRA-referens"
+
+#: internal/adapters/output/errorformatting_messages.go:299
+msgid "Body has no descriptive content"
+msgstr "Brödtexten saknar beskrivande innehåll"
+
+#: internal/adapters/output/errorformatting_messages.go:357
+msgid "Body is %s characters (min %s)"
+msgstr "Brödtexten är %s tecken (minst %s)"
+
+#: internal/adapters/output/errorformatting_messages.go:107
+msgid "Body is required but missing"
+msgstr "Brödtext krävs men saknas"
+
+#: internal/adapters/output/errorformatting_messages.go:360
+msgid "Body is shorter than the configured minimum"
+msgstr "Brödtexten är kortare än det konfigurerade minimumet"
+
+#: internal/adapters/cli/commands/config_show_text.go:410
+msgid "Body max line length: %d"
+msgstr "Maximal radlängd i brödtext: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:409
+msgid "Body min length: %d"
+msgstr "Minimilängd för brödtext: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:408
+msgid "Body required: %t"
+msgstr "Brödtext krävs: %t"
+
+#: internal/adapters/output/errorformatting_messages.go:295
+msgid "Body starts with a sign-off line"
+msgstr "Brödtexten börjar med en signeringsrad"
+
+#: internal/domain/rulecatalog/catalog.go:51
+msgid "Branch Ahead"
+msgstr "Gren före"
+
+#: internal/adapters/output/errorformatting_messages.go:586
+msgid "Branch has %s commits over the limit"
+msgstr "Grenen har %s incheckningar över gränsen"
+
+#: internal/adapters/output/errorformatting_messages.go:81
+msgid "Breaking change marker (!) is not allowed"
+msgstr "Markören för brytande ändring (!) är inte tillåten"
+
+#: cmd/gommitlint/main.go:246
+msgid ""
+"By default, gommitlint validates the HEAD commit. Use --base-branch to "
+"validate all commits in a feature branch, or --count to validate multiple "
+"recent commits."
+msgstr ""
+"Som standard validerar gommitlint HEAD-incheckningen. Använd --base-branch "
+"för att validera alla incheckningar i en funktionsgren, eller --count för "
+"att validera ett antal senaste incheckningar."
+
+#: cmd/gommitlint/help_printer.go:415 cmd/gommitlint/help_printer.go:444
+msgid "CATEGORY"
+msgstr "KATEGORI"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:444
+#: cmd/gommitlint/help_printer.go:558
+msgid "COMMANDS"
+msgstr "KOMMANDON"
+
+#: internal/adapters/output/textformatter.go:481
+msgid "COMMIT #%d [%s] %s"
+msgstr "INCHECKNING nr %d [%s] %s"
+
+#: internal/adapters/output/textformatter.go:484
+msgid "COMMIT %s"
+msgstr "INCHECKNING %s"
+
+#: internal/adapters/output/textformatter.go:486
+msgid "COMMIT [%s] %s"
+msgstr "INCHECKNING [%s] %s"
+
+#: cmd/gommitlint/help_printer.go:558
+msgid "COMMON FLAGS"
+msgstr "VANLIGA FLAGGOR"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "COPYRIGHT"
+msgstr "UPPHOVSRÄTT"
+
+#: internal/adapters/cli/commands/errors.go:265
+msgid "Change to a git repository: cd /path/to/repo"
+msgstr "Byt till ett Git-kodförråd: cd /sökväg/till/repo"
+
+#: internal/adapters/output/errorformatting.go:218
+msgid "Check ID: %s"
+msgstr "Kontroll-ID: %s"
+
+#: internal/adapters/cli/commands/errors.go:309
+msgid "Check config syntax: gommitlint config show"
+msgstr "Kontrollera konfigurationssyntax: gommitlint config show"
+
+#: internal/adapters/cli/commands/errors.go:268
+msgid "Check current directory: pwd"
+msgstr "Kontrollera aktuell katalog: pwd"
+
+#: internal/adapters/cli/commands/config_init.go:179
+#: internal/adapters/cli/commands/config_init.go:210
+#: internal/adapters/cli/commands/validate_output.go:61
+msgid "Check directory permissions"
+msgstr "Kontrollera katalogrättigheter"
+
+#: internal/adapters/cli/commands/errors.go:358
+msgid "Check git log: git log --oneline -10"
+msgstr "Kontrollera Git-historik: git log --oneline -10"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:275
+#: internal/adapters/cli/commands/hook_lifecycle.go:284
+msgid "Check hook file permissions"
+msgstr "Kontrollera krokfilens rättigheter"
+
+#: internal/adapters/cli/commands/errors.go:172
+#: internal/adapters/cli/commands/errors.go:208
+#: internal/adapters/cli/commands/errors.go:69
+msgid "Check hook status: gommitlint hook status"
+msgstr "Kontrollera krokstatus: gommitlint hook status"
+
+#: internal/adapters/cli/commands/config_sync.go:144
+msgid ""
+"Check managed_sources configuration, URL reachability, and integrity.sha256 "
+"values"
+msgstr ""
+"Kontrollera managed_sources-konfigurationen, att URL:er kan nås och "
+"integrity.sha256-värden"
+
+#: internal/adapters/cli/commands/config_init.go:275
+#: internal/adapters/cli/commands/config_show.go:201
+#: internal/adapters/cli/commands/config_show.go:74
+#: internal/adapters/cli/commands/errors.go:407
+#: internal/adapters/cli/commands/translations_errors.go:174
+msgid "Check output destination"
+msgstr "Kontrollera utdata-mål"
+
+#: internal/adapters/cli/commands/globalhooks.go:167
+msgid "Check permissions and global git config"
+msgstr "Kontrollera behörigheter och global git-config"
+
+#: internal/adapters/cli/commands/validate_execute.go:234
+#: internal/adapters/cli/commands/validate_output.go:71
+msgid "Check report file path or permissions"
+msgstr "Kontrollera rapportfilens sökväg eller behörigheter"
+
+#: internal/adapters/cli/commands/hookstatus.go:71
+msgid "Check repository path and hook directory"
+msgstr "Kontrollera sökväg till kodförråd och krokkatalog"
+
+#: internal/adapters/cli/commands/removehook.go:567
+msgid "Check repository path and hook permissions"
+msgstr "Kontrollera kodförrådssökväg och krokbehörigheter"
+
+#: internal/adapters/cli/commands/config.go:308
+#: internal/adapters/cli/commands/validate.go:292
+msgid "Check spell locale in configuration"
+msgstr "Kontrollera stavningslokal i konfigurationen"
+
+#: internal/adapters/cli/commands/validate_execute.go:196
+msgid ""
+"Check that Git can read it: git -C <path> rev-parse --show-object-format"
+msgstr ""
+"Kontrollera att Git kan läsa det: git -C <sökväg> rev-parse --show-object-"
+"format"
+
+#: internal/adapters/output/errorformatting_messages.go:207
+msgid "Check that you are in a valid Git repository"
+msgstr "Kontrollera att du är i ett giltigt Git-kodförråd"
+
+#: internal/adapters/output/helpregistry.go:71
+msgid "Check the case of the first character of your commit subject"
+msgstr "Kontrollera skiftläget på ämnesradens första tecken"
+
+#: internal/adapters/cli/commands/translations_errors.go:114
+msgid "Check the locale directory path, type, and permissions"
+msgstr "Kontrollera språkkatalogens sökväg, typ och behörigheter"
+
+#: internal/adapters/cli/commands/errors.go:347
+msgid "Check the path and re-run"
+msgstr "Kontrollera sökvägen och kör igen"
+
+#: internal/adapters/cli/commands/translations_errors.go:103
+msgid "Check the source directory path and permissions"
+msgstr "Kontrollera källkatalogens sökväg och behörigheter"
+
+#: internal/adapters/output/errorformatting_messages.go:226
+msgid "Check your configuration file path"
+msgstr "Kontrollera sökvägen till konfigurationsfilen"
+
+#: internal/adapters/output/errorformatting_messages.go:556
+msgid "Check your rule configuration"
+msgstr "Kontrollera din regelkonfiguration"
+
+#: internal/adapters/output/errorformatting_messages.go:544
+msgid "Check your signature policy configuration"
+msgstr "Kontrollera konfigurationen för signaturpolicyn"
+
+#: internal/adapters/output/texthelpers.go:69
+msgid "Column"
+msgstr "Kolumn"
+
+#: internal/adapters/output/gitlabformatter.go:112
+msgid "Commit #%d: %s - %s"
+msgstr "Incheckning nr %d: %s - %s"
+
+#: internal/domain/rulecatalog/catalog.go:54
+msgid "Commit body"
+msgstr "Brödtext"
+
+#: internal/adapters/output/errorformatting_messages.go:147
+msgid "Commit is not cryptographically signed"
+msgstr "Incheckningen är inte kryptografiskt signerad"
+
+#: internal/adapters/output/errorformatting_messages.go:305
+msgid "Commit is not signed with %s"
+msgstr "Incheckningen är inte signerad med %s"
+
+#: internal/adapters/output/errorformatting_messages.go:43
+msgid "Commit message has no subject"
+msgstr "Incheckningsmeddelandet saknar ämnesrad"
+
+#: internal/adapters/output/errorformatting_messages.go:150
+msgid "Commit signature is invalid"
+msgstr "Incheckningens signatur är ogiltig"
+
+#: internal/adapters/output/errorformatting_messages.go:153
+msgid "Commit signature is malformed"
+msgstr "Incheckningens signatur är felformad"
+
+#: internal/domain/rulecatalog/catalog.go:48
+msgid "Commit type"
+msgstr "Incheckningstyp"
+
+#: internal/adapters/output/tableformatter.go:120
+msgid "Commits: %d"
+msgstr "Incheckningar: %d"
+
+#: internal/adapters/output/tableformatter.go:186
+msgid "Commits: Validated %d   Ignored %d"
+msgstr "Incheckningar: Validerade %d   Ignorerade %d"
+
+#: internal/adapters/cli/commands/translations_compile.go:105
+msgid "Compiled %d translation catalog\n"
+msgid_plural "Compiled %d translation catalogs\n"
+msgstr[0] "Kompilerade %d översättningskatalog\n"
+msgstr[1] "Kompilerade %d översättningskataloger\n"
+
+#: internal/adapters/cli/commands/translations_compile.go:36
+msgid ""
+"Compiles each locale/<lang>/gommitlint.po to a binary\n"
+"generated/locale/<lang>/LC_MESSAGES/gommitlint.mo via msgfmt --check.\n"
+"The --check flag fails on syntax errors and on incomplete plural\n"
+"forms — caught at build time, never at runtime.\n"
+"\n"
+"Run-host requirement: msgfmt (GNU gettext-tools)."
+msgstr ""
+"Kompilerar varje locale/<lang>/gommitlint.po till en binär\n"
+"generated/locale/<lang>/LC_MESSAGES/gommitlint.mo via msgfmt --check.\n"
+"Flaggan --check fallerar på syntaxfel och på ofullständiga pluralformer\n"
+"— de fångas vid byggtillfället, aldrig i körtid.\n"
+"\n"
+"Krav på byggmiljön: msgfmt (GNU gettext-tools)."
+
+#: cmd/gommitlint/completion_command.go:751
+msgid "Completions are registered for '%s' (the binary name)."
+msgstr "Kompletteringar registrerade för '%s' (binärnamnet)."
+
+#: internal/adapters/output/textformatter.go:371
+msgid "Config: %s"
+msgstr "Konfiguration: %s"
+
+#: internal/adapters/cli/globalflags.go:26
+#: internal/adapters/cli/globalflags.go:31
+msgid "Configuration Control"
+msgstr "Konfigurationsstyrning"
+
+#: internal/adapters/cli/commands/config_show_text.go:229
+msgid "Configuration Graph:"
+msgstr "Konfigurationsgraf:"
+
+#: internal/adapters/cli/commands/config_check.go:361
+msgid "Configuration Issues:"
+msgstr "Konfigurationsproblem:"
+
+#: internal/adapters/cli/commands/config_show_text.go:274
+msgid "Configuration Provenance:"
+msgstr "Konfigurationshärkomst:"
+
+#: internal/adapters/cli/commands/config_check.go:268
+#: internal/adapters/cli/commands/config_show_text.go:181
+msgid "Configuration Source: %s"
+msgstr "Konfigurationskälla: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:170
+msgid "Configuration Sources (in precedence order):"
+msgstr "Konfigurationskällor (i prioriteringsordning):"
+
+#: internal/adapters/output/gitlabformatter.go:100
+msgid "Configuration Warnings"
+msgstr "Konfigurationsvarningar"
+
+#: internal/adapters/output/warningformatting_messages.go:74
+msgid "Configuration file contains an unknown key (ignored)"
+msgstr "Konfigurationsfilen innehåller en okänd nyckel (ignoreras)"
+
+#: internal/adapters/output/warningformatting_messages.go:101
+msgid "Configuration file structure does not match the expected schema"
+msgstr "Konfigurationsfilens struktur matchar inte det förväntade schemat"
+
+#: internal/adapters/output/warningformatting_messages.go:63
+msgid "Configuration file was skipped"
+msgstr "Konfigurationsfilen hoppades över"
+
+#: internal/adapters/cli/commands/config_show.go:151
+msgid "Configuration source: %s"
+msgstr "Konfigurationskälla: %s"
+
+#: internal/adapters/cli/commands/installhook.go:226
+msgid "Configuration:\n"
+msgstr "Konfiguration:\n"
+
+#: internal/adapters/cli/commands/doctor.go:76
+msgid "Configuration: %s\n"
+msgstr "Konfiguration: %s\n"
+
+#: internal/adapters/output/helpregistry.go:303
+msgid "Configure GPG signing: git config --global commit.gpgsign true"
+msgstr "Konfigurera GPG-signering: git config --global commit.gpgsign true"
+
+#: internal/adapters/output/helpregistry.go:306
+msgid "Configure SSH signing: git config --global gpg.format ssh"
+msgstr "Konfigurera SSH-signering: git config --global gpg.format ssh"
+
+#: internal/adapters/cli/commands/config_show_text.go:204
+#: internal/adapters/cli/commands/config_sync.go:105
+#: internal/adapters/cli/commands/config_sync.go:93
+msgid "Configured source: %s"
+msgstr "Konfigurerad källa: %s"
+
+#: internal/adapters/output/helpregistry.go:379
+msgid "Consider smaller PRs or rebase: 'git rebase -i %s'%s"
+msgstr "Överväg mindre PR:ar eller ombasering: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:375
+msgid "Consider squashing %d excess commits: 'git rebase -i %s'%s"
+msgstr ""
+"Överväg att squasha %d överskjutande incheckningar: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:367
+msgid "Consider squashing excess commits before merging"
+msgstr "Överväg att squasha överskjutande incheckningar före sammanslagning"
+
+#: internal/adapters/output/errorformatting_messages.go:98
+msgid "Content appears after sign-off lines"
+msgstr "Innehåll förekommer efter signeringsrader"
+
+#: internal/adapters/cli/commands/config_show_text.go:417
+msgid "Conventional Commit Configuration:"
+msgstr "Konfiguration för konventionella incheckningar:"
+
+#: internal/adapters/output/errorformatting_messages.go:64
+msgid "Conventional commit description is empty"
+msgstr "Beskrivningen i conventional commit är tom"
+
+#: internal/adapters/output/warningformatting_messages.go:48
+msgid "Could not parse %s config file %s (%s), using defaults instead"
+msgstr ""
+"Kunde inte tolka %s-konfigurationsfilen %s (%s), använder standardvärden i "
+"stället"
+
+#: internal/adapters/output/warningformatting_messages.go:51
+msgid "Could not parse %s config file %s, using defaults instead"
+msgstr ""
+"Kunde inte tolka %s-konfigurationsfilen %s, använder standardvärden i stället"
+
+#: internal/adapters/output/warningformatting_messages.go:59
+msgid "Could not parse configuration file, using defaults instead"
+msgstr ""
+"Kunde inte tolka konfigurationsfilen, använder standardvärden i stället"
+
+#: internal/adapters/cli/commands/config_sync.go:61
+msgid "Create a project config file: gommitlint config init"
+msgstr "Skapa en projektkonfigurationsfil: gommitlint config init"
+
+#: internal/adapters/cli/commands/errors.go:310
+msgid "Create default config: gommitlint config init"
+msgstr "Skapa standardkonfiguration: gommitlint config init"
+
+#: internal/adapters/cli/commands/config_show_text.go:435
+msgid "Crypto Signature Configuration:"
+msgstr "Konfiguration för kryptografiska signaturer:"
+
+#: internal/adapters/output/texthelpers.go:107
+msgid "Current Word"
+msgstr "Nuvarande ord"
+
+#: internal/adapters/output/errorformatting.go:286
+msgid "Current length: %s characters"
+msgstr "Nuvarande längd: %s tecken"
+
+#: internal/adapters/cli/commands/removehook.go:285
+msgid "Current state:\n"
+msgstr "Nuvarande status:\n"
+
+#: internal/adapters/output/errorformatting.go:314
+msgid "Current: '%s'"
+msgstr "Nuvarande: '%s'"
+
+#: internal/adapters/cli/commands/config_show.go:163
+msgid "Customize values for your project as needed"
+msgstr "Anpassa värden efter ditt projekts behov"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "DESCRIPTION"
+msgstr "BESKRIVNING"
+
+#: internal/adapters/output/tableformatter.go:132
+msgid "DETAILS"
+msgstr "DETALJER"
+
+#: internal/adapters/cli/globalflags.go:61
+#: internal/adapters/cli/globalflags.go:66
+msgid "Debug and Logging"
+msgstr "Felsökning och loggning"
+
+#: internal/adapters/cli/commands/config_init.go:291
+msgid ""
+"Default values are commented out. Uncomment and modify settings you want to "
+"change."
+msgstr ""
+"Standardvärden är utkommenterade. Avkommentera och ändra de inställningar du "
+"vill ändra."
+
+#: internal/adapters/output/errorformatting_messages.go:327
+msgid "Description is longer than %d characters"
+msgstr "Beskrivningen är längre än %d tecken"
+
+#: internal/adapters/output/errorformatting_messages.go:330
+msgid "Description is too long"
+msgstr "Beskrivningen är för lång"
+
+#: internal/adapters/cli/commands/config_show_text.go:208
+msgid "Destination: %s"
+msgstr "Mål: %s"
+
+#: internal/adapters/cli/commands/translations.go:25
+msgid ""
+"Developer-facing translation catalog management.\n"
+"\n"
+"Commands:\n"
+"  update   Refresh locale/<lang>/gommitlint.po from source code\n"
+"           (the built-in extractor finds msgids; msgmerge folds them into "
+"existing\n"
+"           catalogs while preserving translator-edited msgstr entries).\n"
+"\n"
+"  compile  Compile every locale/<lang>/gommitlint.po to a binary\n"
+"           gommitlint.mo catalog under generated/locale/<lang>/"
+"LC_MESSAGES/.\n"
+"\n"
+"The scripts/lint/translation-drift.sh gate re-runs extraction and reports\n"
+"catalogs that were not refreshed after source strings changed."
+msgstr ""
+"Utvecklarverktyg för hantering av översättningskataloger.\n"
+"\n"
+"Kommandon:\n"
+"  update   Uppdatera locale/<språk>/gommitlint.po från källkoden\n"
+"           (den inbyggda extraheraren hittar msgid-värden; msgmerge infogar "
+"dem\n"
+"           i befintliga kataloger och bevarar översättarnas msgstr-värden).\n"
+"\n"
+"  compile  Kompilera varje locale/<språk>/gommitlint.po till en binär\n"
+"           gommitlint.mo-katalog under generated/locale/<språk>/"
+"LC_MESSAGES/.\n"
+"\n"
+"Kontrollen scripts/lint/translation-drift.sh kör extraheringen igen och "
+"rapporterar\n"
+"kataloger som inte uppdaterades efter att källsträngar ändrades."
+
+#: internal/adapters/cli/commands/config_show_text.go:371
+msgid "Disabled (not in active config):"
+msgstr "Inaktiverade (inte i aktiv konfiguration):"
+
+#: internal/adapters/cli/commands/config_show_text.go:390
+msgid "Disabled: %v"
+msgstr "Inaktiverade: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:392
+msgid "Disabled: (none)"
+msgstr "Inaktiverade: (inga)"
+
+#: internal/adapters/cli/commands/config_show_text.go:419
+msgid "Disallow breaking changes: %t"
+msgstr "Förbjud icke-bakåtkompatibla ändringar: %t"
+
+#: internal/adapters/cli/commands/installhook.go:206
+msgid "Dispatchers installed:\n"
+msgstr "Installerade förmedlare:\n"
+
+#: internal/adapters/cli/commands/translations_errors.go:74
+msgid ""
+"Do not use '.', '..', absolute paths, drive prefixes, or control characters"
+msgstr ""
+"Använd inte '.', '..', absoluta sökvägar, enhetsprefix eller kontrolltecken"
+
+#: internal/adapters/output/gitlabformatter.go:132
+#: internal/adapters/output/gitlabformatter.go:187
+msgid "ERROR:"
+msgstr "FEL:"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444 cmd/gommitlint/help_printer.go:558
+msgid "EXAMPLES"
+msgstr "EXEMPEL"
+
+#: internal/adapters/output/helpregistry.go:213
+msgid "Each sign-off must be from a different person"
+msgstr "Varje signering måste komma från en annan person"
+
+#: internal/adapters/cli/commands/config_init.go:202
+msgid "Edit existing config in your editor"
+msgstr "Redigera befintlig konfiguration i din redigerare"
+
+#: internal/adapters/cli/commands/config_show_text.go:358
+msgid "Enabled Rules (%d of %d):"
+msgstr "Aktiverade regler (%d av %d):"
+
+#: internal/adapters/cli/commands/config_show_text.go:384
+msgid "Enabled: %v"
+msgstr "Aktiverade: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:386
+msgid "Enabled: (none)"
+msgstr "Aktiverade: (inga)"
+
+#: cmd/gommitlint/completion_command.go:730
+msgid "Ensure %s is in your fpath"
+msgstr "Säkerställ att %s finns i din fpath"
+
+#: internal/adapters/output/helpregistry.go:329
+msgid "Ensure %s public keys are present in the key directory"
+msgstr "Säkerställ att publika %s-nycklar finns i nyckelkatalogen"
+
+#: internal/adapters/output/helpregistry.go:296
+msgid "Ensure GPG signature includes complete BEGIN/END markers"
+msgstr "Säkerställ att GPG-signaturen har kompletta BEGIN/END-markörer"
+
+#: internal/adapters/output/helpregistry.go:299
+msgid "Ensure SSH signature includes complete BEGIN/END markers"
+msgstr "Säkerställ att SSH-signaturen har kompletta BEGIN/END-markörer"
+
+#: internal/adapters/output/helpregistry.go:347
+msgid "Ensure all ignore_ticket_patterns are valid regular expressions"
+msgstr ""
+"Säkerställ att alla ignore_ticket_patterns är giltiga reguljära uttryck"
+
+#: internal/adapters/output/helpregistry.go:326
+msgid "Ensure public keys are present in the key directory"
+msgstr "Säkerställ att publika nycklar finns i nyckelkatalogen"
+
+#: cmd/gommitlint/completion_command.go:752
+#: internal/adapters/cli/commands/translations_errors.go:93
+msgid "Ensure that name is on your PATH when invoking the command."
+msgstr "Se till att det namnet finns i din PATH när du kör kommandot."
+
+#: internal/adapters/output/helpregistry.go:358
+msgid ""
+"Ensure the branch '%s' exists, or use a full ref like 'origin/%s' if only "
+"the remote branch exists"
+msgstr ""
+"Säkerställ att grenen '%s' finns, eller använd en fullständig referens som "
+"'origin/%s' om endast fjärrgrenen finns"
+
+#: internal/adapters/cli/commands/errors.go:320
+msgid "Ensure the config file is owned by your user"
+msgstr "Kontrollera att konfigurationsfilen ägs av din användare"
+
+#: internal/adapters/output/helpregistry.go:293
+msgid "Ensure the key directory exists and is readable"
+msgstr "Säkerställ att nyckelkatalogen finns och är läsbar"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:260
+#: internal/adapters/cli/commands/hook_lifecycle.go:304
+msgid "Ensure the repository path is within your workspace"
+msgstr "Kontrollera att kodförrådets sökväg ligger inom din arbetsyta"
+
+#: internal/adapters/output/helpregistry.go:226
+msgid "Ensure the spell checker is properly configured"
+msgstr "Säkerställ att stavningskontrollen är korrekt konfigurerad"
+
+#: internal/adapters/output/helpregistry.go:81
+msgid "Ensure your commit message contains only valid UTF-8 characters"
+msgstr ""
+"Säkerställ att incheckningsmeddelandet endast innehåller giltiga UTF-8-tecken"
+
+#: internal/adapters/output/helpregistry.go:290
+msgid "Ensure your signing key is properly configured"
+msgstr "Säkerställ att din signeringsnyckel är korrekt konfigurerad"
+
+#: internal/adapters/cli/commands/config_show_text.go:203
+#: internal/adapters/cli/commands/config_sync.go:92
+msgid "Env var: %s"
+msgstr "Miljövariabel: %s"
+
+#: internal/adapters/output/errorformatting.go:223
+msgid "Error Message: %s"
+msgstr "Felmeddelande: %s"
+
+#: cmd/gommitlint/suggestions.go:58
+msgid ""
+"Error: Unknown command %q\n"
+"\n"
+msgstr ""
+"Fel: Okänt kommando %q\n"
+"\n"
+
+#: cmd/gommitlint/suggestions.go:55
+msgid ""
+"Error: Unknown command %q\n"
+"\n"
+"Did you mean %q?\n"
+"\n"
+msgstr ""
+"Fel: Okänt kommando %q\n"
+"\n"
+"Menade du %q?\n"
+"\n"
+
+#: cmd/gommitlint/help_printer.go:467
+msgid "Examples:"
+msgstr "Exempel:"
+
+#: cmd/gommitlint/main.go:248
+msgid ""
+"Examples:\n"
+"   # Validate the HEAD commit\n"
+"   gommitlint validate\n"
+"\n"
+"   # Validate the last 5 commits\n"
+"   gommitlint validate --count 5\n"
+"\n"
+"   # Validate every commit on a feature branch\n"
+"   gommitlint validate --base-branch main\n"
+"\n"
+"   # Read a commit message from stdin (commit-msg hook)\n"
+"   cat .git/COMMIT_EDITMSG | gommitlint validate --message-file -\n"
+"\n"
+"   # Machine-readable output for CI pipelines\n"
+"   gommitlint validate --format json"
+msgstr ""
+"Examples:\n"
+"   # Validera HEAD-incheckningen\n"
+"   gommitlint validate\n"
+"\n"
+"   # Validera de senaste 5 incheckningarna\n"
+"   gommitlint validate --count 5\n"
+"\n"
+"   # Validera alla incheckningar på en funktionsgren\n"
+"   gommitlint validate --base-branch main\n"
+"\n"
+"   # Läs incheckningsmeddelande från stdin (commit-msg-krok)\n"
+"   cat .git/COMMIT_EDITMSG | gommitlint validate --message-file -\n"
+"\n"
+"   # Maskinläsbar utdata för CI-pipelines\n"
+"   gommitlint validate --format json"
+
+#: internal/adapters/output/texthelpers.go:71
+#: internal/adapters/output/texthelpers.go:84
+msgid "Expected"
+msgstr "Förväntat"
+
+#: internal/adapters/output/texthelpers.go:105
+msgid "Expected word"
+msgstr "Förväntat ord"
+
+#: internal/adapters/output/errorformatting.go:276
+#: internal/adapters/output/textformatter.go:766
+#: internal/adapters/output/textformatter.go:793
+msgid "Expected: %s"
+msgstr "Förväntat: %s"
+
+#: internal/adapters/output/errorformatting.go:315
+msgid "Expected: '%s'"
+msgstr "Förväntat: '%s'"
+
+#: internal/adapters/output/tableformatter.go:233
+msgid "FAIL"
+msgstr "FEL"
+
+#: internal/adapters/cli/commands/prepush.go:241
+msgid "Fetch the remote and retry the push"
+msgstr "Hämta från fjärren och försök att pusha igen"
+
+#: internal/adapters/cli/commands/config_show_text.go:219
+msgid "Fetched at: %s"
+msgstr "Hämtad: %s"
+
+#: internal/adapters/cli/commands/config.go:205
+msgid ""
+"Fetches remote managed_sources, verifies integrity, vendors them locally,\n"
+"and updates the inline resolved metadata in the active config file.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config sync\n"
+"  gommitlint config sync --source team-policy\n"
+"  gommitlint config sync --check"
+msgstr ""
+"Hämtar fjärrlagrade managed_sources, verifierar integritet, sparar dem "
+"lokalt\n"
+"och uppdaterar den inbäddade resolved-metadatan i den aktiva "
+"konfigurationsfilen.\n"
+"\n"
+"Exempel:\n"
+"  gommitlint config sync\n"
+"  gommitlint config sync --source team-policy\n"
+"  gommitlint config sync --check"
+
+#: internal/adapters/cli/commands/config_show_text.go:211
+msgid "Final URL: %s"
+msgstr "Slutlig URL: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:446
+msgid "First word does not match the configured case"
+msgstr "Första ordet matchar inte det konfigurerade skiftläget"
+
+#: internal/adapters/output/errorformatting_messages.go:278
+msgid "First word is a gerund (-ing form)"
+msgstr "Första ordet är en gerundform (-ing-form)"
+
+#: internal/adapters/output/errorformatting_messages.go:416
+msgid "First word is not a lowercase imperative verb"
+msgstr "Första ordet är inte ett gement imperativt verb"
+
+#: internal/adapters/output/errorformatting_messages.go:444
+msgid "First word is not an imperative verb in the configured case"
+msgstr ""
+"Första ordet är inte ett imperativt verb i det konfigurerade skiftläget"
+
+#: internal/adapters/output/errorformatting_messages.go:397
+msgid "First word is not capitalized"
+msgstr "Första ordet inleds inte med versal"
+
+#: internal/adapters/output/errorformatting_messages.go:418
+msgid "First word is not lowercase"
+msgstr "Första ordet är inte gement"
+
+#: internal/adapters/output/errorformatting_messages.go:267
+msgid "First word is past tense"
+msgstr "Första ordet är i dåtid"
+
+#: internal/adapters/output/errorformatting_messages.go:289
+msgid "First word is third person"
+msgstr "Första ordet är i tredje person"
+
+#: internal/adapters/output/errorformatting_messages.go:394
+#: internal/adapters/output/errorformatting_messages.go:414
+#: internal/adapters/output/errorformatting_messages.go:442
+msgid "First word should be '%s'"
+msgstr "Första ordet bör vara '%s'"
+
+#: internal/adapters/output/errorformatting_messages.go:437
+msgid "First word should be '%s' (imperative verb)"
+msgstr "Första ordet bör vara '%s' (imperativt verb)"
+
+#: internal/adapters/output/errorformatting_messages.go:409
+msgid "First word should be '%s' (lowercase, imperative verb)"
+msgstr "Första ordet bör vara '%s' (gement, imperativt verb)"
+
+#: internal/adapters/cli/commands/errors.go:319
+msgid "Fix config file permissions: chmod o-w -- %s"
+msgstr "Åtgärda konfigurationsfilens behörigheter: chmod o-w -- %s"
+
+#: internal/adapters/output/errorformatting_messages.go:609
+msgid "Fix spelling in the commit message"
+msgstr "Rätta stavning i incheckningsmeddelandet"
+
+#: internal/adapters/output/helpregistry.go:281
+msgid "Fix the allowed_authors entry '%s'"
+msgstr "Rätta posten '%s' i allowed_authors"
+
+#: internal/adapters/output/helpregistry.go:278
+msgid "Fix the allowed_authors entry '%s' — use %s"
+msgstr "Rätta posten '%s' i allowed_authors — använd %s"
+
+#: internal/adapters/output/errorformatting_messages.go:552
+msgid "Fix the invalid entry in your configuration"
+msgstr "Rätta det ogiltiga värdet i din konfiguration"
+
+#: internal/adapters/output/errorformatting_messages.go:548
+msgid "Fix the invalid regex in your configuration"
+msgstr "Rätta det ogiltiga reguljära uttrycket i din konfiguration"
+
+#: internal/adapters/cli/commands/translations_errors.go:152
+msgid "Fix the reported catalog or gettext error, then rerun the compile"
+msgstr ""
+"Åtgärda det rapporterade katalog- eller gettext-felet och kör sedan "
+"kompileringen igen"
+
+#: internal/adapters/cli/commands/translations_errors.go:133
+msgid "Fix the reported catalog, path, or gettext error, then rerun the update"
+msgstr ""
+"Åtgärda det rapporterade katalog-, sökvägs- eller gettext-felet och kör "
+"sedan uppdateringen igen"
+
+#: internal/adapters/output/helpregistry.go:223
+msgid "Fix the spelling error"
+msgstr "Rätta stavfelet"
+
+#: internal/adapters/output/errorformatting.go:190
+msgid "Fix the test error"
+msgstr "Rätta testfelet"
+
+#: internal/adapters/cli/commands/config_init.go:292
+msgid "For more information, see: https://codefloe.com/itiquette/gommitlint"
+msgstr "Mer information finns på: https://codefloe.com/itiquette/gommitlint"
+
+#: internal/adapters/cli/commands/config_show_text.go:405
+msgid "Forbid endings: %v"
+msgstr "Förbjudna avslutningar: %v"
+
+#: internal/adapters/cli/commands/errors.go:173
+msgid "Force overwrite: gommitlint hook install --force"
+msgstr "Tvinga överskrivning: gommitlint hook install --force"
+
+#: internal/adapters/cli/commands/errors.go:209
+msgid "Force overwrite: gommitlint hook install --global --force"
+msgstr "Tvinga överskrivning: gommitlint hook install --global --force"
+
+#: internal/adapters/output/helpregistry.go:84
+msgid "Format your commit message according to the proper convention"
+msgstr "Formatera incheckningsmeddelandet enligt konventionen"
+
+#: internal/adapters/cli/commands/config_show_text.go:502
+msgid "Format: %s"
+msgstr "Format: %s"
+
+#: internal/adapters/output/texthelpers.go:73
+msgid "Found"
+msgstr "Hittat"
+
+#: internal/adapters/output/warningformatting_messages.go:35
+msgid "Found an invalid commit SHA in ignore_commits"
+msgstr "Hittade en ogiltig inchecknings-SHA i ignore_commits"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+msgid "GLOBAL OPTIONS"
+msgstr "GLOBALA FLAGGOR"
+
+#: internal/adapters/output/errorformatting_messages.go:169
+msgid "GPG signature is incomplete"
+msgstr "GPG-signaturen är ofullständig"
+
+#: internal/adapters/cli/commands/config_show_text.go:517
+msgid "General Configuration:"
+msgstr "Allmän konfiguration:"
+
+#: internal/adapters/cli/commands/config_init.go:289
+msgid "Generated by: gommitlint config init"
+msgstr "Genererad av: gommitlint config init"
+
+#: internal/adapters/cli/commands/config_init.go:236
+msgid "Generated by: gommitlint config init --preset %s"
+msgstr "Genererad av: gommitlint config init --preset %s"
+
+#: internal/adapters/cli/commands/config_show.go:147
+msgid "Generated by: gommitlint config show --format=yaml"
+msgstr "Genererad av: gommitlint config show --format=yaml"
+
+#: internal/adapters/output/helpregistry.go:170
+msgid "Git convention requires a blank line between subject and body"
+msgstr "Git-konventionen kräver en tom rad mellan ämnesrad och brödtext"
+
+#: internal/adapters/output/errorformatting_messages.go:223
+msgid "Git operation failed — check repository state"
+msgstr "Git-operation misslyckades — kontrollera kodförrådets tillstånd"
+
+#: internal/adapters/cli/commands/installhook.go:203
+#: internal/adapters/cli/commands/removehook.go:385
+msgid ""
+"Global hooks directory: %s\n"
+"\n"
+msgstr ""
+"Global krokkatalog: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/config_init.go:235
+#: internal/adapters/cli/commands/config_init.go:288
+#: internal/adapters/cli/commands/config_show.go:143
+#: internal/adapters/cli/commands/config_show_text.go:163
+msgid "Gommitlint Configuration"
+msgstr "Gommitlint-konfiguration"
+
+#: internal/adapters/cli/commands/config_check.go:266
+msgid "Gommitlint Configuration Check"
+msgstr "Gommitlint-konfigurationskontroll"
+
+#: internal/adapters/cli/commands/doctor.go:73
+msgid "Gommitlint Doctor\n"
+msgstr "Gommitlint Doctor\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:97
+msgid "Gommitlint Git Hooks:\n"
+msgstr "Gommitlint Git-krokar:\n"
+
+#: internal/adapters/output/gitlabformatter.go:86
+msgid "Gommitlint Summary"
+msgstr "Gommitlint-sammanfattning"
+
+#: cmd/gommitlint/main.go:247
+msgid ""
+"Gommitlint includes built-in defaults. Discovery mode merges user "
+"configuration from $XDG_CONFIG_HOME/gommitlint/settings.{yaml,yml,toml} and "
+"project configuration from .gommitlint.{yaml,yml,toml}. --config selects "
+"defaults plus one explicit file and its imports without discovered files; --"
+"ignore-config uses defaults only. Dedicated environment variables affect "
+"discovery and runtime flags, not a general configuration overlay."
+msgstr ""
+"Gommitlint innehåller inbyggda standardvärden. I upptäcktsläget slås "
+"användarkonfiguration från $XDG_CONFIG_HOME/gommitlint/settings."
+"{yaml,yml,toml} och projektkonfiguration från .gommitlint.{yaml,yml,toml} "
+"samman. --config väljer standardvärden plus en explicit fil och dess "
+"importer utan upptäckta filer; --ignore-config använder endast "
+"standardvärden. Särskilda miljövariabler påverkar upptäckt och "
+"körningsflaggor, inte ett allmänt konfigurationslager."
+
+#: internal/adapters/cli/commands/validate.go:236
+#: internal/adapters/cli/commands/validate.go:244
+msgid "Help for rule: %s"
+msgstr "Hjälp för regel: %s"
+
+#: internal/adapters/output/errorformatting.go:248
+#: internal/adapters/output/textformatter.go:889
+msgid "Help:"
+msgstr "Hjälp:"
+
+#: internal/adapters/output/errorformatting_messages.go:192
+msgid "History contains a fixup commit"
+msgstr "Historiken innehåller en fixup-incheckning"
+
+#: internal/adapters/output/errorformatting_messages.go:189
+msgid "History contains a merge commit"
+msgstr "Historiken innehåller en sammanslagningsincheckning"
+
+#: internal/adapters/cli/commands/validate_output.go:146
+msgid "Honor terminal capability: --color=auto"
+msgstr "Respektera terminalens förmåga: --color=auto"
+
+#: internal/adapters/cli/commands/removehook.go:281
+msgid "Hook type: %s\n"
+msgstr "Kroktyp: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:244
+msgid ""
+"Hook type: %s\n"
+"\n"
+msgstr ""
+"Kroktyp: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/doctor.go:89
+msgid "Hooks:\n"
+msgstr "Hookar:\n"
+
+#: internal/domain/rulecatalog/catalog.go:55
+msgid "Identity"
+msgstr "Identitet"
+
+#: internal/adapters/cli/commands/config_show_text.go:456
+msgid "Identity Configuration:"
+msgstr "Identitetskonfiguration:"
+
+#: internal/adapters/cli/commands/config_show_text.go:483
+msgid "Ignore ticket patterns: %v"
+msgstr "Ignorera ärendemönster: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:494
+msgid "Ignore words: %v"
+msgstr "Ignorera ord: %v"
+
+#: internal/adapters/output/reportview.go:72
+msgid "Ignored: %s"
+msgstr "Ignorerade: %s"
+
+#: internal/adapters/cli/commands/errors.go:266
+msgid "Initialize git repository: git init"
+msgstr "Initiera Git-kodförråd: git init"
+
+#: internal/adapters/cli/globalflags.go:37
+msgid "Input Control"
+msgstr "Inmatningsstyrning"
+
+#: internal/adapters/cli/commands/validate.go:100
+#: internal/adapters/cli/commands/validate.go:106
+#: internal/adapters/cli/commands/validate.go:113
+#: internal/adapters/cli/commands/validate.go:118
+#: internal/adapters/cli/commands/validate.go:123
+#: internal/adapters/cli/commands/validate.go:128
+#: internal/adapters/cli/commands/validate.go:84
+#: internal/adapters/cli/commands/validate.go:89
+#: internal/adapters/cli/commands/validate.go:95
+msgid "Input Selection"
+msgstr "Val av indata"
+
+#: internal/adapters/cli/commands/config_init.go:238
+msgid "Inspect active rules: gommitlint config show --view=compact"
+msgstr "Inspektera aktiva regler: gommitlint config show --view=compact"
+
+#: internal/adapters/cli/commands/errors.go:221
+msgid "Inspect that directory: ls -la -- %s"
+msgstr "Inspektera katalogen: ls -la -- %s"
+
+#: internal/adapters/cli/commands/errors.go:298
+msgid "Inspect the effective config: gommitlint config show --format=yaml"
+msgstr ""
+"Inspektera den effektiva konfigurationen: gommitlint config show --"
+"format=yamlInspektera gällande konfiguration: gommitlint config show --"
+"format=yaml"
+
+#: internal/adapters/cli/commands/doctor.go:32
+msgid ""
+"Inspects the current repository without modifying files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint doctor\n"
+"  gommitlint --repo-path /path/to/repo doctor"
+msgstr ""
+"Inspekterar det aktuella kodförrådet utan att ändra filer.\n"
+"\n"
+"Exempel:\n"
+"  gommitlint doctor\n"
+"  gommitlint --repo-path /sökväg/till/förråd doctor"
+
+#: internal/adapters/cli/commands/translations_errors.go:92
+msgid "Install GNU gettext (apt install gettext / brew install gettext)"
+msgstr "Installera GNU gettext (apt install gettext / brew install gettext)"
+
+#: internal/adapters/cli/commands/validate_execute.go:194
+msgid "Install Git, or use the container image that includes it"
+msgstr "Installera Git, eller använd containeravbilden som innehåller det"
+
+#: internal/adapters/cli/commands/doctor.go:149
+#: internal/adapters/cli/commands/errors.go:237
+msgid "Install globally instead: gommitlint hook install --global"
+msgstr "Installera globalt i stället: gommitlint hook install --global"
+
+#: cmd/gommitlint/completion_command.go:704
+msgid "Installed"
+msgstr "Installerad"
+
+#: internal/adapters/cli/commands/installhook.go:266
+msgid ""
+"Installing git hooks...\n"
+"\n"
+msgstr ""
+"Installerar git-krokar...\n"
+"\n"
+
+#: internal/adapters/cli/commands/installhook.go:204
+msgid ""
+"Installing global git hooks using dispatcher pattern...\n"
+"\n"
+msgstr ""
+"Installerar globala git-krokar med förmedlarmönster...\n"
+"\n"
+
+#: internal/adapters/cli/commands/installhook.go:34
+msgid ""
+"Installs commit-msg and pre-push Git hooks for automatic validation.\n"
+"\n"
+"Examples:\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Replace existing Gommitlint hooks\n"
+"  gommitlint hook install --force\n"
+"\n"
+"  # Install global hooks\n"
+"  gommitlint hook install --global"
+msgstr ""
+"Installerar Git-krokarna commit-msg och pre-push för automatisk validering.\n"
+"\n"
+"Exempel:\n"
+"  # Installera krokar i det aktuella kodförrådet\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Ersätt befintliga Gommitlint-krokar\n"
+"  gommitlint hook install --force\n"
+"\n"
+"  # Installera globala krokar\n"
+"  gommitlint hook install --global"
+
+#: cmd/gommitlint/completion_command.go:116
+msgid ""
+"Installs shell completion for bash, zsh, or fish. Use --all to install all "
+"supported shells."
+msgstr ""
+"Installerar skalkomplettering för bash, zsh eller fish. Använd --all för att "
+"installera alla stödda skal."
+
+#: internal/adapters/cli/commands/config_show_text.go:222
+msgid "Integrity: %s"
+msgstr "Integritet: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:474
+msgid "JIRA Configuration:"
+msgstr "JIRA-konfiguration:"
+
+#: internal/adapters/output/errorformatting_messages.go:142
+msgid "JIRA key in Refs: line is not uppercase"
+msgstr "JIRA-nyckeln i Refs:-raden är inte i versaler"
+
+#: internal/adapters/output/errorformatting_messages.go:132
+msgid "JIRA key is not at an allowed position"
+msgstr "JIRA-nyckeln är inte på en tillåten plats"
+
+#: internal/domain/rulecatalog/catalog.go:53
+msgid "JIRA reference"
+msgstr "JIRA-referens"
+
+#: internal/adapters/output/errorformatting_messages.go:129
+msgid "JIRA reference is not in the PROJ-123 format"
+msgstr "JIRA-referensen är inte i formatet PROJ-123"
+
+#: internal/adapters/output/helpregistry.go:98
+msgid "Keep description under %s characters"
+msgstr "Håll beskrivningen under %s tecken"
+
+#: internal/adapters/cli/commands/errors.go:222
+msgid ""
+"Keep the current hooks directory and add gommitlint through its hook manager"
+msgstr ""
+"Behåll den aktuella hook-katalogen och lägg till gommitlint via dess hook-"
+"hanterare"
+
+#: internal/adapters/output/helpregistry.go:101
+msgid "Keep the description under the maximum allowed length"
+msgstr "Håll beskrivningen under den maximalt tillåtna längden"
+
+#: internal/adapters/cli/commands/config_show_text.go:444
+msgid "Key directory: %s"
+msgstr "Nyckelkatalog: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:508
+msgid "Limits Configuration:"
+msgstr "Begränsningskonfiguration:"
+
+#: internal/adapters/output/texthelpers.go:67
+#: internal/adapters/output/texthelpers.go:88
+msgid "Line"
+msgstr "Rad"
+
+#: internal/adapters/output/errorformatting_messages.go:344
+msgid "Line %s is %s characters (max %s)"
+msgstr "Rad %s är %s tecken (max %s)"
+
+#: internal/domain/rulecatalog/catalog.go:56
+msgid "Linear History"
+msgstr "Linjär historik"
+
+#: internal/adapters/cli/commands/validate_execute.go:131
+#: internal/adapters/cli/commands/validate_execute.go:181
+msgid "List available branches: git branch -a"
+msgstr "Lista tillgängliga grenar: git branch -a"
+
+#: internal/adapters/cli/commands/validate_execute.go:284
+msgid "List configured rules: gommitlint config show"
+msgstr "Lista konfigurerade regler: gommitlint config show"
+
+#: internal/adapters/cli/commands/validate_execute.go:132
+msgid "List recent commits: git log --oneline -10"
+msgstr "Lista senaste incheckningarna: git log --oneline -10"
+
+#: internal/adapters/output/texthelpers.go:86
+msgid "Locale"
+msgstr "Lokal"
+
+#: internal/adapters/cli/commands/config_show_text.go:491
+#: internal/adapters/output/errorformatting.go:305
+msgid "Locale: %s"
+msgstr "Lokal: %s"
+
+#: internal/adapters/cli/commands/hook.go:27
+msgid ""
+"Manage Gommitlint Git hooks for automatic commit message and signature "
+"validation.\n"
+"\n"
+"Gommitlint manages two hooks:\n"
+"  commit-msg   Validates message format (blocks invalid commits)\n"
+"  pre-push     Validates signatures when required by the active "
+"configuration\n"
+"\n"
+"Examples:\n"
+"  # Show current hook status\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Install hooks globally\n"
+"  gommitlint hook install --global\n"
+"\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove"
+msgstr ""
+"Hantera Gommitlint-krokar för automatisk validering av "
+"incheckningsmeddelanden och signaturer.\n"
+"\n"
+"Gommitlint hanterar två krokar:\n"
+"  commit-msg   Validerar meddelandeformat (blockerar ogiltiga "
+"incheckningar)\n"
+"  pre-push     Validerar signaturer när den aktiva konfigurationen kräver "
+"det\n"
+"\n"
+"Exempel:\n"
+"  # Visa aktuell krokstatus\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Installera krokar i det aktuella kodförrådet\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Installera krokar globalt\n"
+"  gommitlint hook install --global\n"
+"\n"
+"  # Ta bort krokar från det aktuella kodförrådet\n"
+"  gommitlint hook remove"
+
+#: internal/adapters/cli/commands/config_check.go:315
+msgid "Managed Source Summary:"
+msgstr "Sammanfattning av hanterade källor:"
+
+#: internal/adapters/cli/commands/config_show_text.go:125
+#: internal/adapters/cli/commands/config_show_text.go:188
+msgid "Managed Sources:"
+msgstr "Hanterade källor:"
+
+#: internal/adapters/cli/commands/config_check.go:269
+msgid "Managed Sources: %d"
+msgstr "Hanterade källor: %d"
+
+#: internal/adapters/output/texthelpers.go:94
+msgid "Max"
+msgstr "Max"
+
+#: internal/adapters/cli/commands/config_show_text.go:511
+msgid "Max commit count: %d"
+msgstr "Maximalt antal incheckningar: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:469
+msgid "Max commits ahead: %d"
+msgstr "Maximalt antal incheckningar före: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:420
+msgid "Max description length: %d"
+msgstr "Maximal beskrivningslängd: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:512
+msgid "Max key files: %d"
+msgstr "Maximalt antal nyckelfiler: %d"
+
+#: internal/adapters/output/errorformatting.go:287
+msgid "Maximum allowed: %s characters"
+msgstr "Maximalt tillåtet: %s tecken"
+
+#: internal/adapters/cli/commands/config_show_text.go:399
+msgid "Message Configuration:"
+msgstr "Meddelandekonfiguration:"
+
+#: internal/adapters/output/errorformatting_messages.go:197
+msgid "Message contains invalid UTF-8"
+msgstr "Meddelandet innehåller ogiltig UTF-8"
+
+#: internal/adapters/output/errorformatting_messages.go:235
+msgid "Message file does not exist"
+msgstr "Meddelandefilen finns inte"
+
+#: internal/adapters/output/errorformatting_messages.go:115
+msgid "Message is not structured as subject, blank line, body"
+msgstr "Meddelandet är inte strukturerat som ämnesrad, tom rad, brödtext"
+
+#: internal/adapters/output/texthelpers.go:96
+msgid "Min"
+msgstr "Min"
+
+#: internal/adapters/cli/commands/config_show_text.go:447
+msgid "Min EC bits: %d"
+msgstr "Minsta antal EC-bitar: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:448
+msgid "Min RSA bits: %d"
+msgstr "Minsta antal RSA-bitar: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:412
+msgid "Min signoff count: %d"
+msgstr "Minsta antal sign-offs: %d"
+
+#: internal/adapters/output/errorformatting_messages.go:78
+msgid "Missing single space after the type colon"
+msgstr "Saknar ett enkelt mellanslag efter typens kolon"
+
+#: internal/adapters/output/errorformatting.go:297
+msgid "Misspelled: '%s'"
+msgstr "Felstavat: '%s'"
+
+#: internal/adapters/output/helpregistry.go:248
+msgid ""
+"Move JIRA to end: 'feat: description PROJ-123' or in scope: 'feat(PROJ-123): "
+"description'"
+msgstr ""
+"Flytta JIRA till slutet: 'feat: beskrivning PROJ-123' eller i scope: "
+"'feat(PROJ-123): beskrivning'"
+
+#: internal/adapters/output/helpregistry.go:254
+msgid "Move Refs lines before Signed-off-by lines"
+msgstr "Flytta Refs-rader före Signed-off-by-rader"
+
+#: internal/adapters/output/helpregistry.go:210
+msgid "Move all sign-off lines to the end"
+msgstr "Flytta alla signeringsrader till slutet"
+
+#: internal/adapters/output/errorformatting_messages.go:87
+msgid "Multiple scopes are not allowed"
+msgstr "Flera scope är inte tillåtna"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "NAME"
+msgstr "NAMN"
+
+#: internal/adapters/cli/commands/errors.go:142
+msgid "Next steps:"
+msgstr "Nästa steg:"
+
+#: internal/adapters/cli/commands/doctor.go:137
+#: internal/adapters/cli/commands/installhook.go:283
+#: internal/adapters/cli/commands/removehook.go:410
+#: internal/adapters/cli/commands/removehook.go:545
+#: internal/adapters/cli/commands/removehook.go:550
+msgid "Next steps:\n"
+msgstr "Nästa steg:\n"
+
+#: internal/adapters/cli/commands/config_show_text.go:159
+msgid "Next: %s"
+msgstr "Nästa: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:120
+msgid "No JIRA reference found"
+msgstr "Ingen JIRA-referens hittades"
+
+#: internal/adapters/output/errorformatting_messages.go:92
+msgid "No Signed-off-by trailer found"
+msgstr "Ingen Signed-off-by-trailer hittades"
+
+#: internal/adapters/output/errorformatting_messages.go:110
+msgid "No blank line between subject and body"
+msgstr "Ingen tom rad mellan ämnesrad och brödtext"
+
+#: internal/adapters/output/errorformatting_messages.go:160
+msgid "No eligible public key found in key directory"
+msgstr "Ingen godtagbar publik nyckel hittades i nyckelkatalogen"
+
+#: internal/adapters/cli/commands/validate.go:237
+#: internal/adapters/cli/commands/validate.go:245
+msgid "No help available for rule '%s'."
+msgstr "Ingen hjälp tillgänglig för regel '%s'."
+
+#: internal/adapters/cli/commands/removehook.go:549
+msgid "No local hooks found to remove"
+msgstr "Hittade inga lokala krokar att ta bort"
+
+#: internal/adapters/cli/commands/config_sync.go:157
+msgid "No managed sources configured"
+msgstr "Inga managed_sources konfigurerade"
+
+#: internal/adapters/output/warningformatting_messages.go:125
+msgid "None of the base branches exist (%s), validating HEAD only"
+msgstr "Ingen av basgrenarna finns (%s), validerar bara HEAD"
+
+#: internal/adapters/cli/commands/errors.go:196
+msgid "Note: --force will NOT work for custom hooks (safety feature)"
+msgstr "Obs: --force fungerar INTE för anpassade krokar (säkerhetsfunktion)"
+
+#: cmd/gommitlint/help_printer.go:415 cmd/gommitlint/help_printer.go:444
+msgid "OPTIONS"
+msgstr "FLAGGOR"
+
+#: internal/adapters/output/errorformatting_messages.go:210
+msgid "Operation cancelled"
+msgstr "Operationen avbröts"
+
+#: internal/adapters/output/errorformatting_messages.go:213
+msgid "Operation cancelled by user or timeout"
+msgstr "Operationen avbröts av användare eller tidsgräns"
+
+#: internal/adapters/cli/commands/config.go:87
+msgid ""
+"Operations for viewing and managing gommitlint configuration.\n"
+"\n"
+"Configuration has three load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the "
+"project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its "
+"imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration "
+"files.\n"
+"\n"
+"Examples:\n"
+"  # Show current effective configuration\n"
+"  gommitlint config show\n"
+"\n"
+"  # Generate complete config template with all options\n"
+"  gommitlint config init\n"
+"\n"
+"  # Generate a small config using an existing preset\n"
+"  gommitlint config init --preset minimal\n"
+"\n"
+"  # Create user-specific configuration (XDG)\n"
+"  mkdir -p ~/.config/gommitlint\n"
+"  gommitlint config init --output ~/.config/gommitlint/settings.yaml\n"
+"\n"
+"  # Show current config in YAML format\n"
+"  gommitlint config show --format=yaml\n"
+"\n"
+"  # Show configuration in JSON format\n"
+"  gommitlint config show --format=json"
+msgstr ""
+"Åtgärder för att visa och hantera gommitlints konfiguration.\n"
+"\n"
+"Konfigurationen har tre inläsningslägen:\n"
+"  Upptäckt (standard): inbyggda standardvärden, därefter användarens XDG-"
+"konfiguration och sedan projektkonfigurationen.\n"
+"  Explicit fil (--config SÖKVÄG): inbyggda standardvärden plus SÖKVÄG och "
+"dess importer; upptäckt användar- och projektkonfiguration läses inte in.\n"
+"  Endast standardvärden (--ignore-config): inbyggda standardvärden och inga "
+"konfigurationsfiler.\n"
+"\n"
+"Exempel:\n"
+"  # Visa aktuell effektiv konfiguration\n"
+"  gommitlint config show\n"
+"\n"
+"  # Generera komplett konfigurationsmall med alla alternativ\n"
+"  gommitlint config init\n"
+"\n"
+"  # Generera en liten konfiguration från en befintlig förinställning\n"
+"  gommitlint config init --preset minimal\n"
+"\n"
+"  # Skapa användarspecifik konfiguration (XDG)\n"
+"  mkdir -p ~/.config/gommitlint\n"
+"  gommitlint config init --output ~/.config/gommitlint/settings.yaml\n"
+"\n"
+"  # Visa aktuell konfiguration i YAML-format\n"
+"  gommitlint config show --format=yaml\n"
+"\n"
+"  # Visa konfigurationen i JSON-format\n"
+"  gommitlint config show --format=json"
+
+#: internal/adapters/cli/commands/errors.go:224
+msgid "Or install per repository instead: gommitlint hook install"
+msgstr "Eller installera per arkiv i stället: gommitlint hook install"
+
+#: internal/adapters/cli/commands/validate_setup.go:149
+msgid "Or omit --%s to run all configured rules"
+msgstr "Eller utelämna --%s för att köra alla konfigurerade regler"
+
+#: internal/adapters/cli/commands/config_init.go:148
+msgid "Or print to stdout: gommitlint config init --stdout"
+msgstr "Eller skriv till stdout: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/doctor.go:146
+#: internal/adapters/cli/commands/errors.go:238
+#: internal/adapters/cli/commands/errors.go:246
+msgid "Or run per-repository hooks here: git config core.hooksPath .git/hooks"
+msgstr "Eller kör hookar per arkiv här: git config core.hooksPath .git/hooks"
+
+#: internal/adapters/cli/commands/config_show_text.go:501
+msgid "Output Configuration:"
+msgstr "Utdatakonfiguration:"
+
+#: internal/adapters/cli/commands/validate.go:136
+#: internal/adapters/cli/commands/validate.go:142
+#: internal/adapters/cli/commands/validate.go:147
+#: internal/adapters/cli/commands/validate.go:152
+#: internal/adapters/cli/globalflags.go:43
+#: internal/adapters/cli/globalflags.go:49
+#: internal/adapters/cli/globalflags.go:55
+msgid "Output Control"
+msgstr "Utmatningsstyrning"
+
+#: internal/adapters/cli/commands/config_sync.go:178
+msgid "Overall: %s"
+msgstr "Totalt: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:292
+msgid "Overrides:"
+msgstr "Åsidosätter:"
+
+#: internal/adapters/cli/commands/config_init.go:201
+msgid "Overwrite: gommitlint config init --force"
+msgstr "Skriv över: gommitlint config init --force"
+
+#: internal/adapters/cli/commands/installhook.go:274
+msgid "Overwritten: previous hook replaced"
+msgstr "Överskriven: tidigare krok ersatt"
+
+#: internal/adapters/output/tableformatter.go:228
+msgid "PASS"
+msgstr "OK"
+
+#: internal/adapters/cli/commands/translations_compile.go:55
+#: internal/adapters/cli/commands/translations_update.go:53
+msgid "PO domain name (also the PO/MO filename stem)"
+msgstr "PO-domännamn (även PO-/MO-filnamnets stam)"
+
+#: internal/adapters/output/reportview.go:75
+msgid "Passed: %d, Failed: %d"
+msgstr "Godkända: %d, underkända: %d"
+
+#: internal/adapters/cli/commands/config_init.go:159
+msgid "Place the config at the repo root: .gommitlint.yaml"
+msgstr "Placera konfigurationen i förrådets rot: .gommitlint.yaml"
+
+#: internal/adapters/cli/commands/doctor.go:122
+msgid "Policy:\n"
+msgstr "Policy:\n"
+
+#: internal/adapters/output/texthelpers.go:65
+msgid "Position"
+msgstr "Placering"
+
+#: internal/adapters/cli/commands/config_init.go:203
+msgid "Print instead of write: gommitlint config init --stdout"
+msgstr "Skriv ut i stället för att skriva fil: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/config_init.go:180
+#: internal/adapters/cli/commands/config_init.go:211
+msgid "Print to stdout instead: gommitlint config init --stdout"
+msgstr "Skriv till stdout i stället: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/config.go:184
+msgid ""
+"Prints the JSON Schema that describes the gommitlint configuration file.\n"
+"\n"
+"The schema is generated from the Go config types and embedded in the "
+"binary,\n"
+"so the output matches this exact gommitlint version. Pipe it to a file to\n"
+"validate configs in editors (VS Code, JetBrains) without relying on the\n"
+"network-fetched copy from SchemaStore.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config schema > .gommitlint.schema.json\n"
+"  gommitlint config schema --compact | jq ."
+msgstr ""
+"Skriver ut JSON-schemat som beskriver gommitlints konfigurationsfil.\n"
+"\n"
+"Schemat genereras från Go-konfigurationstyperna och bäddas in i binären,\n"
+"så utdata matchar exakt denna gommitlint-version. Skicka det till en fil\n"
+"för att validera konfigurationer i redigerare (VS Code, JetBrains) utan\n"
+"att förlita dig på den nätverkshämtade kopian från SchemaStore.\n"
+"\n"
+"Exempel:\n"
+"  gommitlint config schema > .gommitlint.schema.json\n"
+"  gommitlint config schema --compact | jq ."
+
+#: internal/adapters/cli/commands/man.go:44
+msgid ""
+"Prints the gommitlint manual to standard output.\n"
+"\n"
+"This is a convenience for environments where man(1) is not installed. The\n"
+"content is identical to 'man gommitlint'. The manual source ships only in a\n"
+"source checkout; from a packaged install use 'man gommitlint' or see the\n"
+"online manual."
+msgstr ""
+"Skriver ut gommitlint-manualen till standardutmatning.\n"
+"\n"
+"Detta är en bekvämlighet för miljöer där man(1) inte är installerat.\n"
+"Innehållet är identiskt med 'man gommitlint'. Manualkällan levereras endast "
+"i\n"
+"en källkodsutcheckning; använd 'man gommitlint' från en paketerad "
+"installation\n"
+"eller se onlinemanualen."
+
+#: internal/adapters/cli/commands/config_show_text.go:479
+msgid "Project prefixes: %v"
+msgstr "Projektprefix: %v"
+
+#: internal/adapters/output/helpregistry.go:361
+msgid "Provide a base branch with --base-branch (e.g., --base-branch main)"
+msgstr "Ange en basgren med --base-branch (t.ex. --base-branch main)"
+
+#: internal/adapters/cli/commands/validate_execute.go:118
+msgid "Provide a commit subject line, e.g. 'feat: add feature'"
+msgstr "Ange en ämnesrad, t.ex. 'feat: add feature'"
+
+#: internal/adapters/output/helpregistry.go:46
+msgid "Provide a non-empty commit message subject"
+msgstr "Ange en icke-tom ämnesrad"
+
+#: internal/adapters/output/helpregistry.go:177
+msgid "Provide at least %s characters of detail explaining the change"
+msgstr "Ange minst %s tecken som förklarar ändringen"
+
+#: internal/adapters/output/tableformatter.go:130
+msgid "RULE"
+msgstr "REGEL"
+
+#: internal/adapters/cli/commands/translations_update.go:33
+msgid ""
+"Re-extracts translatable strings from Go source with the built-in\n"
+"extractor (it understands the project's Localizer API and Msg\n"
+"constructors), then folds the new template into each locale's existing\n"
+".po with msgmerge. Translator-edited msgstr entries are preserved;\n"
+"obsolete msgids are removed; new untranslated msgids land with empty\n"
+"msgstr.\n"
+"\n"
+"Run-host requirements (build-time only — not needed by end users):\n"
+"  msgmerge  GNU gettext-tools\n"
+"  msgen     GNU gettext-tools\n"
+"  msgattrib GNU gettext-tools"
+msgstr ""
+"Extraherar översättningsbara strängar från Go-källkoden igen med den "
+"inbyggda\n"
+"extraheraren (som förstår projektets Localizer-API och Msg-konstruktorer)\n"
+"och infogar sedan den nya mallen i varje språks befintliga .po-fil med\n"
+"msgmerge. Översättarnas msgstr-värden bevaras; föråldrade msgid-värden tas\n"
+"bort och nya oöversatta msgid-värden får tomma msgstr-värden.\n"
+"\n"
+"Krav på körvärden (endast vid bygge, behövs inte av slutanvändare):\n"
+"  msgmerge  GNU gettext-tools\n"
+"  msgen     GNU gettext-tools\n"
+"  msgattrib GNU gettext-tools"
+
+#: internal/adapters/cli/commands/config_check.go:174
+msgid "Re-sync '%s' or inspect the vendored file manually"
+msgstr ""
+"Synkronisera om '%s' eller inspektera den lokalt hämtade filen manuellt"
+
+#: internal/adapters/cli/commands/errors.go:348
+msgid ""
+"Read the commit message from stdin instead: echo \"feat: message\" | "
+"gommitlint validate -f -"
+msgstr ""
+"Läs incheckningsmeddelandet från stdin i stället: echo \"feat: message\" | "
+"gommitlint validate -f -"
+
+#: internal/adapters/cli/commands/config_show_text.go:288
+msgid "Reason: %s"
+msgstr "Orsak: %s"
+
+#: internal/adapters/output/helpregistry.go:383
+msgid ""
+"Rebase your branch instead of merging: 'git rebase <target-branch>', or use "
+"'git merge --ff-only <target-branch>' for fast-forward only. Note: rebase "
+"recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --"
+"signoff as needed. Disable rule:\n"
+"  Config File: rules.disabled: [\"linearhistory\"]\n"
+"  CLI Flag: --exclude-rule linearhistory"
+msgstr ""
+"Ombasera din gren i stället för att slå samman: 'git rebase <målgren>', "
+"eller använd 'git merge --ff-only <målgren>' för endast snabbspolning. Obs: "
+"ombasering återskapar incheckningar, vilket tar bort signaturer och "
+"signeringar. Lägg till --gpg-sign och/eller --signoff vid behov. Inaktivera "
+"regeln:\n"
+"  Konfigurationsfil: rules.disabled: [\"linearhistory\"]\n"
+"  CLI-flagga: --exclude-rule linearhistory"
+
+#: internal/adapters/cli/commands/config_check.go:276
+msgid "Recommended next command: %s"
+msgstr "Rekommenderat nästa kommando: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:589
+msgid "Reduce the number of commits on this branch"
+msgstr "Minska antalet incheckningar på denna gren"
+
+#: internal/adapters/output/texthelpers.go:92
+msgid "Reference"
+msgstr "Referens"
+
+#: internal/adapters/output/errorformatting_messages.go:597
+msgid "Reference branch '%s' not found"
+msgstr "Referensgrenen '%s' hittades inte"
+
+#: internal/adapters/output/errorformatting_messages.go:136
+msgid "Refs: lines appear after sign-offs"
+msgstr "Refs:-rader förekommer efter signeringar"
+
+#: internal/adapters/output/errorformatting_messages.go:139
+msgid "Refs: trailer is not in 'Refs: PROJ-123' format"
+msgstr "Refs:-trailern är inte i formatet 'Refs: PROJ-123'"
+
+#: cmd/gommitlint/completion_command.go:726
+#: cmd/gommitlint/completion_command.go:735
+msgid "Reload your shell or run: source %s"
+msgstr "Ladda om ditt skal eller kör: source %s"
+
+#: internal/adapters/cli/commands/errors.go:194
+msgid "Remove custom hook manually: rm %s"
+msgstr "Ta bort anpassad krok manuellt: rm %s"
+
+#: internal/adapters/output/helpregistry.go:110
+msgid "Remove the breaking change indicator (!) from the commit type"
+msgstr "Ta bort markören för brytande ändring (!) från incheckningstypen"
+
+#: internal/adapters/output/helpregistry.go:78
+msgid ""
+"Remove the punctuation or special character from the end of your subject line"
+msgstr "Ta bort skiljetecknet eller specialtecknet i slutet av ämnesraden"
+
+#: internal/adapters/output/helpregistry.go:75
+msgid ""
+"Remove the punctuation or special character from the end of your subject "
+"line — it should end with a letter or number, not: %s"
+msgstr ""
+"Ta bort skiljetecknet eller specialtecknet i slutet av ämnesraden — den bör "
+"sluta med en bokstav eller siffra, inte: %s"
+
+#: internal/adapters/cli/commands/removehook.go:36
+msgid ""
+"Removes Gommitlint-managed Git hooks while preserving custom hooks.\n"
+"\n"
+"Examples:\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove\n"
+"\n"
+"  # Remove global hooks\n"
+"  gommitlint hook remove --global"
+msgstr ""
+"Tar bort Git-krokar som hanteras av Gommitlint och bevarar anpassade "
+"krokar.\n"
+"\n"
+"Exempel:\n"
+"  # Ta bort krokar från det aktuella kodförrådet\n"
+"  gommitlint hook remove\n"
+"\n"
+"  # Ta bort globala krokar\n"
+"  gommitlint hook remove --global"
+
+#: internal/adapters/cli/commands/removehook.go:486
+msgid ""
+"Removing git hooks...\n"
+"\n"
+msgstr ""
+"Tar bort git-krokar...\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:386
+msgid ""
+"Removing global git hooks...\n"
+"\n"
+msgstr ""
+"Tar bort globala git-krokar...\n"
+"\n"
+
+#: internal/adapters/output/helpregistry.go:220
+msgid "Replace %q with %q"
+msgstr "Ersätt %q med %q"
+
+#: internal/adapters/cli/commands/errors.go:223
+msgid ""
+"Replace it (previous value is recorded and restored by 'hook remove --"
+"global'): gommitlint hook install --global --force"
+msgstr ""
+"Ersätt den (föregående värde sparas och återställs av 'hook remove --"
+"global'): gommitlint hook install --global --force"
+
+#: internal/adapters/cli/commands/config_show_text.go:468
+msgid "Repository Configuration:"
+msgstr "Kodförrådskonfiguration:"
+
+#: internal/adapters/output/gitlabformatter.go:126
+msgid "Repository Validation"
+msgstr "Kodförrådsvalidering"
+
+#: internal/adapters/output/reportview.go:78
+msgid "Repository failures: %d"
+msgstr "Kodförrådsfel: %d"
+
+#: internal/adapters/output/reportview.go:82
+msgid "Repository rules skipped: %d"
+msgstr "Överhoppade kodförrådsregler: %d"
+
+#: internal/adapters/cli/commands/doctor.go:75
+#: internal/adapters/cli/commands/installhook.go:265
+#: internal/adapters/cli/commands/removehook.go:234
+#: internal/adapters/cli/commands/removehook.go:485
+msgid "Repository: %s\n"
+msgstr "Kodförråd: %s\n"
+
+#: internal/adapters/cli/commands/config_show_text.go:449
+msgid "Require GPG: %t"
+msgstr "Kräv GPG: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:450
+msgid "Require SSH: %t"
+msgstr "Kräv SSH: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:402
+msgid "Require imperative: %t"
+msgstr "Kräv imperativ: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:476
+msgid "Require in body: %t"
+msgstr "Kräv i brödtext: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:475
+msgid "Require in subject: %t"
+msgstr "Kräv i ämnesrad: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:421
+msgid "Require scope: %t"
+msgstr "Kräv omfång: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:436
+msgid "Required: %t"
+msgstr "Krävs: %t"
+
+#: internal/adapters/cli/commands/config_sync.go:106
+msgid "Resolved URL: %s"
+msgstr "Upplöst URL: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:205
+msgid "Resolved from env during last sync: %t"
+msgstr "Löst från miljövariabel vid senaste synkronisering: %t"
+
+#: internal/adapters/cli/commands/validate_execute.go:141
+#: internal/adapters/cli/commands/validate_execute.go:149
+msgid "Retry validation"
+msgstr "Försök validera igen"
+
+#: internal/adapters/cli/commands/installhook.go:148
+#: internal/adapters/cli/commands/installhook.go:155
+msgid "Retry with: gommitlint hook install --force"
+msgstr "Försök igen med: gommitlint hook install --force"
+
+#: internal/adapters/cli/commands/installhook.go:92
+msgid "Retry with: gommitlint hook install --global --force"
+msgstr "Försök igen med: gommitlint hook install --global --force"
+
+#: internal/adapters/cli/commands/config_sync.go:129
+msgid ""
+"Review fetched content and update integrity.sha256 only if the change is "
+"trusted"
+msgstr ""
+"Granska det hämtade innehållet och uppdatera integrity.sha256 endast om "
+"ändringen är betrodd"
+
+#: internal/adapters/cli/commands/config_check.go:81
+msgid "Review the reported config warnings and managed source statuses"
+msgstr ""
+"Granska de rapporterade konfigurationsvarningarna och statusarna för "
+"hanterade källor"
+
+#: internal/adapters/cli/commands/removehook.go:403
+msgid "Review the statuses above before retrying.\n"
+msgstr "Granska statusarna ovan innan du försöker igen.\n"
+
+#: internal/adapters/cli/commands/config_check.go:159
+msgid "Review the warning and update your config if needed"
+msgstr "Granska varningen och uppdatera konfigurationen vid behov"
+
+#: internal/adapters/cli/commands/config_show_text.go:215
+msgid "Revision: %s"
+msgstr "Revision: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:381
+msgid "Rules Configuration:"
+msgstr "Regelkonfiguration:"
+
+#: internal/adapters/output/tableformatter.go:183
+msgid "Rules: Total %d   Passed %d   Failed %d"
+msgstr "Regler: Totalt %d   Godkända %d   Misslyckade %d"
+
+#: internal/adapters/cli/commands/help.go:12
+msgid "Run '%s --help' for more information"
+msgstr "Kör '%s --help' för mer information"
+
+#: cmd/gommitlint/completion_command.go:767
+msgid "Run '%s completion --help' for more information"
+msgstr "Kör '%s completion --help' för mer information"
+
+#: cmd/gommitlint/suggestions.go:56
+msgid "Run 'gommitlint --help' for available commands\n"
+msgstr "Kör 'gommitlint --help' för tillgängliga kommandon\n"
+
+#: internal/adapters/cli/commands/validate_output.go:147
+#: internal/adapters/cli/commands/validate_output.go:182
+#: internal/adapters/cli/commands/validate_output.go:99
+msgid "Run 'gommitlint --help' to see global options"
+msgstr "Kör 'gommitlint --help' för att visa globala alternativ"
+
+#: internal/adapters/cli/commands/config.go:309
+#: internal/adapters/cli/commands/validate.go:293
+msgid "Run 'gommitlint config show' to inspect settings"
+msgstr "Kör 'gommitlint config show' för att granska inställningar"
+
+#: internal/adapters/cli/commands/validate_setup.go:187
+msgid "Run 'gommitlint config show' to see active rules"
+msgstr "Kör 'gommitlint config show' för att se aktiva regler"
+
+#: internal/adapters/cli/commands/config_check.go:167
+msgid "Run 'gommitlint config sync --source %s'"
+msgstr "Kör 'gommitlint config sync --source %s'"
+
+#: internal/adapters/cli/commands/config_check.go:183
+msgid ""
+"Run 'gommitlint config sync --source %s' or update integrity.sha256 if the "
+"change is intentional"
+msgstr ""
+"Kör 'gommitlint config sync --source %s' eller uppdatera integrity.sha256 om "
+"ändringen är avsiktlig"
+
+#: internal/adapters/cli/commands/config_sync.go:132
+msgid "Run 'gommitlint config sync' to refresh vendored managed source files"
+msgstr ""
+"Kör 'gommitlint config sync' för att uppdatera medskickade hanterade "
+"källfilerKör 'gommitlint config sync' för att uppdatera lokalt hämtade "
+"managed_sources-filer"
+
+#: internal/adapters/cli/commands/validate_execute.go:195
+msgid ""
+"Run as the user that owns the repository; in the container image, mount the "
+"repository at /repo"
+msgstr ""
+"Kör som den användare som äger kodförrådet; montera kodförrådet på /repo i "
+"containeravbilden"
+
+#: internal/adapters/cli/commands/errors.go:389
+#: internal/adapters/cli/commands/validate_execute.go:165
+msgid "Run inside a git repository"
+msgstr "Kör i ett Git-kodförråd"
+
+#: internal/adapters/output/errorformatting_messages.go:238
+msgid "Run this command inside a Git repository or use --ignore-repo-rules"
+msgstr ""
+"Kör detta kommando inuti ett Git-kodförråd eller använd --ignore-repo-"
+"rulesKör detta kommando i ett Git-kodförråd eller använd --ignore-repo-rules"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "SEE ALSO"
+msgstr "SE ÄVEN"
+
+#: internal/adapters/output/tableformatter.go:117
+msgid "SHA: %s"
+msgstr "SHA: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:172
+msgid "SSH signature is incomplete"
+msgstr "SSH-signaturen är ofullständig"
+
+#: internal/adapters/output/tableformatter.go:131
+msgid "STATUS"
+msgstr "STATUS"
+
+#: internal/adapters/output/tableformatter.go:180
+msgid "SUMMARY"
+msgstr "SAMMANFATTNING"
+
+#: internal/adapters/output/errorformatting_messages.go:84
+msgid "Scope list is malformed (expected comma-separated without spaces)"
+msgstr "Scope-listan är felformad (förväntade kommaseparerad utan mellanslag)"
+
+#: internal/adapters/cli/commands/config_show_text.go:424
+msgid "Scopes: %v"
+msgstr "Omfång: %v"
+
+#: internal/adapters/output/textformatter.go:633
+msgid "See examples: gommitlint validate --rule-help %s"
+msgstr "Visa exempel: gommitlint validate --rule-help %s"
+
+#: internal/adapters/cli/commands/man.go:189
+msgid "See the online manual: %s"
+msgstr "Se onlinemanualen: %s"
+
+#: internal/adapters/cli/commands/config_sync.go:62
+msgid "Select a specific config: gommitlint --config <path> config sync"
+msgstr ""
+"Välj en specifik konfiguration: gommitlint --config <sökväg> config sync"
+
+#: internal/adapters/cli/commands/validate_setup.go:196
+msgid "Separate rules with commas: --%s subject,signoff"
+msgstr "Separera regler med kommatecken: --%s subject,signoff"
+
+#: internal/adapters/output/helpregistry.go:351
+msgid ""
+"Set only one of require_gpg or require_ssh to true, or set both to false to "
+"allow either type"
+msgstr ""
+"Sätt endast en av require_gpg och require_ssh till true, eller båda till "
+"false för att tillåta båda typerna"
+
+#: internal/adapters/output/helpregistry.go:354
+msgid ""
+"Set repo.max_commits_ahead to a positive number, or disable the rule by "
+"adding 'branchahead' to rules.disabled"
+msgstr ""
+"Sätt repo.max_commits_ahead till ett positivt tal, eller inaktivera regeln "
+"genom att lägga till 'branchahead' i rules.disabled"
+
+#: internal/adapters/cli/commands/config_sync.go:130
+#: internal/adapters/cli/commands/config_sync.go:90
+msgid ""
+"Set the referenced environment variable before running 'gommitlint config "
+"sync'"
+msgstr ""
+"Ange den refererade miljövariabeln innan du kör 'gommitlint config sync'"
+
+#: internal/adapters/output/helpregistry.go:59
+msgid "Shorten your commit message subject line"
+msgstr "Korta ner ämnesraden"
+
+#: internal/adapters/output/helpregistry.go:56
+msgid ""
+"Shorten your commit message subject line by %s characters — aim for under %s "
+"characters"
+msgstr "Korta ner ämnesraden med %s tecken — sikta på under %s tecken"
+
+#: cmd/gommitlint/help_printer.go:381
+#: internal/adapters/cli/commands/validate_execute.go:285
+msgid "Show docs for a rule: gommitlint validate --rule-help <name>"
+msgstr ""
+"Visa dokumentation för en regel: gommitlint validate --rule-help <namn>"
+
+#: cmd/gommitlint/help_printer.go:474
+msgid "Shows a list of commands or help for one command"
+msgstr "Visar en lista med kommandon eller hjälp för ett kommando"
+
+#: internal/adapters/cli/commands/hookstatus.go:25
+msgid ""
+"Shows the current state of local and global Gommitlint Git hooks for a "
+"repository.\n"
+"\n"
+"Examples:\n"
+"  # Show hook status for current repository\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Show hook status with details (timestamps and file size)\n"
+"  gommitlint hook status -v\n"
+"\n"
+"  # Show hook status for specific repository\n"
+"  gommitlint hook status --repo-path /path/to/repo"
+msgstr ""
+"Visar aktuell status för lokala och globala Gommitlint-krokar i ett "
+"kodförråd.\n"
+"\n"
+"Exempel:\n"
+"  # Visa krokstatus för aktuellt kodförråd\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Visa krokstatus med detaljer (tidsstämplar och filstorlek)\n"
+"  gommitlint hook status -v\n"
+"\n"
+"  # Visa krokstatus för ett specifikt kodförråd\n"
+"  gommitlint hook status --repo-path /sökväg/till/kodförråd"
+
+#: internal/adapters/cli/commands/config.go:118
+msgid ""
+"Shows the effective configuration produced by the selected load mode.\n"
+"\n"
+"Load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the "
+"project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its "
+"imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration "
+"files.\n"
+"\n"
+"Output formats:\n"
+"  text - Human-readable summary (default)\n"
+"  json - Machine-readable JSON\n"
+"  yaml - Config file format"
+msgstr ""
+"Visar den effektiva konfigurationen från det valda inläsningsläget.\n"
+"\n"
+"Inläsningslägen:\n"
+"  Upptäckt (standard): inbyggda standardvärden, därefter användarens XDG-"
+"konfiguration och sedan projektkonfigurationen.\n"
+"  Explicit fil (--config SÖKVÄG): inbyggda standardvärden plus SÖKVÄG och "
+"dess importer; upptäckt användar- och projektkonfiguration läses inte in.\n"
+"  Endast standardvärden (--ignore-config): inbyggda standardvärden och inga "
+"konfigurationsfiler.\n"
+"\n"
+"Utdataformat:\n"
+"  text - Människoläsbar sammanfattning (standard)\n"
+"  json - Maskinläsbar JSON\n"
+"  yaml - Konfigurationsfilformat"
+
+#: internal/adapters/output/helpregistry.go:287
+msgid ""
+"Sign your commits using 'git commit -S' for GPG or configure SSH signing"
+msgstr ""
+"Signera incheckningar med 'git commit -S' för GPG eller konfigurera SSH-"
+"signering"
+
+#: internal/domain/rulecatalog/catalog.go:49
+msgid "Sign-off"
+msgstr "Signering"
+
+#: internal/adapters/output/errorformatting_messages.go:95
+msgid "Sign-off is not in 'Signed-off-by: Name <email>' format"
+msgstr "Signeringen är inte i formatet 'Signed-off-by: Namn <e-post>'"
+
+#: internal/domain/rulecatalog/catalog.go:52
+msgid "Signature"
+msgstr "Kryptografisk signatur"
+
+#: internal/adapters/output/errorformatting_messages.go:156
+msgid "Signature format is not recognized"
+msgstr "Signaturformatet känns inte igen"
+
+#: internal/adapters/output/errorformatting_messages.go:308
+msgid "Signature type is not allowed"
+msgstr "Signaturtypen är inte tillåten"
+
+#: internal/adapters/output/errorformatting_messages.go:166
+msgid "Signature verification failed"
+msgstr "Signaturverifieringen misslyckades"
+
+#: internal/adapters/output/errorformatting_messages.go:175
+msgid "Signing key directory is not usable"
+msgstr "Nyckelkatalogen för signering är inte användbar"
+
+#: internal/adapters/output/errorformatting_messages.go:202
+msgid "Signing key is weaker than the required minimum"
+msgstr "Signeringsnyckeln är svagare än det krävda minimumet"
+
+#: internal/adapters/output/errorformatting_messages.go:163
+msgid "Signing keys could not be loaded"
+msgstr "Signeringsnycklarna kunde inte läsas in"
+
+#: internal/adapters/cli/commands/config_sync.go:104
+#: internal/adapters/cli/commands/config_sync.go:91
+msgid "Source id: %s"
+msgstr "Käll-id: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:200
+msgid "Source mode: %s"
+msgstr "Källäge: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:199
+#: internal/adapters/cli/commands/config_show_text.go:285
+msgid "Source: %s"
+msgstr "Källa: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:600
+msgid "Specify a base branch with --base-branch"
+msgstr "Ange en basgren med --base-branch"
+
+#: internal/adapters/cli/commands/errors.go:312
+#: internal/adapters/cli/commands/errors.go:322
+msgid "Specify config file: gommitlint --config /path/to/settings.yaml"
+msgstr "Ange konfigurationsfil: gommitlint --config /sökväg/till/settings.yaml"
+
+#: internal/adapters/cli/commands/errors.go:267
+msgid "Specify repository path: gommitlint --repo-path /path/to/repo"
+msgstr ""
+"Ange kodförrådsväg: gommitlint --repo-path /sökväg/till/repoAnge sökväg till "
+"kodförråd: gommitlint --repo-path /sökväg/till/kodförråd"
+
+#: internal/adapters/cli/commands/errors.go:390
+#: internal/adapters/cli/commands/validate_execute.go:166
+msgid "Specify repository path: gommitlint validate --repo-path /path/to/repo"
+msgstr ""
+"Ange kodförrådsväg: gommitlint validate --repo-path /sökväg/till/repoAnge "
+"sökväg till kodförråd: gommitlint validate --repo-path /sökväg/till/kodförråd"
+
+#: internal/adapters/cli/commands/config_show_text.go:490
+msgid "Spell Configuration:"
+msgstr "Stavningskonfiguration:"
+
+#: internal/domain/rulecatalog/catalog.go:50
+msgid "Spelling"
+msgstr "Stavning"
+
+#: internal/adapters/output/helpregistry.go:377
+msgid "Squash related commits: 'git rebase -i %s'%s"
+msgstr "Squasha relaterade incheckningar: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:191
+msgid ""
+"Start with actual content explaining your changes, then add sign-off lines "
+"at the end"
+msgstr ""
+"Börja med faktiskt innehåll som förklarar ändringarna, och lägg "
+"signeringsrader sist"
+
+#: internal/adapters/output/helpregistry.go:140
+msgid "Start with an imperative verb like: add, fix, update, remove, implement"
+msgstr "Börja med ett imperativt verb som: add, fix, update, remove, implement"
+
+#: internal/adapters/output/helpregistry.go:137
+msgid "Start your commit message with a verb"
+msgstr "Börja ditt incheckningsmeddelande med ett verb"
+
+#: internal/adapters/cli/commands/config_check.go:262
+msgid "Status: FAIL (%d issue)"
+msgid_plural "Status: FAIL (%d issues)"
+msgstr[0] "Status: FEL (%d problem)"
+msgstr[1] "Status: FEL (%d problem)"
+
+#: internal/adapters/cli/commands/config_check.go:260
+msgid "Status: OK"
+msgstr "Status: OK"
+
+#: internal/domain/rulecatalog/catalog.go:47
+msgid "Subject"
+msgstr "Ämnesrad"
+
+#: internal/adapters/cli/commands/config_show_text.go:401
+msgid "Subject case: %s"
+msgstr "Versalisering av ämnesrad: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:69
+msgid "Subject does not follow the conventional commit format"
+msgstr "Ämnesraden följer inte conventional commit-formatet"
+
+#: internal/adapters/output/errorformatting_messages.go:567
+msgid "Subject does not start with a verb"
+msgstr "Ämnesraden börjar inte med ett verb"
+
+#: internal/adapters/output/errorformatting_messages.go:54
+msgid "Subject does not start with a word"
+msgstr "Ämnesraden börjar inte med ett ord"
+
+#: internal/adapters/output/errorformatting_messages.go:253
+msgid "Subject ends with '%s'"
+msgstr "Ämnesraden slutar med '%s'"
+
+#: internal/adapters/output/errorformatting_messages.go:256
+msgid "Subject ends with forbidden punctuation"
+msgstr "Ämnesraden slutar med otillåtet skiljetecken"
+
+#: internal/adapters/output/errorformatting_messages.go:123
+msgid "Subject has no JIRA reference"
+msgstr "Ämnesraden saknar JIRA-referens"
+
+#: internal/adapters/output/errorformatting_messages.go:40
+msgid "Subject is empty"
+msgstr "Ämnesraden är tom"
+
+#: internal/adapters/output/errorformatting_messages.go:246
+msgid "Subject is not in imperative mood"
+msgstr "Ämnesraden är inte i imperativ"
+
+#: internal/adapters/cli/commands/config_show_text.go:400
+msgid "Subject max length: %d"
+msgstr "Maximal längd på ämnesrad: %d"
+
+#: internal/adapters/output/tableformatter.go:118
+msgid "Subject: %s"
+msgstr "Ämnesrad: %s"
+
+#: internal/adapters/output/texthelpers.go:82
+msgid "Suggestion"
+msgstr "Förslag"
+
+#: internal/adapters/output/errorformatting.go:301
+msgid "Suggestion: '%s'"
+msgstr "Förslag: '%s'"
+
+#: internal/adapters/cli/commands/config_check.go:270
+#: internal/adapters/cli/commands/config_show_text.go:145
+msgid "Summary: %s"
+msgstr "Sammanfattning: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:201
+msgid "Supported formats: %s"
+msgstr "Format som stöds: %s"
+
+#: internal/adapters/output/tableformatter.go:129
+msgid "TARGET"
+msgstr "MÅL"
+
+#: internal/adapters/output/tableformatter.go:128
+msgid "TYPE"
+msgstr "TYP"
+
+#: internal/adapters/cli/commands/removehook.go:282
+msgid ""
+"Target path: %s\n"
+"\n"
+msgstr ""
+"Målsökväg: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/config.go:271
+msgid "The 'config check' command doesn't accept arguments"
+msgstr "Kommandot 'config check' tar inte emot argument"
+
+#: internal/adapters/cli/commands/config.go:273
+msgid "The 'config init' command doesn't accept arguments"
+msgstr "Kommandot 'config init' tar inte emot argument"
+
+#: internal/adapters/cli/commands/config.go:275
+msgid "The 'config schema' command doesn't accept arguments"
+msgstr "Kommandot 'config schema' tar inga argument"
+
+#: internal/adapters/cli/commands/config.go:277
+msgid "The 'config show' command doesn't accept arguments"
+msgstr "Kommandot 'config show' tar inte emot argument"
+
+#: internal/adapters/cli/commands/config.go:279
+msgid "The 'config sync' command doesn't accept arguments"
+msgstr "Kommandot 'config sync' tar inte emot argument"
+
+#: internal/adapters/cli/commands/doctor.go:44
+msgid "The 'doctor' command doesn't accept arguments"
+msgstr "Kommandot 'doctor' tar inga argument"
+
+#: internal/adapters/cli/commands/removehook.go:65
+msgid "The 'hook remove' command doesn't accept arguments"
+msgstr "Kommandot 'hook remove' tar inte emot argument"
+
+#: internal/adapters/cli/commands/hookstatus.go:52
+msgid "The 'hook status' command doesn't accept arguments"
+msgstr "Kommandot 'hook status' tar inte emot argument"
+
+#: internal/adapters/cli/commands/man.go:174
+msgid "The 'man' command doesn't accept arguments"
+msgstr "Kommandot 'man' tar inte emot argument"
+
+#: internal/adapters/cli/commands/config_show_text.go:503
+msgid "Theme: %s"
+msgstr "Tema: %s"
+
+#: internal/adapters/cli/commands/errors.go:195
+msgid "Then install gommitlint: %s"
+msgstr "Installera sedan gommitlint: %s"
+
+#: cmd/gommitlint/completion_command.go:731
+msgid "Then run: autoload -Uz compinit && compinit"
+msgstr "Kör sedan: autoload -Uz compinit && compinit"
+
+#: internal/adapters/cli/commands/installhook.go:67
+#: internal/adapters/cli/commands/translations_errors.go:49
+msgid "This command does not accept positional arguments"
+msgstr "Kommandot godtar inte positionsargument"
+
+#: internal/adapters/output/textformatter.go:177
+msgid ""
+"Tip: to validate multiple commits, use --count, --range, or --base-branch"
+msgstr ""
+"Tips: för att validera flera incheckningar, använd --count, --range eller --"
+"base-branch"
+
+#: internal/adapters/output/textformatter.go:203
+msgid "Tip: use -v for rule details"
+msgstr "Tips: använd -v för regeldetaljer"
+
+#: internal/adapters/cli/commands/errors.go:366
+msgid ""
+"To validate more commits, raise limits.max_commit_count in .gommitlint.yaml"
+msgstr ""
+"För att validera fler incheckningar, höj limits.max_commit_count "
+"i .gommitlint.yaml"
+
+#: internal/adapters/output/errorformatting_messages.go:101
+msgid "Too few distinct sign-offs"
+msgstr "För få unika signeringar"
+
+#: internal/adapters/cli/commands/man.go:188
+msgid "Try 'man gommitlint' if the man page is installed"
+msgstr "Prova 'man gommitlint' om manualsidan är installerad"
+
+#: internal/adapters/cli/commands/man.go:194
+msgid "Try 'man gommitlint' if the man page is installed, or see: %s"
+msgstr "Prova 'man gommitlint' om manualsidan är installerad, eller se: %s"
+
+#: internal/adapters/output/errorformatting.go:472
+msgid "Try: \"%s\""
+msgstr "Försök: \"%s\""
+
+#: internal/adapters/output/errorformatting.go:474
+msgid "Try: %s"
+msgstr "Försök: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:74
+msgid "Type is missing a required scope"
+msgstr "Typen saknar ett obligatoriskt scope"
+
+#: internal/adapters/cli/commands/config_show_text.go:428
+msgid "Types: %v"
+msgstr "Typer: %v"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444 cmd/gommitlint/help_printer.go:558
+msgid "USAGE"
+msgstr "ANVÄNDNING"
+
+#: internal/adapters/output/jsonformatter.go:238
+msgid "Unknown"
+msgstr "Okänd"
+
+#: cmd/gommitlint/completion_command.go:706
+msgid "Updated"
+msgstr "Uppdaterad"
+
+#: cmd/gommitlint/completion_command.go:766
+msgid "Usage: %s completion <shell>|--all"
+msgstr "Användning: %s completion <shell>|--all"
+
+#: internal/adapters/output/errorformatting_messages.go:510
+msgid "Use '%s' instead of '%s'"
+msgstr "Använd '%s' i stället för '%s'"
+
+#: internal/adapters/output/helpregistry.go:386
+msgid ""
+"Use 'git rebase -i <base>' and mark fixup commits as 'squash'. Note: rebase "
+"recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --"
+"signoff as needed. Disable rule:\n"
+"  Config File: allow_fixup_commits: true"
+msgstr ""
+"Använd 'git rebase -i <bas>' och markera fixup-incheckningar som 'squash'. "
+"Obs: ombasering återskapar incheckningar, vilket tar bort signaturer och "
+"signeringar. Lägg till --gpg-sign och/eller --signoff vid behov. Inaktivera "
+"regeln:\n"
+"  Konfigurationsfil: allow_fixup_commits: true"
+
+#: internal/adapters/cli/commands/config_sync.go:128
+msgid ""
+"Use 'gommitlint config show --format=yaml' to inspect configured managed "
+"source ids"
+msgstr ""
+"Använd 'gommitlint config show --format=yaml' för att granska konfigurerade "
+"managed source-id:n"
+
+#: internal/adapters/cli/commands/removehook.go:77
+msgid "Use --dry-run for repository-local hooks only"
+msgstr "Använd --dry-run endast för kodförrådslokala krokar"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:276
+msgid "Use --force to overwrite existing hooks"
+msgstr "Använd --force för att skriva över befintliga krokar"
+
+#: internal/adapters/cli/commands/validate_execute.go:204
+#: internal/adapters/cli/commands/validate_setup.go:82
+msgid "Use --format text for detailed output"
+msgstr "Använd --format text för detaljerad utdata"
+
+#: internal/adapters/cli/commands/config.go:298
+msgid "Use --format to choose a supported format"
+msgstr "Använd --format för att välja ett format som stöds"
+
+#: internal/adapters/cli/commands/config_show_text.go:523
+msgid "Use --format=json for machine-readable output"
+msgstr "Använd --format=json för maskinläsbar utdata"
+
+#: internal/adapters/cli/commands/config_show_text.go:527
+msgid "Use --format=yaml to generate a config file output"
+msgstr "Använd --format=yaml för att generera konfigurationsfilsutdata"
+
+#: internal/adapters/cli/commands/validate_execute.go:235
+#: internal/adapters/cli/commands/validate_output.go:72
+msgid "Use --report-file - to write to stdout"
+msgstr "Använd --report-file - för att skriva till stdout"
+
+#: internal/adapters/cli/commands/validate_output.go:62
+msgid "Use --report-file to choose a different path"
+msgstr "Använd --report-file för att välja en annan sökväg"
+
+#: internal/adapters/cli/commands/config_show.go:225
+msgid "Use --view to choose a supported text view"
+msgstr "Använd --view för att välja en textvy som stöds"
+
+#: internal/adapters/cli/commands/validate_output.go:109
+msgid "Use -v or --verbose for verbose output"
+msgstr "Använd -v eller --verbose för utförlig utskrift"
+
+#: internal/adapters/cli/commands/validate_output.go:110
+msgid "Use -vv for extra verbose output"
+msgstr "Använd -vv för extra utförlig utskrift"
+
+#: internal/adapters/cli/commands/config_sync.go:134
+msgid "Use a direct HTTPS source URL or keep redirects on the same host"
+msgstr ""
+"Använd en direkt HTTPS-käll-URL eller håll omdirigeringar på samma "
+"värdAnvänd en direkt HTTPS-käll-URL eller behåll omdirigeringar på samma värd"
+
+#: internal/adapters/cli/commands/config_sync.go:103
+#: internal/adapters/cli/commands/config_sync.go:131
+msgid ""
+"Use a direct HTTPS source URL or resolve the environment variable to one"
+msgstr "Använd en direkt HTTPS-käll-URL eller lös upp miljövariabeln till en"
+
+#: internal/adapters/cli/commands/translations_errors.go:73
+msgid ""
+"Use a filename stem without path separators, for example: --domain gommitlint"
+msgstr ""
+"Använd ett filnamn utan sökvägsavgränsare, till exempel: --domain gommitlint"
+
+#: internal/adapters/cli/commands/config_sync.go:133
+msgid "Use a relative destination path inside the config directory"
+msgstr "Använd en relativ destinationssökväg i konfigurationskatalogen"
+
+#: internal/adapters/cli/commands/config_init.go:147
+msgid "Use a relative path inside the repo, e.g. .gommitlint.yaml"
+msgstr "Använd en relativ sökväg inom förrådet, t.ex. .gommitlint.yaml"
+
+#: internal/adapters/output/helpregistry.go:116
+msgid "Use a single scope: %s"
+msgstr "Använd ett enda scope: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:216
+#: internal/adapters/output/helpregistry.go:340
+msgid "Use a valid commit hash, branch name, or tag"
+msgstr "Använd en giltig incheckningshash, grennamn eller tagg"
+
+#: internal/adapters/output/errorformatting_messages.go:495
+msgid "Use a valid commit type like: %s"
+msgstr "Använd en giltig incheckningstyp som: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:513
+msgid "Use a valid project key"
+msgstr "Använd en giltig projektkod"
+
+#: internal/adapters/output/errorformatting_messages.go:578
+msgid "Use a valid scope"
+msgstr "Använd ett giltigt omfång"
+
+#: internal/adapters/output/helpregistry.go:271
+msgid "Use an authorized email address or add this email to allowed_authors"
+msgstr ""
+"Använd en behörig e-postadress eller lägg till adressen i allowed_authors"
+
+#: internal/adapters/cli/commands/validate_execute.go:182
+msgid "Use an existing base branch: gommitlint validate --base-branch main"
+msgstr "Använd en befintlig basgren: gommitlint validate --base-branch main"
+
+#: internal/adapters/output/helpregistry.go:164
+msgid "Use an imperative verb like: add, fix, update, remove, implement"
+msgstr "Använd ett imperativt verb som: add, fix, update, remove, implement"
+
+#: internal/adapters/output/helpregistry.go:126
+msgid "Use comma-separated scopes without spaces: (scope1,scope2)"
+msgstr "Använd kommaseparerade omfång utan mellanslag: (scope1,scope2)"
+
+#: internal/adapters/cli/commands/validate_setup.go:148
+msgid "Use commas to separate rules: --%s subject,signoff"
+msgstr "Använd kommatecken för att separera regler: --%s subject,signoff"
+
+#: internal/adapters/cli/commands/errors.go:311
+#: internal/adapters/cli/commands/errors.go:321
+msgid "Use default config: gommitlint validate --ignore-config"
+msgstr "Använd standardkonfiguration: gommitlint validate --ignore-config"
+
+#: internal/adapters/cli/commands/config_init.go:123
+msgid "Use either --stdout to print, or --output PATH to write a file"
+msgstr ""
+"Använd antingen --stdout för att skriva ut, eller --output SÖKVÄG för att "
+"skriva en fil"
+
+#: internal/adapters/output/helpregistry.go:104
+msgid "Use exactly one space after the colon followed by description text"
+msgstr "Använd exakt ett mellanslag efter kolonet följt av beskrivningstext"
+
+#: internal/adapters/cli/commands/validate_execute.go:309
+msgid ""
+"Use flags to specify validation targets: --ref REF, --range RANGE, --base-"
+"branch BRANCH, --count N"
+msgstr ""
+"Använd flaggor för att ange valideringsmål: --ref REF, --range RANGE, --base-"
+"branch BRANCH, --count N"
+
+#: internal/adapters/output/errorformatting_messages.go:535
+#: internal/adapters/output/helpregistry.go:113
+msgid "Use format: %s"
+msgstr "Använd format: %s"
+
+#: internal/adapters/output/helpregistry.go:87
+msgid "Use format: %s (e.g., 'feat: add login')"
+msgstr "Använd formatet: %s (t.ex. 'feat: add login')"
+
+#: internal/adapters/output/helpregistry.go:260
+msgid "Use format: 'Refs: PROJ-123'"
+msgstr "Använd formatet: 'Refs: PROJ-123'"
+
+#: internal/adapters/output/helpregistry.go:251
+msgid "Use format: 'Refs: PROJ-123' (with colon)"
+msgstr "Använd formatet: 'Refs: PROJ-123' (med kolon)"
+
+#: internal/adapters/output/errorformatting_messages.go:219
+#: internal/adapters/output/helpregistry.go:343
+msgid "Use format: <from>..<to> or <from>...<to>"
+msgstr "Använd formatet: <från>..<till> eller <från>...<till>"
+
+#: internal/adapters/output/helpregistry.go:167
+msgid "Use format: subject line, blank line, then detailed body"
+msgstr "Använd formatet: ämnesrad, tom rad, sedan utförlig brödtext"
+
+#: internal/adapters/cli/commands/config_init.go:97
+msgid "Use full template instead: gommitlint config init"
+msgstr "Använd den fullständiga mallen i stället: gommitlint config init"
+
+#: internal/adapters/output/helpregistry.go:62
+msgid "Use lowercase for the first character of your commit subject"
+msgstr "Använd gemen som första tecken i ämnesraden"
+
+#: internal/adapters/output/helpregistry.go:123
+msgid "Use one of the allowed commit scopes"
+msgstr "Använd ett av de tillåtna scope-värdena"
+
+#: internal/adapters/output/helpregistry.go:94
+msgid "Use one of the allowed commit types"
+msgstr "Använd en av de tillåtna incheckningstyperna"
+
+#: internal/adapters/cli/commands/config_init.go:96
+#: internal/adapters/output/helpregistry.go:120
+#: internal/adapters/output/helpregistry.go:91
+msgid "Use one of: %s"
+msgstr "Använd en av: %s"
+
+#: internal/adapters/cli/commands/errors.go:297
+msgid ""
+"Use one of: preset:minimal, preset:conventional, preset:ambitious, "
+"preset:secure"
+msgstr ""
+"Använd ett av: preset:minimal, preset:conventional, preset:ambitious, "
+"preset:secure"
+
+#: internal/adapters/output/helpregistry.go:68
+msgid "Use sentence case (uppercase first character) for your commit subject"
+msgstr "Använd meningsform (versal som första tecken) i ämnesraden"
+
+#: internal/adapters/output/helpregistry.go:207
+msgid ""
+"Use strict DCO format: 'Signed-off-by: Your Real Name "
+"<your.email@domain.com>'"
+msgstr ""
+"Använd strikt DCO-format: 'Signed-off-by: Ditt Riktiga Namn "
+"<din.epost@example.com>'"
+
+#: internal/adapters/output/helpregistry.go:147
+msgid "Use the base (imperative) form instead of past tense"
+msgstr "Använd grundformen (imperativ) i stället för dåtid"
+
+#: internal/adapters/output/helpregistry.go:154
+msgid ""
+"Use the base (imperative) form instead of the gerund (present participle)"
+msgstr ""
+"Använd grundformen (imperativ) i stället för gerundformen (presens particip)"
+
+#: internal/adapters/output/helpregistry.go:161
+msgid "Use the base (imperative) form instead of third person singular"
+msgstr "Använd grundformen (imperativ) i stället för tredje person singular"
+
+#: internal/adapters/output/helpregistry.go:144
+msgid "Use the base form '%s' instead of past tense"
+msgstr "Använd grundformen '%s' i stället för dåtid"
+
+#: internal/adapters/output/helpregistry.go:151
+msgid "Use the base form '%s' instead of the gerund (present participle)"
+msgstr "Använd grundformen '%s' i stället för gerundformen (presens particip)"
+
+#: internal/adapters/output/helpregistry.go:158
+msgid "Use the base form '%s' instead of third person singular"
+msgstr "Använd grundformen '%s' i stället för tredje person singular"
+
+#: internal/adapters/cli/commands/config_show.go:159
+msgid "Use this as a starting point for gommitlint.yaml"
+msgstr "Använd detta som utgångspunkt för gommitlint.yaml"
+
+#: internal/adapters/output/helpregistry.go:257
+msgid "Use uppercase for JIRA keys: 'Refs: PROJ-123'"
+msgstr "Använd versaler för JIRA-nycklar: 'Refs: PROJ-123'"
+
+#: internal/adapters/output/helpregistry.go:65
+msgid "Use uppercase for the first character of your commit subject"
+msgstr "Använd versal som första tecken i ämnesraden"
+
+#: internal/adapters/output/helpregistry.go:245
+msgid ""
+"Use valid JIRA format: PROJ-123 (uppercase letters, hyphen, numbers only)"
+msgstr ""
+"Använd giltigt JIRA-format: PROJ-123 (endast versaler, bindestreck och "
+"siffror)"
+
+#: internal/adapters/output/warningformatting_messages.go:119
+msgid "Using '%s' as base branch ('%s' was not found)"
+msgstr "Använder '%s' som basgren ('%s' hittades inte)"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "VERSION"
+msgstr "VERSION"
+
+#: internal/adapters/cli/commands/config.go:297
+msgid "Valid formats: %s"
+msgstr "Giltiga format: %s"
+
+#: internal/adapters/cli/commands/validate_setup.go:186
+msgid "Valid rules: %s"
+msgstr "Giltiga regler: %s"
+
+#: internal/adapters/cli/commands/config_show.go:224
+msgid "Valid views: compact, verbose"
+msgstr "Giltiga vyer: compact, verbose"
+
+#: internal/adapters/cli/commands/errors.go:354
+msgid "Validate HEAD commit: gommitlint validate"
+msgstr "Validera HEAD-incheckning: gommitlint validate"
+
+#: internal/adapters/cli/commands/validate_execute.go:121
+#: internal/adapters/cli/commands/validate_execute.go:133
+#: internal/adapters/cli/commands/validate_execute.go:183
+msgid "Validate HEAD instead: gommitlint validate"
+msgstr "Validera HEAD i stället: gommitlint validate"
+
+#: internal/adapters/cli/commands/errors.go:357
+msgid "Validate branch: gommitlint validate --base-branch main"
+msgstr "Validera gren: gommitlint validate --base-branch main"
+
+#: internal/adapters/cli/commands/validate_execute.go:119
+msgid "Validate from a file: gommitlint validate --message-file commit-msg.txt"
+msgstr ""
+"Validera från en fil: gommitlint validate --message-file commit-msg.txt"
+
+#: internal/adapters/cli/commands/errors.go:355
+#: internal/adapters/cli/commands/errors.go:391
+msgid "Validate from file: gommitlint validate -f commit-msg.txt"
+msgstr "Validera från fil: gommitlint validate -f commit-msg.txt"
+
+#: internal/adapters/cli/commands/errors.go:356
+#: internal/adapters/cli/commands/errors.go:392
+msgid "Validate from stdin: echo \"feat: message\" | gommitlint validate -f -"
+msgstr "Validera från stdin: echo \"feat: message\" | gommitlint validate -f -"
+
+#: internal/adapters/cli/commands/validate_execute.go:120
+msgid ""
+"Validate from stdin: echo 'feat: message' | gommitlint validate --message-"
+"file -"
+msgstr ""
+"Validera från stdin: echo 'feat: meddelande' | gommitlint validate --message-"
+"file -"
+
+#: internal/adapters/cli/commands/errors.go:349
+msgid "Validate the HEAD commit instead: gommitlint validate"
+msgstr "Validera HEAD-incheckningen i stället: gommitlint validate"
+
+#: internal/adapters/output/reportview.go:68
+msgid "Validated %s"
+msgstr "Validerade %s"
+
+#: internal/adapters/cli/commands/config.go:136
+msgid ""
+"Validates the active configuration, reports config warnings,\n"
+"and checks vendored managed_sources files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config check"
+msgstr ""
+"Validerar den aktiva konfigurationen, rapporterar konfigurationsvarningar\n"
+"och kontrollerar lokalt hämtade managed_sources-filer.\n"
+"\n"
+"Exempel:\n"
+"  gommitlint config check"
+
+#: internal/adapters/output/errorformatting_messages.go:241
+msgid "Validation failed"
+msgstr "Validering misslyckades"
+
+#: internal/adapters/output/reportview.go:90
+msgid "Validation failed: %d commit has violations"
+msgid_plural "Validation failed: %d commits have violations"
+msgstr[0] "Validering misslyckades: %d incheckning har fel"
+msgstr[1] "Validering misslyckades: %d incheckningar har fel"
+
+#: internal/adapters/output/errorformatting_messages.go:31
+msgid "Validation failed: %s"
+msgstr "Validering misslyckades: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:437
+msgid "Verify format: %t"
+msgstr "Verifiera format: %t"
+
+#: internal/adapters/cli/commands/errors.go:313
+#: internal/adapters/cli/commands/errors.go:323
+msgid ""
+"View config docs: https://codefloe.com/itiquette/gommitlint#configuration"
+msgstr ""
+"Läs konfigurationsdokumentation: https://codefloe.com/itiquette/"
+"gommitlint#configuration"
+
+#: internal/adapters/cli/commands/errors.go:171
+#: internal/adapters/cli/commands/errors.go:192
+#: internal/adapters/cli/commands/errors.go:207
+msgid "View current hook: cat %s"
+msgstr "Visa nuvarande krok: cat %s"
+
+#: internal/adapters/output/gitlabformatter.go:103
+msgid "WARNING:"
+msgstr "VARNING:"
+
+#: internal/adapters/cli/commands/configwarnings.go:31
+msgid "Warning: %s"
+msgstr "Varning: %s"
+
+#: internal/adapters/cli/commands/man.go:193
+msgid ""
+"Warning: the terminal manual source (%s) is not available outside a source "
+"checkout."
+msgstr ""
+"Varning: källan till terminalmanualen (%s) är inte tillgänglig utanför en "
+"källkodsutcheckning."
+
+#: internal/adapters/cli/commands/config_check.go:291
+msgid "Warnings:"
+msgstr "Varningar:"
+
+#: internal/adapters/cli/commands/config_check.go:271
+msgid "Warnings: %d"
+msgstr "Varningar: %d"
+
+#: internal/adapters/cli/commands/doctor.go:77
+msgid ""
+"Warnings: %d\n"
+"\n"
+msgstr ""
+"Varningar: %d\n"
+"\n"
+
+#: internal/adapters/output/texthelpers.go:90
+msgid "Word"
+msgstr "Ord"
+
+#: internal/adapters/output/helpregistry.go:184
+msgid "Wrap body lines at %s characters for better readability in git log"
+msgstr "Radbryt brödtextens rader vid %s tecken för bättre läsbarhet i git log"
+
+#: internal/adapters/output/helpregistry.go:187
+msgid "Wrap long body lines for better readability in git log"
+msgstr "Radbryt långa rader i brödtexten för bättre läsbarhet i git log"
+
+#: internal/adapters/cli/commands/config.go:147
+msgid ""
+"Writes a .gommitlint.yaml template in the current directory. By default it\n"
+"contains every option with defaults commented out. With --preset, it writes "
+"a\n"
+"small config that extends an existing built-in preset. Refuses to overwrite "
+"an\n"
+"existing file unless --force is set.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config init                          # write .gommitlint.yaml "
+"in CWD\n"
+"  gommitlint config init --preset minimal         # write a small preset "
+"config\n"
+"  gommitlint config init --force                  # overwrite existing\n"
+"  gommitlint config init --output custom.yaml     # write to a specific "
+"path\n"
+"  gommitlint config init --stdout                 # print to stdout, write "
+"nothing\n"
+"  gommitlint config init -o -                     # POSIX shorthand for --"
+"stdout"
+msgstr ""
+"Skriver en .gommitlint.yaml-mall i aktuell katalog. Som standard innehåller\n"
+"den alla alternativ med standardvärden utkommenterade. Med --preset skrivs "
+"en\n"
+"liten konfiguration som utökar en inbyggd förinställning. Vägrar skriva "
+"över\n"
+"en befintlig fil om inte --force anges.\n"
+"\n"
+"Exempel:\n"
+"  gommitlint config init                          # skriv .gommitlint.yaml i "
+"aktuell katalog\n"
+"  gommitlint config init --preset minimal         # skriv en liten "
+"förinställningskonfiguration\n"
+"  gommitlint config init --force                  # skriv över befintlig\n"
+"  gommitlint config init --output custom.yaml     # skriv till en specifik "
+"sökväg\n"
+"  gommitlint config init --stdout                 # skriv till stdout, skriv "
+"ingen fil\n"
+"  gommitlint config init -o -                     # POSIX-kortform för --"
+"stdout"
+
+#: internal/adapters/output/errorformatting_messages.go:387
+msgid "Your commit message is %d characters too long"
+msgstr "Ditt incheckningsmeddelande är %d tecken för långt"
+
+#: internal/adapters/output/errorformatting_messages.go:384
+msgid "Your commit message is 1 character too long"
+msgstr "Ditt incheckningsmeddelande är 1 tecken för långt"
+
+#: internal/adapters/output/errorformatting_messages.go:369
+#: internal/adapters/output/errorformatting_messages.go:374
+#: internal/adapters/output/errorformatting_messages.go:379
+msgid "Your commit message is too long"
+msgstr "Ditt incheckningsmeddelande är för långt"
+
+#: internal/adapters/cli/commands/validate_output.go:60
+msgid "cannot create output directory"
+msgstr "det gick inte att skapa utdatakatalogen"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:312
+msgid "cannot read hook file"
+msgstr "det gick inte att läsa hook-filen"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:314
+msgid "cannot remove hook file"
+msgstr "det gick inte att ta bort hook-filen"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:310
+msgid "cannot stat hook file"
+msgstr "det gick inte att läsa metadata för hook-filen"
+
+#: internal/adapters/cli/commands/config.go:135
+msgid "check configuration health"
+msgstr "kontrollera konfigurationshälsa"
+
+#: internal/adapters/cli/commands/configdisplay.go:118
+msgid "cli"
+msgstr "kommandorad"
+
+#: internal/adapters/cli/commands/config_check.go:411
+msgid "code: %s"
+msgstr "kod: %s"
+
+#: internal/adapters/output/tableformatter.go:246
+msgid "commit"
+msgstr "incheckning"
+
+#: internal/adapters/cli/commands/translations_compile.go:35
+msgid "compile .po catalogs to binary .mo files"
+msgstr "kompilera .po-kataloger till binära .mo-filer"
+
+#: internal/adapters/cli/commands/config_init.go:200
+msgid "config file already exists: %s"
+msgstr "konfigurationsfilen finns redan: %s"
+
+#: internal/adapters/cli/commands/config_check.go:80
+msgid "configuration issues found"
+msgstr "konfigurationsproblem hittades"
+
+#: internal/adapters/cli/commands/config.go:86
+msgid "configuration operations"
+msgstr "konfigurationsåtgärder"
+
+#: internal/adapters/cli/globalflags.go:42
+msgid "control colored output: %s"
+msgstr "styr färgad utdata: %s"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:283
+msgid "could not stat hook file"
+msgstr "det gick inte att läsa metadata för hook-filen"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:274
+msgid "could not write hook file"
+msgstr "det gick inte att skriva hook-filen"
+
+#: internal/adapters/cli/commands/config.go:146
+msgid "create .gommitlint.yaml in the current directory"
+msgstr "skapa .gommitlint.yaml i aktuell katalog"
+
+#: internal/adapters/cli/commands/errors.go:183
+msgid "custom hook exists at %s - will not overwrite"
+msgstr "en anpassad hook finns på %s - skriver inte över"
+
+#: internal/adapters/cli/commands/config_show_text.go:257
+#: internal/adapters/cli/commands/configdisplay.go:108
+msgid "defaults"
+msgstr "standardvärden"
+
+#: internal/adapters/cli/commands/configdisplay.go:70
+msgid "defaults (no config file found)"
+msgstr "standardvärden (ingen konfigurationsfil hittades)"
+
+#: internal/adapters/cli/commands/config_check.go:340
+#: internal/adapters/cli/commands/config_sync.go:172
+msgid "destination: %s"
+msgstr "mål: %s"
+
+#: internal/adapters/cli/commands/validate.go:127
+msgid ""
+"disable automatic CI environment detection (also: GOMMITLINT_NO_CI_DETECT)"
+msgstr ""
+"inaktivera automatisk identifiering av CI-miljö (även: "
+"GOMMITLINT_NO_CI_DETECT)"
+
+#: internal/adapters/cli/commands/config.go:197
+msgid "emit single-line JSON instead of indented"
+msgstr "mata ut JSON på en rad i stället för indenterad"
+
+#: internal/adapters/cli/commands/validate_execute.go:117
+msgid "empty commit message"
+msgstr "tomt incheckningsmeddelande"
+
+#: cmd/gommitlint/completion_command.go:784
+msgid "exactly one shell argument is required"
+msgstr "exakt ett skalargument krävs"
+
+#: internal/adapters/cli/commands/validate.go:122
+msgid ""
+"exclude specific `RULES` from validation (comma-separated). Applied after --"
+"rule"
+msgstr ""
+"uteslut specifika `RULES` från validering (kommaseparerade). Tillämpas efter "
+"--rule"
+
+#: internal/adapters/cli/commands/errors.go:54
+msgid "existing %s hook at %s was installed by another tool"
+msgstr "befintlig %s-hook på %s installerades av ett annat verktyg"
+
+#: internal/adapters/cli/commands/config_show_text.go:267
+msgid "explicit"
+msgstr "explicit"
+
+#: internal/adapters/cli/commands/configdisplay.go:110
+msgid "extended"
+msgstr "utökad"
+
+#: internal/adapters/cli/commands/config_show_text.go:259
+msgid "extends"
+msgstr "utökning"
+
+#: internal/adapters/cli/commands/config.go:223
+msgid "fail if vendored managed sources are out of date"
+msgstr "misslyckas om lokalt hämtade managed_sources inte är uppdaterade"
+
+#: internal/adapters/cli/commands/globalhooks.go:146
+msgid "failed to check global hooks directory"
+msgstr "det gick inte att kontrollera den globala hook-katalogen"
+
+#: internal/adapters/cli/commands/config_init.go:319
+#: internal/adapters/cli/commands/config_show.go:180
+msgid "failed to close YAML encoder"
+msgstr "det gick inte att stänga YAML-kodaren"
+
+#: internal/adapters/cli/commands/validate_execute.go:254
+msgid "failed to close validation output"
+msgstr "det gick inte att stänga valideringsutdata"
+
+#: internal/adapters/cli/commands/translations_errors.go:151
+msgid "failed to compile translation catalogs: %s"
+msgstr "det gick inte att kompilera översättningskatalogerna: %s"
+
+#: internal/adapters/cli/commands/globalhooks.go:144
+msgid "failed to configure git"
+msgstr "det gick inte att konfigurera Git"
+
+#: internal/adapters/cli/commands/config_init.go:178
+#: internal/adapters/cli/commands/config_init.go:209
+msgid "failed to create config file: %s"
+msgstr "det gick inte att skapa konfigurationsfilen: %s"
+
+#: internal/adapters/cli/commands/globalhooks.go:140
+msgid "failed to create global hooks directory"
+msgstr "det gick inte att skapa den globala hook-katalogen"
+
+#: internal/adapters/cli/commands/validate_setup.go:80
+msgid "failed to create output options: %s"
+msgstr "det gick inte att skapa utdataalternativ: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:70
+msgid "failed to create report file"
+msgstr "det gick inte att skapa rapportfilen"
+
+#: internal/adapters/cli/commands/validate_execute.go:164
+msgid "failed to create repository"
+msgstr "det gick inte att skapa Git-kodförrådet"
+
+#: internal/adapters/cli/commands/config.go:307
+#: internal/adapters/cli/commands/validate.go:291
+msgid "failed to create spell checker"
+msgstr "det gick inte att skapa stavningskontrollen"
+
+#: internal/adapters/cli/commands/errors.go:376
+msgid "failed to create validation target: %s"
+msgstr "det gick inte att skapa valideringsmålet: %s"
+
+#: internal/adapters/cli/commands/config_show.go:135
+msgid "failed to encode config as JSON"
+msgstr "det gick inte att koda konfigurationen som JSON"
+
+#: internal/adapters/cli/commands/config_show.go:185
+msgid "failed to encode config as YAML"
+msgstr "det gick inte att koda konfigurationen som YAML"
+
+#: internal/adapters/cli/commands/config_check.go:205
+msgid "failed to encode config check as JSON"
+msgstr "det gick inte att koda konfigurationskontrollen som JSON"
+
+#: internal/adapters/cli/commands/config_check.go:213
+#: internal/adapters/cli/commands/config_check.go:218
+msgid "failed to encode config check as YAML"
+msgstr "det gick inte att koda konfigurationskontrollen som YAML"
+
+#: internal/adapters/cli/commands/config_init.go:315
+msgid "failed to encode config template as YAML"
+msgstr "det gick inte att koda konfigurationsmallen som YAML"
+
+#: internal/adapters/cli/commands/config_sync.go:135
+msgid "failed to fetch managed source"
+msgstr "det gick inte att hämta den hanterade källan"
+
+#: internal/adapters/cli/commands/config_init.go:219
+msgid "failed to finalize config file: %s"
+msgstr "det gick inte att slutföra konfigurationsfilen: %s"
+
+#: internal/adapters/cli/commands/config_init.go:273
+msgid "failed to generate config template"
+msgstr "det gick inte att generera konfigurationsmallen"
+
+#: internal/adapters/cli/commands/hookstatus.go:69
+msgid "failed to get hook status"
+msgstr "det gick inte att hämta hook-status"
+
+#: internal/adapters/cli/commands/errors.go:296
+#: internal/adapters/cli/commands/errors.go:327
+msgid "failed to load configuration: %s"
+msgstr "det gick inte att läsa in konfigurationen: %s"
+
+#: internal/adapters/cli/commands/config_show.go:72
+msgid "failed to print configuration"
+msgstr "det gick inte att skriva ut konfigurationen"
+
+#: internal/adapters/cli/commands/globalhooks.go:148
+msgid "failed to read global hook"
+msgstr "det gick inte att läsa den globala hooken"
+
+#: internal/adapters/cli/commands/man.go:187
+msgid "failed to read terminal manual"
+msgstr "det gick inte att läsa terminalmanualen"
+
+#: internal/adapters/cli/commands/globalhooks.go:150
+msgid "failed to remove global hook"
+msgstr "det gick inte att ta bort den globala hooken"
+
+#: internal/adapters/cli/commands/globalhooks.go:125
+msgid "failed to resolve global hooks path"
+msgstr "det gick inte att lösa sökvägen till globala hooks"
+
+#: internal/adapters/cli/commands/config_sync.go:144
+msgid "failed to sync managed sources"
+msgstr "det gick inte att synkronisera hanterade källor"
+
+#: internal/adapters/cli/commands/translations_errors.go:132
+msgid "failed to update translation catalogs: %s"
+msgstr "det gick inte att uppdatera översättningskatalogerna: %s"
+
+#: internal/adapters/cli/commands/errors.go:406
+#: internal/adapters/cli/commands/translations_errors.go:173
+msgid "failed to write command output"
+msgstr "det gick inte att skriva kommandoutdata"
+
+#: cmd/gommitlint/completion_command.go:786
+msgid "failed to write completion output"
+msgstr "det gick inte att skriva kompletteringsutdata"
+
+#: internal/adapters/cli/commands/config_check.go:281
+#: internal/adapters/cli/commands/config_check.go:292
+#: internal/adapters/cli/commands/config_check.go:297
+#: internal/adapters/cli/commands/config_check.go:305
+#: internal/adapters/cli/commands/config_check.go:362
+#: internal/adapters/cli/commands/config_check.go:431
+msgid "failed to write config check output"
+msgstr "det gick inte att skriva utdata från konfigurationskontrollen"
+
+#: internal/adapters/cli/commands/config_schema.go:37
+#: internal/adapters/cli/commands/config_schema.go:44
+msgid "failed to write config schema"
+msgstr "det gick inte att skriva konfigurationsschemat"
+
+#: internal/adapters/cli/commands/globalhooks.go:142
+msgid "failed to write global hook"
+msgstr "det gick inte att skriva global hook"
+
+#: internal/adapters/cli/commands/config_show.go:231
+msgid "failed to write header"
+msgstr "det gick inte att skriva rubriken"
+
+#: internal/adapters/cli/commands/config_init.go:185
+#: internal/adapters/cli/commands/config_init.go:297
+#: internal/adapters/cli/commands/config_init.go:325
+#: internal/adapters/cli/commands/config_show_text.go:524
+#: internal/adapters/cli/commands/config_show_text.go:528
+msgid "failed to write output"
+msgstr "det gick inte att skriva utdata"
+
+#: internal/adapters/cli/commands/config_init.go:247
+msgid "failed to write preset config template"
+msgstr "det gick inte att skriva konfigurationsmallen för förinställningen"
+
+#: internal/adapters/cli/commands/validate_execute.go:233
+msgid "failed to write report"
+msgstr "det gick inte att skriva rapporten"
+
+#: internal/adapters/cli/commands/config_sync.go:158
+#: internal/adapters/cli/commands/config_sync.go:174
+#: internal/adapters/cli/commands/config_sync.go:179
+msgid "failed to write sync output"
+msgstr "det gick inte att skriva synkroniseringsutdata"
+
+#: internal/adapters/cli/commands/config.go:219
+msgid "fetch and verify without writing files"
+msgstr "hämta och verifiera utan att skriva filer"
+
+#: cmd/gommitlint/main.go:282
+msgid "git commit linter"
+msgstr "git-incheckningslinter"
+
+#: internal/adapters/cli/commands/errors.go:220
+msgid "git config core.hooksPath already points to %s - will not take it over"
+msgstr "git config core.hooksPath pekar redan på %s - tar inte över den"
+
+#: internal/adapters/cli/commands/validate_execute.go:130
+msgid "git reference not found: %s"
+msgstr "Git-referensen hittades inte: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:263
+#: internal/adapters/cli/commands/configdisplay.go:114
+msgid "global"
+msgstr "globalt"
+
+#: internal/adapters/cli/commands/globalhooks.go:152
+msgid "global hook operation failed"
+msgstr "åtgärden för global hook misslyckades"
+
+#: internal/adapters/cli/commands/removehook.go:105
+msgid "global hook removal failed"
+msgstr "borttagningen av den globala hooken misslyckades"
+
+#: cmd/gommitlint/help_printer.go:513
+msgid ""
+"gommitlint - git commit linter\n"
+"\n"
+"%s\n"
+"  gommitlint validate [--format FORMAT] [--count N] [options]\n"
+"\n"
+"%s\n"
+"  --format FORMAT       output format: %s\n"
+"  --count N             validate last N commits\n"
+"  --base-branch BRANCH  validate from branch to HEAD\n"
+"  --log-level LEVEL     logging level: %s\n"
+"\n"
+"%s\n"
+"  # Validate current commit\n"
+"  $ gommitlint validate\n"
+"  ✓ abc1234 feat: add new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"  # Validate multiple commits\n"
+"  $ gommitlint validate --count 3\n"
+"  #1 ✓ abc1234 feat: add feature\n"
+"  #2 ✓ def5678 fix: resolve bug\n"
+"  #3 ✗ bad7890 bad commit message\n"
+"  ✗ 1 issue found\n"
+"\n"
+"  # CI/CD automation with JSON output\n"
+"  $ gommitlint validate --format json | jq '.summary.allPassed'\n"
+"  true\n"
+"\n"
+"  # Validate feature branch commits\n"
+"  $ gommitlint validate --base-branch main\n"
+"  #1 ✓ abc1234 feat: new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"%s\n"
+"  validate    validate commit messages (primary command)\n"
+"  doctor      inspect configuration, hooks, and effective policy\n"
+"  config      configuration operations  \n"
+"  hook        manage Git hooks\n"
+"  --version   print version information\n"
+"\n"
+"Docs: https://docs.itiquette.org/gommitlint/\n"
+"Issues: https://codefloe.com/itiquette/gommitlint/issues\n"
+"Manual: man gommitlint\n"
+"\n"
+"Full options: gommitlint --help\n"
+msgstr ""
+"gommitlint - git-incheckningslinter\n"
+"\n"
+"%s\n"
+"  gommitlint validate [--format FORMAT] [--count N] [options]\n"
+"\n"
+"%s\n"
+"  --format FORMAT       utdataformat: %s\n"
+"  --count N             validera de senaste N incheckningarna\n"
+"  --base-branch BRANCH  validera från gren till HEAD\n"
+"  --log-level LEVEL     loggnivå: %s\n"
+"\n"
+"%s\n"
+"  # Validera aktuell incheckning\n"
+"  $ gommitlint validate\n"
+"  ✓ abc1234 feat: add new feature\n"
+"  ✓ Alla kontroller godkända\n"
+"\n"
+"  # Validera flera incheckningar\n"
+"  $ gommitlint validate --count 3\n"
+"  #1 ✓ abc1234 feat: add feature\n"
+"  #2 ✓ def5678 fix: resolve bug\n"
+"  #3 ✗ bad7890 dåligt incheckningsmeddelande\n"
+"  ✗ 1 problem hittat\n"
+"\n"
+"  # CI/CD-automation med JSON-utdata\n"
+"  $ gommitlint validate --format json | jq '.summary.allPassed'\n"
+"  true\n"
+"\n"
+"  # Validera incheckningar i funktionsgren\n"
+"  $ gommitlint validate --base-branch main\n"
+"  #1 ✓ abc1234 feat: new feature\n"
+"  ✓ Alla kontroller godkända\n"
+"\n"
+"%s\n"
+"  validate    validera incheckningsmeddelanden (huvudkommando)\n"
+"  doctor      inspektera konfiguration, krokar och effektiv policy\n"
+"  config      konfigurationsåtgärder  \n"
+"  hook        hantera Git-krokar\n"
+"  --version   skriv ut versionsinformation\n"
+"\n"
+"Dokumentation: https://docs.itiquette.org/gommitlint/\n"
+"Problem: https://codefloe.com/itiquette/gommitlint/issues\n"
+"Manual: man gommitlint\n"
+"\n"
+"Alla flaggor: gommitlint --help\n"
+
+#: cmd/gommitlint/main.go:283
+msgid "gommitlint [OPTION...] COMMAND [args...]"
+msgstr "gommitlint [FLAGGA...] KOMMANDO [argument...]"
+
+#: internal/adapters/cli/commands/errors.go:206
+msgid "gommitlint global hook already exists at %s"
+msgstr "gommitlints globala hook finns redan på %s"
+
+#: internal/adapters/cli/commands/errors.go:170
+msgid "gommitlint hook already exists at %s"
+msgstr "gommitlints hook finns redan på %s"
+
+#: cmd/gommitlint/main.go:245
+msgid ""
+"gommitlint validates Git commit messages against configurable rules to "
+"ensure consistency and quality. It supports conventional commit format "
+"validation, subject line checks, body requirements, JIRA reference "
+"validation, spell checking, and more. The tool can validate individual "
+"commits, ranges of commits, or files containing commit messages."
+msgstr ""
+"gommitlint validerar Git-incheckningsmeddelanden mot konfigurerade regler "
+"för att säkerställa konsekvens och kvalitet. Det stöder validering av "
+"konventionellt incheckningsformat, ämnesradsregler, krav på brödtext, JIRA-"
+"referensvalidering, stavningskontroll och mer. Verktyget kan validera "
+"enskilda incheckningar, intervall av incheckningar eller filer med "
+"incheckningsmeddelanden."
+
+#: cmd/gommitlint/main.go:521
+msgid "gommitlint: child process failed with exit status %d"
+msgstr "gommitlint: underprocessen misslyckades med slutstatus %d"
+
+#: cmd/gommitlint/main.go:510
+msgid "gommitlint: operation canceled"
+msgstr "gommitlint: åtgärden avbröts"
+
+#: cmd/gommitlint/main.go:504
+msgid "gommitlint: operation timed out"
+msgstr "gommitlint: tidsgränsen för åtgärden överskreds"
+
+#: cmd/gommitlint/main.go:526
+msgid ""
+"gommitlint: unexpected internal error; use --log-level=debug for diagnostic "
+"details"
+msgstr ""
+"gommitlint: oväntat internt fel; använd --log-level=debug för diagnostisk "
+"information"
+
+#: internal/adapters/cli/commands/config_check.go:415
+msgid "hint: %s"
+msgstr "tips: %s"
+
+#: internal/adapters/cli/commands/validate.go:141
+msgid "increase output verbosity (-v or -vv)"
+msgstr "öka detaljnivån i utdata (-v eller -vv)"
+
+#: internal/adapters/cli/commands/doctor.go:31
+msgid "inspect configuration, hooks, and effective policy"
+msgstr "inspektera konfiguration, krokar och effektiv policy"
+
+#: internal/adapters/cli/commands/installhook.go:33
+msgid "install Gommitlint Git hooks"
+msgstr "installera Gommitlint-krokar för Git"
+
+#: cmd/gommitlint/completion_command.go:121
+msgid "install completions for all supported shells"
+msgstr "installera komplettering för alla stödda skal"
+
+#: internal/adapters/cli/commands/installhook.go:54
+msgid ""
+"install hooks globally to $XDG_CONFIG_HOME/git/git-hooks/ (default: "
+"~/.config/git/git-hooks/) and configure git config core.hooksPath"
+msgstr ""
+"installera krokar globalt i $XDG_CONFIG_HOME/git/git-hooks/ (standard: "
+"~/.config/git/git-hooks/) och konfigurera git config core.hooksPath"
+
+#: cmd/gommitlint/completion_command.go:115
+msgid "install shell completion script"
+msgstr "installera skalkompletteringsskript"
+
+#: internal/adapters/cli/commands/hookstatus.go:208
+msgid "installed (%s)"
+msgstr "installerad (%s)"
+
+#: internal/adapters/cli/commands/config_sync.go:81
+msgid "integrity mismatch for managed source %s"
+msgstr "integritetsfel för den hanterade källan %s"
+
+#: internal/adapters/cli/commands/config_init.go:146
+msgid "invalid --output path: %s"
+msgstr "ogiltig --output-sökväg: %s"
+
+#: internal/adapters/cli/commands/prepush.go:225
+msgid "invalid pre-push input"
+msgstr "ogiltig pre-push-indata"
+
+#: internal/adapters/cli/commands/errors.go:264
+msgid "invalid repository path: %s"
+msgstr "ogiltig sökväg till Git-kodförråd: %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:72
+msgid "invalid translation domain %q: expected one safe filename stem"
+msgstr "ogiltig översättningsdomän %q: ett säkert filnamn förväntades"
+
+#: internal/adapters/cli/globalflags.go:25
+msgid ""
+"load built-in defaults plus `FILE` and its imports; bypass discovered user "
+"and project configs; does not affect global hook operations"
+msgstr ""
+"läs in inbyggda standardvärden samt `FILE` och dess importer; kringgå "
+"upptäckta användar- och projektkonfigurationer; påverkar inte globala "
+"krokåtgärder"
+
+#: internal/adapters/cli/commands/hookstatus.go:153
+#: internal/adapters/cli/commands/hookstatus.go:162
+#: internal/adapters/cli/commands/hookstatus.go:218
+msgid "local"
+msgstr "lokal"
+
+#: internal/adapters/cli/commands/translations_update.go:48
+msgid "locale source directory (default: ./locale)"
+msgstr "källkatalog för locale (standard: ./locale)"
+
+#: internal/adapters/cli/commands/hook.go:26
+msgid "manage Gommitlint Git hooks"
+msgstr "hantera Gommitlint-krokar för Git"
+
+#: internal/adapters/cli/commands/translations.go:23
+msgid "manage translation catalogs (developer tool)"
+msgstr "hantera översättningskataloger (utvecklarverktyg)"
+
+#: internal/adapters/cli/commands/config_check.go:175
+msgid "managed source %s has invalid vendored file %s"
+msgstr "hanterad källa %s har ogiltig lokalt hämtad fil %s"
+
+#: internal/adapters/cli/commands/config_check.go:168
+msgid "managed source %s is missing vendored file %s"
+msgstr "hanterad källa %s saknar lokalt hämtad fil %s"
+
+#: internal/adapters/cli/commands/config_check.go:184
+msgid "managed source %s vendored file does not match integrity.sha256"
+msgstr "hanterad källa %s: lokalt hämtad fil matchar inte integrity.sha256"
+
+#: internal/adapters/cli/commands/config_sync.go:131
+msgid "managed source URL is invalid"
+msgstr "den hanterade källans URL är ogiltig"
+
+#: internal/adapters/cli/commands/config_sync.go:101
+msgid "managed source URL is invalid for %s"
+msgstr "den hanterade källans URL är ogiltig för %s"
+
+#: internal/adapters/cli/commands/config_sync.go:133
+msgid "managed source destination is invalid"
+msgstr "den hanterade källans mål är ogiltigt"
+
+#: internal/adapters/cli/commands/config_sync.go:130
+msgid "managed source environment variable is not set"
+msgstr "den hanterade källans miljövariabel är inte angiven"
+
+#: internal/adapters/cli/commands/config_sync.go:88
+msgid "managed source environment variable is not set for %s (%s)"
+msgstr "den hanterade källans miljövariabel är inte angiven för %s (%s)"
+
+#: internal/adapters/cli/commands/config_sync.go:129
+msgid "managed source integrity check failed"
+msgstr "integritetskontrollen av den hanterade källan misslyckades"
+
+#: internal/adapters/cli/commands/config_sync.go:132
+msgid "managed source is out of date"
+msgstr "den hanterade källan är inaktuell"
+
+#: internal/adapters/cli/commands/config_sync.go:128
+msgid "managed source not found"
+msgstr "den hanterade källan hittades inte"
+
+#: internal/adapters/cli/commands/config_sync.go:134
+msgid "managed source redirect changed host"
+msgstr "den hanterade källans omdirigering bytte värd"
+
+#: cmd/gommitlint/completion_command.go:780
+msgid "missing shell for completion command"
+msgstr "ett skal måste anges för kompletteringskommandot"
+
+#: internal/adapters/cli/commands/config_check.go:344
+msgid "next step: %s"
+msgstr "nästa steg: %s"
+
+#: internal/adapters/cli/commands/doctor.go:133
+msgid "no"
+msgstr "nej"
+
+#: cmd/gommitlint/completion_command.go:782
+msgid "no extra arguments allowed with --all"
+msgstr "inga extra argument tillåts med --all"
+
+#: internal/adapters/cli/commands/translations_errors.go:162
+msgid "no regular %s.po translation catalogs found under %s"
+msgstr "inga vanliga %s.po-översättningskataloger hittades under %s"
+
+#: internal/adapters/cli/commands/config_sync.go:60
+msgid "no writable config file found for sync"
+msgstr "ingen skrivbar konfigurationsfil hittades för synkronisering"
+
+#: internal/adapters/cli/commands/config_check.go:400
+msgid "none"
+msgstr "ingen"
+
+#: internal/adapters/cli/commands/hookstatus.go:204
+msgid "not executable (%s)"
+msgstr "inte körbar (%s)"
+
+#: internal/adapters/cli/commands/doctor.go:113
+msgid "not installed"
+msgstr "inte installerad"
+
+#: internal/adapters/cli/commands/validate.go:88
+msgid "only run commit message rules, ignore all repository rules"
+msgstr ""
+"kör endast regler för incheckningsmeddelanden, ignorera alla kodförrådsregler"
+
+#: internal/adapters/cli/globalflags.go:36
+msgid ""
+"operate on git repository at `PATH` (default: current directory); does not "
+"affect global hook operations"
+msgstr ""
+"arbeta med Git-kodförrådet vid `PATH` (standard: aktuell katalog); påverkar "
+"inte globala krokåtgärder"
+
+#: internal/adapters/cli/commands/config.go:249
+msgid "output `FORMAT`: %s"
+msgstr "utdata `FORMAT`: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:34
+msgid "output `FORMAT`: %s (table best for ≤30 commits)"
+msgstr "utdata-`FORMAT`: %s (table passar bäst för ≤30 incheckningar)"
+
+#: internal/adapters/cli/commands/translations_compile.go:50
+msgid ""
+"output directory for compiled .mo catalogs (default: ./generated/locale)"
+msgstr ""
+"utdatakatalog för kompilerade .mo-kataloger (standard: ./generated/locale)"
+
+#: internal/adapters/cli/commands/config.go:176
+msgid "overwrite the target file if it already exists"
+msgstr "skriv över målfilen om den redan finns"
+
+#: internal/adapters/cli/commands/config.go:227
+msgid "per-source download `TIMEOUT`"
+msgstr "nedladdningsgräns `TIMEOUT` per källa"
+
+#: internal/adapters/cli/globalflags.go:65
+msgid ""
+"permit kernel coredumps on crash (default: suppressed for residue "
+"minimization)"
+msgstr ""
+"tillåt kärnminnesdumpar vid krasch (standard: undertryckta för att minimera "
+"rester)"
+
+#: internal/adapters/cli/commands/prepush.go:240
+msgid "pre-push commit selection failed"
+msgstr "val av pre-push-incheckningar misslyckades"
+
+#: internal/adapters/cli/commands/config_show_text.go:261
+#: internal/adapters/cli/commands/configdisplay.go:112
+msgid "preset"
+msgstr "förinställning"
+
+#: internal/adapters/cli/commands/removehook.go:52
+msgid "preview repository-local hook removal without changing files"
+msgstr ""
+"förhandsvisa borttagning av kodförrådslokala krokar utan att ändra filer"
+
+#: internal/adapters/cli/commands/config.go:172
+msgid "print template to stdout instead of writing a file"
+msgstr "skriv mallen till stdout i stället för att skriva en fil"
+
+#: internal/adapters/cli/commands/config.go:183
+msgid "print the JSON Schema for the config file"
+msgstr "skriv ut JSON-schemat för konfigurationsfilen"
+
+#: internal/adapters/cli/commands/config_check.go:410
+msgid "problem: %s"
+msgstr "problem: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:265
+#: internal/adapters/cli/commands/configdisplay.go:116
+msgid "project"
+msgstr "projekt"
+
+#: internal/adapters/cli/commands/validate.go:83
+msgid "read commit message from `FILE` (use - for stdin)"
+msgstr "läs incheckningsmeddelande från `FILE` (använd - för stdin)"
+
+#: internal/adapters/cli/commands/translations_update.go:32
+msgid "refresh .po catalogs from source"
+msgstr "uppdatera .po-kataloger från källkoden"
+
+#: internal/adapters/cli/commands/config_init.go:158
+msgid "refusing to write config file inside .git/: %s"
+msgstr "vägrar skriva konfigurationsfilen inuti .git/: %s"
+
+#: internal/adapters/cli/commands/removehook.go:35
+msgid "remove Gommitlint Git hooks"
+msgstr "ta bort Gommitlint-krokar för Git"
+
+#: internal/adapters/cli/commands/removehook.go:48
+msgid ""
+"remove global hooks from $XDG_CONFIG_HOME/git/git-hooks/ (default: ~/.config/"
+"git/git-hooks/) and restore, unset, or preserve git config core.hooksPath as "
+"appropriate"
+msgstr ""
+"ta bort globala krokar från $XDG_CONFIG_HOME/git/git-hooks/ (standard: "
+"~/.config/git/git-hooks/) och återställ, avaktivera eller bevara git config "
+"core.hooksPath efter behov"
+
+#: internal/adapters/cli/commands/installhook.go:50
+msgid "replace existing Gommitlint hooks or another global core.hooksPath"
+msgstr ""
+"ersätt befintliga Gommitlint-krokar eller en annan global core.hooksPath"
+
+#: internal/adapters/output/tableformatter.go:248
+msgid "repo"
+msgstr "kodförråd"
+
+#: internal/adapters/output/tableformatter.go:253
+msgid "repository"
+msgstr "kodförråd"
+
+#: internal/adapters/cli/commands/translations_errors.go:91
+msgid "required translation tool %q was not found"
+msgstr "det nödvändiga översättningsverktyget %q hittades inte"
+
+#: internal/adapters/cli/commands/rulehelp.go:243
+msgid "rulehelp.branchahead"
+msgstr ""
+"REGEL FÖR BRANCH AHEAD\n"
+"\n"
+"Kontrollerar att nuvarande gren inte är för långt före basgrenen.\n"
+"\n"
+"SYFTE:\n"
+"  • Hjälper till att hålla funktionsgrenar små\n"
+"  • Förhindrar föråldrade sammanslagningsbegäranden\n"
+"  • Bevarar en ren git-historik\n"
+"\n"
+"ANTECKNINGAR:\n"
+"  • Körs endast när --base-branch anges\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Funktionsgren före main\n"
+"  ✗ Funktionsgren bakom main-grenen\n"
+"  ✗ Inga incheckningar före målet"
+
+#: internal/adapters/cli/commands/rulehelp.go:218
+msgid "rulehelp.commitbody"
+msgstr ""
+"REGEL FÖR BRÖDTEXT\n"
+"\n"
+"Kontrollerar format, längd och innehållskrav för brödtexten.\n"
+"\n"
+"KRAV:\n"
+"  • Brödtext krävs när aktiverat\n"
+"  • Minimilängd för brödtext\n"
+"  • Radlängdsgränser\n"
+"  • Korrekt formatering\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Korrekt formaterad brödtext med detaljer\n"
+"  ✗ Brödtextsrad som överskrider teckenbegränsning\n"
+"  ✗ Saknad obligatorisk brödtext när konfigurerad"
+
+#: internal/adapters/cli/commands/rulehelp.go:41
+msgid "rulehelp.conventional"
+msgstr ""
+"REGEL FÖR KONVENTIONELLA INCHECKNINGAR\n"
+"\n"
+"Kontrollerar att incheckningsmeddelanden följer Conventional Commits-"
+"formatet: %s\n"
+"\n"
+"FORMAT:\n"
+"  %s\n"
+"  \n"
+"GILTIGA TYPER:\n"
+"  %s\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ feat: lägg till användarautentisering\n"
+"  ✓ fix(api): åtgärda inloggnings-timeout\n"
+"  ✓ docs: uppdatera README:s installationssteg\n"
+"  ✗ Lägg till användarautentisering (saknar typ-prefix)\n"
+"  ✗ feat add auth (saknar kolon)"
+
+#: internal/adapters/cli/commands/rulehelp.go:160
+msgid "rulehelp.cryptosignature"
+msgstr ""
+"REGEL FÖR KRYPTOGRAFISKA SIGNATURER\n"
+"\n"
+"Kontrollerar kryptografiska incheckningssignaturer (GPG/SSH) för närvaro, "
+"format och policy.\n"
+"\n"
+"VALIDERING:\n"
+"  • Signatur finns (när required: true)\n"
+"  • Signaturformat (när verify_format: true)\n"
+"  • Tvingar signaturtyp (require_gpg/require_ssh)\n"
+"  • Betrodda nycklar i key_directory\n"
+"  • Krav på nyckelstyrka (min_rsa_bits/min_ec_bits)\n"
+"  • Nyckelutgång och återkallning (endast GPG)\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Incheckning med giltig GPG-signatur\n"
+"  ✓ Incheckning med giltig SSH-signatur\n"
+"  ✗ Osignerad incheckning (när required: true)\n"
+"  ✗ Ofullständig signatur (när verify_format: true)\n"
+"  ✗ SSH-signatur när require_gpg: true"
+
+#: internal/adapters/cli/commands/rulehelp.go:201
+msgid "rulehelp.identity"
+msgstr ""
+"IDENTITETSREGEL\n"
+"\n"
+"Kontrollerar incheckningsförfattarens identitet mot konfigurerade tillåtna "
+"författare.\n"
+"\n"
+"VALIDERING:\n"
+"  • Matchar tillåtna författarmönster\n"
+"  • Stöder domän-jokertecken (t.ex. \"*@company.com\")\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ John Doe <john.doe@company.com>\n"
+"  ✓ Jane Doe <jane@company.com>\n"
+"  ✗ John Doe <john@personal.com>"
+
+#: internal/adapters/cli/commands/rulehelp.go:96
+msgid "rulehelp.jirareference"
+msgstr ""
+"JIRA-REFERENSREGEL\n"
+"\n"
+"Kontrollerar att incheckningar innehåller giltiga JIRA-referenser i ämnesrad "
+"eller brödtext.\n"
+"\n"
+"GILTIGA PLATSER:\n"
+"  • Ämnesrad: feat(PROJ-123): beskrivning\n"
+"  • Ämnesradsslut: feat: beskrivning PROJ-123\n"
+"  • Brödtext: \"Refs: PROJ-123\"\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ feat(TEAM-456): lägg till inloggningsfunktion\n"
+"  ✓ fix: åtgärda timeout PROJ-123\n"
+"  ✓ Brödtext med \"Refs: PROJ-123, TEAM-456\"\n"
+"  ✗ feat: lägg till inloggning (ingen JIRA-referens)\n"
+"  ✗ feat: lägg till TEAM-abc (ogiltigt format)"
+
+#: internal/adapters/cli/commands/rulehelp.go:264
+msgid "rulehelp.linearhistory"
+msgstr ""
+"REGEL FÖR LINJÄR HISTORIK\n"
+"\n"
+"Tvingar ett ombaseringsflöde genom att avvisa sammanslagningsincheckningar i "
+"incheckningsintervallet.\n"
+"\n"
+"SYFTE:\n"
+"  • Bevarar en ren, linjär git-historik\n"
+"  • Förhindrar sammanslagningsincheckningar i funktionsgrenar\n"
+"  • Uppmuntrar ombaseringsflöde i stället för sammanslagningsflöde\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Vanliga incheckningar (inga sammanslagningar)\n"
+"  ✓ Incheckningar efter ombasering mot main\n"
+"  ✗ \"Merge branch 'main' into feature\"\n"
+"  ✗ \"Merge pull request #123 from user/branch\"\n"
+"\n"
+"LÖSNING:\n"
+"  Använd 'git rebase <target-branch>' i stället för 'git merge <target-"
+"branch>'\n"
+"  för att uppdatera din funktionsgren med uppströmsändringar.\n"
+"  Alternativt, använd 'git merge --ff-only <target-branch>' för fast-forward-"
+"sammanslagningar.\n"
+"\n"
+"  Grundläggande ombasering:\n"
+"    git fetch origin\n"
+"    git rebase origin/main\n"
+"\n"
+"  VIKTIGT: Ombasering återskapar incheckningar, vilket tar bort GPG-"
+"signaturer och\n"
+"  Signed-off-by-trailers. Om du använder signerade incheckningar eller "
+"signoffs:\n"
+"\n"
+"    git rebase origin/main --gpg-sign          # Signera igen med GPG\n"
+"    git rebase origin/main --signoff           # Lägg till Signed-off-by "
+"igen\n"
+"    git rebase origin/main --gpg-sign --signoff  # Båda\n"
+"\n"
+"  TIPS: Konfigurera git att alltid signera vid ombasering:\n"
+"    git config commit.gpgsign true"
+
+#: internal/adapters/cli/commands/rulehelp.go:121
+msgid "rulehelp.signoff"
+msgstr ""
+"SIGN-OFF-REGEL\n"
+"\n"
+"Kontrollerar att Developer Certificate of Origin (DCO) följs med korrekt "
+"sign-off-format.\n"
+"\n"
+"KRÄVT FORMAT:\n"
+"  Signed-off-by: Your Real Name <your.email@domain.com>\n"
+"\n"
+"PLACERING:\n"
+"  • Måste vara i slutet av brödtexten\n"
+"  • Före automatiska signaturer\n"
+"  • Flera sign-offs tillåtna vid medförfattarskap\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Signed-off-by: John Doe <john@example.com>\n"
+"  ✗ Signed-off-by: John <john@example.com> (saknar fullständigt namn)\n"
+"  ✗ Signed-off-by:John Doe<john@example.com> (saknar mellanslag)"
+
+#: internal/adapters/cli/commands/rulehelp.go:142
+msgid "rulehelp.spell"
+msgstr ""
+"STAVNINGSKONTROLL-REGEL\n"
+"\n"
+"Kontrollerar incheckningsmeddelandet för stavfel med misspell-biblioteket.\n"
+"\n"
+"OMFATTNING:\n"
+"  • Ämnesradens text\n"
+"  • Brödtext (exklusive tekniska termer)\n"
+"  • Ignorerar URL:er, kodsnuttar och tekniska identifierare\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Åtgärda timeout i autentisering\n"
+"  ✗ Ämnesrad med stavfel som \"the\" eller \"hte\"\n"
+"  ✗ Brödtext med stavfel ger varningar"
+
+#: internal/adapters/cli/commands/rulehelp.go:70
+msgid "rulehelp.subject"
+msgstr ""
+"REGEL FÖR ÄMNESRAD\n"
+"\n"
+"Kontrollerar format, längd och innehållskrav för incheckningens ämnesrad.\n"
+"\n"
+"KRAV:\n"
+"  • Längd inom konfigurerat max\n"
+"  • Inga avslutande skiljetecken\n"
+"  • Imperativ form när aktiverat\n"
+"  • Versal-/gemena-regler enligt konfiguration\n"
+"\n"
+"EXEMPEL:\n"
+"  ✓ Lägg till system för användarautentisering\n"
+"  ✓ Åtgärda minnesläcka i parser\n"
+"  ✗ Lade till användarautentisering (dåtid)\n"
+"  ✗ Åtgärda minnesläcka. (avslutande skiljetecken)\n"
+"  ✗ fix (för kort, ej versal)"
+
+#: internal/adapters/output/warningformatting_messages.go:83
+msgid ""
+"rules listed in both enabled and disabled (disabled wins): %s — remove the "
+"conflict from your config"
+msgstr ""
+"regler som är listade i både enabled och disabled (disabled vinner): %s — ta "
+"bort konflikten från konfigurationen"
+
+#: internal/adapters/output/warningformatting_messages.go:80
+msgid ""
+"rules.enabled and rules.disabled share entries; disabled takes precedence"
+msgstr "rules.enabled och rules.disabled delar poster; disabled har företräde"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:259
+#: internal/adapters/cli/commands/hook_lifecycle.go:303
+msgid "security check failed"
+msgstr "säkerhetskontrollen misslyckades"
+
+#: internal/adapters/cli/globalflags.go:60
+msgid "set logging `LEVEL`: %s"
+msgstr "ställ in loggningsnivå `LEVEL`: %s"
+
+#: internal/adapters/cli/globalflags.go:48
+msgid "set output theme: %s"
+msgstr "ställ in utdata-tema: %s"
+
+#: cmd/gommitlint/completion_command.go:793
+msgid "shell completion failed: %s"
+msgstr "skalkomplettering misslyckades: %s"
+
+#: internal/adapters/cli/commands/hookstatus.go:24
+msgid "show current Gommitlint Git hook status"
+msgstr "visa aktuell status för Gommitlint-krokar i Git"
+
+#: internal/adapters/cli/commands/validate.go:146
+msgid "show detailed help for specific `RULE` and exit"
+msgstr "visa detaljerad hjälp för specifik `RULE` och avsluta"
+
+#: internal/adapters/cli/commands/hookstatus.go:41
+msgid "show detailed information (timestamps and file size)"
+msgstr "visa detaljerad information (tidsstämplar och filstorlek)"
+
+#: internal/adapters/cli/commands/config.go:117
+msgid "show effective configuration"
+msgstr "visa effektiv konfiguration"
+
+#: cmd/gommitlint/help_printer.go:472
+msgid "show help"
+msgstr "visa hjälp"
+
+#: internal/adapters/cli/commands/man.go:43
+msgid "show the terminal manual"
+msgstr "visa terminalmanualen"
+
+#: internal/adapters/cli/commands/translations_compile.go:46
+msgid "source directory holding locale/<lang>/<domain>.po (default: ./locale)"
+msgstr "källkatalog med locale/<språk>/<domän>.po (standard: ./locale)"
+
+#: internal/adapters/cli/commands/config_check.go:336
+#: internal/adapters/cli/commands/config_sync.go:171
+msgid "status: %s"
+msgstr "status: %s"
+
+#: internal/adapters/output/tableformatter.go:145
+msgid "stdin"
+msgstr "stdin"
+
+#: internal/adapters/cli/globalflags.go:54
+msgid "suppress all output except errors"
+msgstr "undertryck all utdata förutom fel"
+
+#: internal/adapters/cli/commands/config.go:204
+msgid "sync managed configuration sources"
+msgstr "synkronisera managed_sources-konfiguration"
+
+#: internal/adapters/cli/commands/config.go:215
+msgid "sync only managed source with `ID`"
+msgstr "synkronisera bara managed source med `ID`"
+
+#: internal/adapters/cli/commands/config.go:254
+msgid "text output `VIEW`: compact, verbose"
+msgstr "textutdata `VIEW`: compact, verbose"
+
+#: internal/adapters/cli/commands/doctor.go:92
+#: internal/adapters/cli/commands/errors.go:244
+msgid ""
+"this repository's hooks run from %s (core.hooksPath), so a hook in .git/"
+"hooks would never run"
+msgstr ""
+"det här Git-kodförrådets hookar körs från %s (core.hooksPath), så en hook "
+"i .git/hooks skulle aldrig köras"
+
+#: internal/adapters/cli/commands/errors.go:236
+msgid "this repository's hooks run from gommitlint's global hooks directory %s"
+msgstr ""
+"det här Git-kodförrådets hookar körs från gommitlints globala hook-katalog %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:113
+msgid "translation locale directory is unavailable: %s"
+msgstr "översättningens språkkatalog är inte tillgänglig: %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:102
+msgid "translation source directory is unavailable: %s"
+msgstr "översättningens källkatalog är inte tillgänglig: %s"
+
+#: internal/adapters/cli/commands/command_helpers.go:27
+msgid "unexpected argument: %s"
+msgstr "oväntat argument: %s"
+
+#: internal/adapters/cli/commands/config_init.go:95
+msgid "unknown preset: %s"
+msgstr "okänd förinställning: %s"
+
+#: internal/adapters/cli/outputoptions.go:70
+msgid "unknown rule %q. Valid rules: %s"
+msgstr "okänd regel %q. Giltiga regler: %s"
+
+#: cmd/gommitlint/completion_command.go:789
+msgid "unknown shell %s"
+msgstr "okänt skal %s"
+
+#: internal/adapters/cli/commands/hookstatus.go:206
+msgid "unknown source (%s)"
+msgstr "okänd källa (%s)"
+
+#: internal/adapters/cli/commands/config.go:296
+msgid "unsupported format '%s'"
+msgstr "formatet '%s' stöds inte"
+
+#: internal/adapters/cli/commands/config_show.go:223
+msgid "unsupported view '%s'"
+msgstr "vyn '%s' stöds inte"
+
+#: internal/adapters/cli/globalflags.go:30
+msgid ""
+"use built-in defaults and ignore all configuration files; does not affect "
+"global hook operations"
+msgstr ""
+"använd inbyggda standardvärden och ignorera alla konfigurationsfiler; "
+"påverkar inte globala krokåtgärder"
+
+#: internal/adapters/cli/commands/validate.go:94
+msgid ""
+"validate all commits from `BRANCH` to HEAD (comma-separated list for "
+"fallback, e.g., main,master,develop)"
+msgstr ""
+"validera alla incheckningar från `BRANCH` till HEAD (kommaseparerad lista "
+"som reserv, t.ex. main,master,develop)"
+
+#: internal/adapters/cli/commands/validate.go:41
+msgid "validate commit messages against configured rules"
+msgstr "validera incheckningsmeddelanden mot konfigurerade regler"
+
+#: internal/adapters/cli/commands/validate.go:99
+msgid "validate commits in git `RANGE` (e.g., main..feature)"
+msgstr "validera incheckningar i git-`RANGE` (t.ex. main..feature)"
+
+#: internal/adapters/cli/commands/validate.go:112
+msgid "validate last N commits from HEAD"
+msgstr "validera senaste N incheckningar från HEAD"
+
+#: internal/adapters/cli/commands/validate.go:117
+msgid ""
+"validate only specific `RULES` (comma-separated, e.g., "
+"conventional,signoff). Default: enabled-by-config set"
+msgstr ""
+"validera endast specifika `RULES` (kommaseparerade, t.ex. "
+"conventional,signoff). Standard: de som är aktiverade i konfigurationen"
+
+#: internal/adapters/cli/commands/validate.go:42
+msgid ""
+"validate searches for commit messages that match or violate the configured\n"
+"rule and prints each violation found. By default, validate examines the "
+"HEAD\n"
+"commit in the current repository.\n"
+"\n"
+"A FILE of \"-\" stands for standard input. If no validation target is "
+"specified,\n"
+"validate examines the HEAD commit. If --base-branch is given, validate "
+"examines\n"
+"all commits from the base branch to HEAD.\n"
+"\n"
+"The exit status is 0 if no violations are found, 1 if violations are found,\n"
+"and 2 for fatal errors.\n"
+"\n"
+"Examples:\n"
+"  # Validate the HEAD commit\n"
+"  gommitlint validate\n"
+"\n"
+"  # Validate the last 3 commits\n"
+"  gommitlint validate --count 3\n"
+"\n"
+"  # Validate every commit between main and HEAD\n"
+"  gommitlint validate --base-branch main\n"
+"\n"
+"  # Validate a range (git range syntax)\n"
+"  gommitlint validate --range main..feature\n"
+"\n"
+"  # Validate a message from a file (commit-msg hook)\n"
+"  gommitlint validate --message-file .git/COMMIT_EDITMSG\n"
+"\n"
+"  # Validate a message from stdin\n"
+"  echo \"feat: add feature\" | gommitlint validate --message-file -\n"
+"\n"
+"  # Only run a subset of rules\n"
+"  gommitlint validate --rule conventional,signoff\n"
+"\n"
+"  # Emit machine-readable JSON for a CI pipeline\n"
+"  gommitlint validate --format json"
+msgstr ""
+"validate söker efter incheckningsmeddelanden som bryter mot de "
+"konfigurerade\n"
+"reglerna och skriver ut varje överträdelse. Som standard granskar validate\n"
+"HEAD-incheckningen i det aktuella kodförrådet.\n"
+"\n"
+"En FIL med värdet \"-\" står för standardinmatning. Om inget valideringsmål\n"
+"anges granskas HEAD-incheckningen. Om --base-branch anges granskas alla\n"
+"incheckningar från basgrenen till HEAD.\n"
+"\n"
+"Slutstatus är 0 om inga överträdelser hittas, 1 om överträdelser hittas\n"
+"och 2 vid allvarliga fel.\n"
+"\n"
+"Exempel:\n"
+"  # Validera HEAD-incheckningen\n"
+"  gommitlint validate\n"
+"\n"
+"  # Validera de senaste 3 incheckningarna\n"
+"  gommitlint validate --count 3\n"
+"\n"
+"  # Validera varje incheckning mellan main och HEAD\n"
+"  gommitlint validate --base-branch main\n"
+"\n"
+"  # Validera ett intervall (gits intervallsyntax)\n"
+"  gommitlint validate --range main..feature\n"
+"\n"
+"  # Validera ett meddelande från en fil (commit-msg-hook)\n"
+"  gommitlint validate --message-file .git/COMMIT_EDITMSG\n"
+"\n"
+"  # Validera ett meddelande från stdin\n"
+"  echo \"feat: add feature\" | gommitlint validate --message-file -\n"
+"\n"
+"  # Kör endast en delmängd av reglerna\n"
+"  gommitlint validate --rule conventional,signoff\n"
+"\n"
+"  # Mata ut maskinläsbar JSON för en CI-pipeline\n"
+"  gommitlint validate --format json"
+
+#: internal/adapters/cli/commands/validate.go:105
+msgid "validate specific git `REF` (default: HEAD)"
+msgstr "validera specifik git-`REF` (standard: HEAD)"
+
+#: internal/adapters/cli/commands/validate_execute.go:140
+msgid "validation cancelled: %s"
+msgstr "valideringen avbröts: %s"
+
+#: cmd/gommitlint/main.go:570 internal/adapters/cli/commands/validate.go:174
+msgid "validation failed"
+msgstr "validering misslyckades"
+
+#: internal/adapters/cli/commands/validate_execute.go:193
+#: internal/adapters/cli/commands/validate_execute.go:202
+msgid "validation failed: %s"
+msgstr "valideringen misslyckades: %s"
+
+#: internal/adapters/cli/commands/validate.go:168
+msgid "validation failed: commit and repository violations found"
+msgstr ""
+"validering misslyckades: incheckings- och kodförrådsöverträdelser "
+"hittadesvalidering misslyckades: inchecknings- och kodförrådsöverträdelser "
+"hittades"
+
+#: internal/adapters/cli/commands/validate.go:170
+msgid "validation failed: one or more commits have violations"
+msgstr ""
+"validering misslyckades: en eller flera incheckningar har överträdelser"
+
+#: internal/adapters/cli/commands/validate.go:172
+msgid "validation failed: repository violations found"
+msgstr "validering misslyckades: kodförrådsöverträdelser hittades"
+
+#: internal/adapters/cli/commands/errors.go:388
+msgid "validation target %q requires a git repository"
+msgstr "valideringsmålet %q kräver ett Git-kodförråd"
+
+#: internal/adapters/cli/commands/validate_execute.go:148
+msgid "validation timed out: %s"
+msgstr "tidsgränsen för valideringen överskreds: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:108
+msgid "verbose flag may be specified at most twice"
+msgstr "verbose-flaggan får anges högst två gånger"
+
+#: internal/adapters/cli/commands/config.go:168
+msgid "write a small config extending built-in `PRESET`"
+msgstr "skriv en liten konfiguration som utökar inbyggd `PRESET`"
+
+#: internal/adapters/cli/commands/config.go:164
+msgid "write template to `PATH` (use - for stdout)"
+msgstr "skriv mallen till `PATH` (använd - för stdout)"
+
+#: cmd/gommitlint/completion_command.go:125
+msgid "write the completion script to stdout instead of installing it"
+msgstr ""
+"skriv kompletteringsskriptet till stdout i stället för att installera det"
+
+#: internal/adapters/cli/commands/validate.go:151
+msgid "write validation results to `FILE` (use - for stdout)"
+msgstr "skriv valideringsresultat till `FILE` (använd - för stdout)"
+
+#: internal/adapters/cli/commands/doctor.go:130
+msgid "yes"
+msgstr "ja"
+
+#: internal/adapters/output/summaryformatter.go:129
+msgid "| Commit | Subject | Status |"
+msgstr "| Incheckning | Ämnesrad | Status |"
+
+#: internal/adapters/output/summaryformatter.go:130
+msgid "|--------|---------|--------|"
+msgstr "|--------|---------|--------|"
+
+#: internal/adapters/output/textformatter.go:713
+msgid "… and %d more"
+msgid_plural "… and %d more"
+msgstr[0] "… och %d till"
+msgstr[1] "… och %d till"
+
+#: internal/adapters/cli/commands/removehook.go:454
+msgid "ℹ Custom dispatcher kept"
+msgstr "ℹ Anpassad förmedlare behölls"
+
+#: internal/adapters/cli/commands/removehook.go:446
+msgid "ℹ Dispatcher kept: other tools still plug into it"
+msgstr "ℹ Dispatchern behålls: andra verktyg kopplar fortfarande in sig i den"
+
+#: internal/adapters/cli/commands/removehook.go:440
+msgid "ℹ Not a gommitlint hook"
+msgstr "ℹ Inte en gommitlint-krok"
+
+#: internal/adapters/cli/commands/config_show_text.go:175
+msgid "← active"
+msgstr "← aktiv"
+
+#: internal/adapters/cli/commands/removehook.go:442
+#: internal/adapters/cli/commands/removehook.go:520
+#: internal/adapters/cli/commands/removehook.go:524
+msgid "⚠ Hook not found"
+msgstr "⚠ Hittade inte kroken"
+
+#: internal/adapters/cli/commands/installhook.go:233
+msgid "⚠ Replaced previous value %s (restored by 'hook remove --global')"
+msgstr "⚠ Ersatte föregående värde %s (återställs av 'hook remove --global')"
+
+#: internal/adapters/output/summaryformatter.go:137
+msgid "✅ Passed"
+msgstr "✅ Godkänd"
+
+#: internal/adapters/output/githubformatter.go:111
+msgid "✓ %s\n"
+msgstr "✓ %s\n"
+
+#: internal/adapters/output/tableformatter.go:193
+msgid "✓ ALL CHECKS PASSED SUCCESSFULLY"
+msgstr "✓ ALLA KONTROLLER GODKÄNDA"
+
+#: internal/adapters/cli/commands/prepush.go:190
+#: internal/adapters/output/textformatter.go:184
+msgid "✓ All checks passed"
+msgstr "✓ Alla kontroller godkända"
+
+#: internal/adapters/output/textformatter.go:197
+msgid "✓ All checks passed — %s, %s, %s"
+msgstr "✓ Alla kontroller godkända — %s, %s, %s"
+
+#: internal/adapters/output/gitlabformatter.go:146
+msgid "✓ All commit validation rules passed"
+msgstr "✓ Alla regler för incheckningsvalidering godkända"
+
+#: internal/adapters/output/githubformatter.go:142
+msgid "✓ All rules passed\n"
+msgstr "✓ Alla regler godkända\n"
+
+#: internal/adapters/cli/commands/installhook.go:278
+msgid "✓ Git hooks installed successfully!"
+msgstr "✓ Git-krokar installerade"
+
+#: internal/adapters/cli/commands/removehook.go:544
+msgid "✓ Git hooks removed successfully!"
+msgstr "✓ Git-krokar borttagna"
+
+#: internal/adapters/cli/commands/installhook.go:225
+msgid "✓ Global git hooks installed successfully!"
+msgstr "✓ Globala git-krokar installerade"
+
+#: internal/adapters/cli/commands/removehook.go:418
+msgid "✓ Global git hooks removed successfully!"
+msgstr "✓ Globala git-krokar borttagna"
+
+#: internal/adapters/cli/commands/removehook.go:438
+msgid "✓ Removed"
+msgstr "✓ Borttagen"
+
+#: internal/adapters/cli/commands/removehook.go:522
+msgid "✓ Removed: %s"
+msgstr "✓ Borttagen: %s"
+
+#: internal/adapters/output/tableformatter.go:101
+msgid "✓ VALIDATION PASSED"
+msgstr "✓ VALIDERING GODKÄND"
+
+#: internal/adapters/output/githubformatter.go:144
+msgid "✗ %d rule failed\n"
+msgid_plural "✗ %d rules failed\n"
+msgstr[0] "✗ %d regel misslyckades\n"
+msgstr[1] "✗ %d regler misslyckades\n"
+
+#: internal/adapters/output/textformatter.go:224
+msgid "✗ %s found"
+msgstr "✗ %s hittades"
+
+#: internal/adapters/output/textformatter.go:69
+msgid "✗ %s found (checked %s"
+msgstr "✗ %s hittades (kontrollerade %s"
+
+#: internal/adapters/cli/commands/removehook.go:402
+msgid "✗ Global hook removal stopped before all operations completed"
+msgstr ""
+"✗ Borttagningen av globala krokar stoppades innan alla åtgärder slutfördes"
+
+#: internal/adapters/cli/commands/removehook.go:245
+msgid "✗ No %s hook found at %s"
+msgstr "✗ Ingen %s-krok hittades vid %s"
+
+#: internal/adapters/cli/commands/removehook.go:532
+msgid "✗ Not removed: %s"
+msgstr "✗ Inte borttagen: %s"
+
+#: internal/adapters/output/tableformatter.go:103
+msgid "✗ VALIDATION FAILED"
+msgstr "✗ VALIDERINGEN MISSLYCKADES"
+
+#: internal/adapters/output/tableformatter.go:196
+msgid "✗ VALIDATION FAILED: %d ISSUES"
+msgstr "✗ VALIDERING MISSLYCKADES: %d FEL"
+
+#: internal/adapters/output/summaryformatter.go:139
+msgid "❌ Failed"
+msgstr "❌ Misslyckad"

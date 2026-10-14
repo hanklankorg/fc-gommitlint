@@ -1,0 +1,11 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Trivy configuration for gommitlint.
+#
+# Point trivy at the YAML ignore file at the repository root. Trivy only
+# auto-discovers the plain-text `.trivyignore`; the richer `.trivyignore.yaml`
+# (which supports per-entry `expired_at` time-bounding and `statement` rationale)
+# must be named explicitly. Every suppression and its evidence live in that file.
+ignorefile: .trivyignore.yaml

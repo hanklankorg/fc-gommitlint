@@ -1,0 +1,17 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+
+baseURL      = "https://gommitlint.itiquette.org/"
+languageCode = "en-US"
+title        = "Gommitlint"
+disableKinds = ["taxonomy", "term", "RSS"]
+disableHugoGeneratorInject = true
+
+[params]
+tagline      = "Validate Git commit messages — sensibly, by default"
+description  = "Git commit-message rules for Conventional Commits, DCO sign-off, spelling, and GPG/SSH signature policy, for local use and CI."
+docs_url     = "https://docs.itiquette.org/gommitlint/"
+source_url   = "https://codefloe.com/itiquette/gommitlint"
+releases_url = "https://codefloe.com/itiquette/gommitlint/releases"
+forgejo_action_url = "https://codefloe.com/itiquette/gommitlint-action"
+github_action_url  = "https://github.com/itiquette/gommitlint-action"

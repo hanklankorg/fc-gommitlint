@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: The Gommitlint Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 720 300"
+     role="img"
+     aria-labelledby="gl-title gl-desc"
+     preserveAspectRatio="xMidYMid meet">
+  <title id="gl-title">Gommitlint inspects commits one by one</title>
+  <desc id="gl-desc">Three commit cards in a row. Two commits pass with a green checkmark; the middle commit fails with a red cross — the kind of problem gommitlint catches.</desc>
+
+  <style>
+    .check { opacity: 0; transform-origin: center; transform-box: fill-box; }
+    .check-1 { animation: pop 9s ease-out infinite; animation-delay: 1.6s; }
+    .check-2 { animation: pop 9s ease-out infinite; animation-delay: 4.6s; }
+    .check-3 { animation: pop 9s ease-out infinite; animation-delay: 7.6s; }
+
+    @keyframes pop {
+      0%, 17%   { opacity: 0; transform: scale(0.4); }
+      20%, 100% { opacity: 1; transform: scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .check  { animation: none; opacity: 1; transform: scale(1); }
+    }
+  </style>
+
+  <defs>
+    <symbol id="commit-card" viewBox="0 0 200 120" overflow="visible">
+      <rect x="0" y="0" width="200" height="120" rx="10"
+            fill="#1e293b" stroke="#334155" stroke-width="2"/>
+      <rect x="14" y="14" width="56" height="10" rx="3" fill="#64748b"/>
+      <rect x="14" y="38" width="172" height="8" rx="3" fill="#475569"/>
+      <rect x="14" y="56" width="148" height="8" rx="3" fill="#475569"/>
+      <rect x="14" y="74" width="120" height="8" rx="3" fill="#475569"/>
+      <rect x="14" y="98" width="44" height="8" rx="3" fill="#3b82f6" opacity="0.7"/>
+    </symbol>
+
+    <symbol id="check-badge" viewBox="0 0 32 32" overflow="visible">
+      <circle cx="16" cy="16" r="15" fill="#22c55e" stroke="#166534" stroke-width="1.5"/>
+      <path d="M9 16 l5 5 l9 -11"
+            fill="none" stroke="white" stroke-width="3.5"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+
+    <symbol id="x-badge" viewBox="0 0 32 32" overflow="visible">
+      <circle cx="16" cy="16" r="15" fill="#ef4444" stroke="#991b1b" stroke-width="1.5"/>
+      <path d="M10 10 l12 12 M22 10 l-12 12"
+            fill="none" stroke="white" stroke-width="3.5"
+            stroke-linecap="round"/>
+    </symbol>
+
+  </defs>
+
+  <!-- Three commit cards, evenly spaced. -->
+  <g transform="translate(20 160)">
+    <use href="#commit-card" x="0"   y="0" width="200" height="120"/>
+    <use href="#commit-card" x="240" y="0" width="200" height="120"/>
+    <use href="#commit-card" x="480" y="0" width="200" height="120"/>
+  </g>
+
+  <!-- Status badges anchored to each card's top-right corner. -->
+  <!-- Commits 1 and 3 pass; commit 2 fails — the catch gommitlint exists for. -->
+  <g class="check check-1">
+    <use href="#check-badge" x="200" y="144" width="36" height="36"/>
+  </g>
+  <g class="check check-2">
+    <use href="#x-badge" x="440" y="144" width="36" height="36"/>
+  </g>
+  <g class="check check-3">
+    <use href="#check-badge" x="680" y="144" width="36" height="36"/>
+  </g>
+</svg>

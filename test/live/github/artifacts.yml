@@ -1,0 +1,27 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Live-trial fixture: what the hosted GitHub release trial builds. amd64 only.
+# The engine runs no tests here: the pull-request fixture owns them.
+sign:
+  method: sigstore
+
+artifacts:
+  - name: gommitlint
+    project-type: go
+    working-directory: .
+    config:
+      build-mode: artifact-first
+      main-package: ./cmd/gommitlint
+      binary-name: gommitlint
+      platforms: linux/amd64
+      build-tags: netgo,osusergo
+      skip-tests: true
+
+containers:
+  - name: gommitlint
+    from: [gommitlint]
+    container-file: test/live/github/image/Containerfile
+    context: test/live/github/image
+    platforms: linux/amd64

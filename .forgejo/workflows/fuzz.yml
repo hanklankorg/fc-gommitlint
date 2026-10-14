@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+name: Fuzz
+
+on:
+  schedule:
+    - cron: '17 3 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sandbox-image:
+    name: Prepare sandbox image
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: https://code.forgejo.org/actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Prepare checksummed OCI archive
+        run: bash .forgejo/scripts/prepare-sandbox-image.sh "${RUNNER_TEMP}/sandbox-image"
+      - name: Upload sandbox image
+        uses: https://code.forgejo.org/actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.6.2
+        with:
+          name: fuzz-sandbox-image
+          path: |
+            ${{ runner.temp }}/sandbox-image/sandbox-image.oci.tar
+            ${{ runner.temp }}/sandbox-image/sandbox-image.sha256
+          retention-days: 1
+
+  fuzz:
+    name: Fuzz
+    needs: sandbox-image
+    runs-on: ${{ vars.CI_RUNNER_LABEL }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: https://code.forgejo.org/actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Go
+        uses: https://code.forgejo.org/actions/setup-go@4dc6199c7b1a012772edbd06daecab0f50c9053c # v6.1.0
+        with:
+          go-version-file: go.mod
+      - name: Download sandbox image
+        uses: https://code.forgejo.org/actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+        with:
+          name: fuzz-sandbox-image
+          path: ${{ runner.temp }}/sandbox-image
+      - name: Fuzz each target in rootless Podman
+        run: |
+          bash .forgejo/scripts/run-external-tests-sandbox.sh fuzz \
+            --artifact-output "${RUNNER_TEMP}/gommitlint-fuzz-artifacts" \
+            --sandbox-image "${RUNNER_TEMP}/sandbox-image/sandbox-image.oci.tar" \
+            --sandbox-image-checksum "${RUNNER_TEMP}/sandbox-image/sandbox-image.sha256"
+      - name: Upload bounded fuzz artifacts
+        if: always()
+        uses: https://code.forgejo.org/actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v4.6.2
+        with:
+          name: gommitlint-fuzz-corpus
+          path: ${{ runner.temp }}/gommitlint-fuzz-artifacts
+          retention-days: 7

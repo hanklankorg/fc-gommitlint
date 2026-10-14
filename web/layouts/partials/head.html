@@ -1,0 +1,32 @@
+<!--
+SPDX-FileCopyrightText: The Gommitlint Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.Title }} — {{ site.Params.tagline }}</title>
+  <meta name="description" content="{{ site.Params.description }}">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; form-action 'self'">
+
+  <meta property="og:title" content="{{ site.Title }}">
+  <meta property="og:description" content="{{ site.Params.description }}">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="{{ replace site.LanguageCode "-" "_" }}">
+  <meta property="og:url" content="{{ site.BaseURL }}">
+  <meta property="og:image" content="{{ site.BaseURL }}logo.png">
+  <meta property="og:image:width" content="288">
+  <meta property="og:image:height" content="281">
+  <meta property="og:image:alt" content="{{ .Params.logo_alt }}">
+
+  <link rel="icon" type="image/svg+xml" href="/logo-animated.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="canonical" href="{{ site.BaseURL }}">
+  <link rel="preload" href="/fonts/atkinson-400.woff2" as="font" type="font/woff2" crossorigin>
+  {{- $css := resources.Get "style.css" | resources.Fingerprint "sha256" -}}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+</head>

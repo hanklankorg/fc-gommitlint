@@ -1,0 +1,418 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://codefloe.com/itiquette/gommitlint/raw/branch/main/schemas/gommitlint.schema.json",
+  "$ref": "#/$defs/Config",
+  "$defs": {
+    "BodyConfig": {
+      "properties": {
+        "allow_signoff_only": {
+          "type": "boolean",
+          "description": "AllowSignoffOnly permits body containing only sign-off trailers.\nDefault: false (requires descriptive content before sign-offs when body is required).\nExample: \"Signed-off-by: Author \u003cemail\u003e\""
+        },
+        "max_line_length": {
+          "type": "integer",
+          "description": "MaxLineLength enforces maximum line width in body.\nRange: 0-200, Default: 72. Set 0 to disable.\nGit convention: 72 chars (80 terminal - 4 indent - 4 padding)\nLines holding a single unbreakable token (for example a URL) and\nidentity trailers such as \"Signed-off-by: Name \u003caddress\u003e\" are exempt."
+        },
+        "min_length": {
+          "type": "integer",
+          "description": "Minimum character count for commit body (0-1000, default: 0 = disabled)"
+        },
+        "min_signoff_count": {
+          "type": "integer",
+          "maximum": 10,
+          "minimum": 0,
+          "description": "MinSignoffCount requires minimum number of sign-off trailers.\nRange: 0-10, Default: 1, For multi-reviewer workflows"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Required mandates presence of commit body beyond subject.\nDefault: false, Useful for detailed change documentation"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "BodyConfig contains configuration options for commit body validation."
+    },
+    "ChecksConfig": {
+      "properties": {
+        "disabled": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Disabled specifies GLxxx checks to deactivate.\nTakes precedence over Enabled list: a check in both lists is disabled."
+        },
+        "enabled": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Enabled specifies GLxxx checks to activate beyond their parent rule defaults.\nEnabling a check also activates its parent rule unless rules.disabled vetoes it."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ChecksConfig contains configuration for public GLxxx check activation."
+    },
+    "Config": {
+      "properties": {
+        "allow_fixup_commits": {
+          "type": "boolean",
+          "description": "Allow fixup/squash commits (\"fixup! …\", \"squash! …\") to pass linting silently.\nDefault: false (these commits fail with a clear error)."
+        },
+        "checks": {
+          "$ref": "#/$defs/ChecksConfig"
+        },
+        "conventional": {
+          "$ref": "#/$defs/ConventionalConfig"
+        },
+        "crypto_signature": {
+          "$ref": "#/$defs/CryptoSignatureConfig"
+        },
+        "extends": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Inherit settings from other config files or built-in presets. Each entry\nis a local file path or a `preset:\u003cname\u003e` reference, resolved relative to\nthis file; later entries override earlier ones. A project config stays\nconfined to its own directory — only a trusted global or --config\nconfig may use an absolute path. Schema validates the list shape only —\n`gommitlint config check` verifies the merged result."
+        },
+        "identity": {
+          "$ref": "#/$defs/IdentityConfig"
+        },
+        "ignore_commits": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Skip validation for specific commits, identified by a 7-64 character\nSHA-1 or SHA-256 object ID prefix. Example: [\"a1b2c3d4e5…\"]. Useful\nfor one-off legacy commits that predate the current rules."
+        },
+        "jira": {
+          "$ref": "#/$defs/JiraConfig"
+        },
+        "managed_sources": {
+          "items": {
+            "$ref": "#/$defs/ManagedSource"
+          },
+          "type": "array",
+          "description": "Remote-managed configuration sources fetched and vendored by `gommitlint\nconfig sync`. Schema validates each entry's literal fields (URL shape,\nintegrity); `gommitlint config check` verifies the resolved file is\nwell-formed."
+        },
+        "message": {
+          "$ref": "#/$defs/MessageConfig"
+        },
+        "output": {
+          "type": "string",
+          "description": "Default output format. Run `gommitlint config show` to see supported values."
+        },
+        "theme": {
+          "type": "string",
+          "description": "Default output theme. Run `gommitlint config show` to see supported values."
+        },
+        "repo": {
+          "$ref": "#/$defs/RepoConfig"
+        },
+        "rules": {
+          "$ref": "#/$defs/RulesConfig"
+        },
+        "spell": {
+          "$ref": "#/$defs/SpellConfig"
+        },
+        "limits": {
+          "$ref": "#/$defs/LimitsConfig"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Config is the complete gommitlint configuration as loaded from a config file."
+    },
+    "ConventionalConfig": {
+      "properties": {
+        "allow_multi_scope": {
+          "type": "boolean",
+          "description": "AllowMultiScope permits multiple scopes in conventional commits.\nDefault: false (multi-scope not allowed), Example: \"feat(ui,api): add feature\""
+        },
+        "disallow_breaking": {
+          "type": "boolean",
+          "description": "DisallowBreaking rejects breaking change indicator (!) in commits.\nDefault: false (breaking changes allowed), Example: \"feat!: breaking change\""
+        },
+        "max_description_length": {
+          "type": "integer",
+          "description": "MaxDescriptionLength limits description part of conventional commits.\nRange: 1-200; 0 uses the default of 72. Applied after type(scope): prefix."
+        },
+        "require_scope": {
+          "type": "boolean",
+          "description": "RequireScope mandates scope presence in conventional commits.\nDefault: false, Example: \"feat(api): add endpoint\" vs \"feat: add endpoint\""
+        },
+        "scopes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Scopes defines valid scope values for conventional commits.\nEmpty list allows any scope, Case-sensitive matching\nExample: [\"api\", \"ui\", \"docs\"] requires \"feat(api): ...\""
+        },
+        "types": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Types restricts allowed conventional commit types.\nDefault: [\"build\", \"chore\", \"ci\", \"docs\", \"feat\", \"fix\", \"perf\", \"refactor\", \"revert\", \"style\", \"test\"]\nCustom types must contain only lowercase ASCII letters."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ConventionalConfig contains configuration options for conventional commit format validation."
+    },
+    "CryptoSignatureConfig": {
+      "properties": {
+        "allowed_signers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "AllowedSigners restricts eligible key metadata in KeyDirectory.\nEmpty list allows any eligible key. Matches exact key fingerprints, emails, or user IDs.\nThis does not identify or authorize the signer of a commit."
+        },
+        "key_directory": {
+          "type": "string",
+          "description": "KeyDirectory specifies public key files for independent inventory policy.\nDefault: \"\". If empty, key policy is skipped but Required and VerifyFormat still apply."
+        },
+        "min_ec_bits": {
+          "type": "integer",
+          "description": "MinECBits sets minimum elliptic curve key length requirement.\nRange: 1-521; 0 uses the default of 256. Common values: 256, 384, 521."
+        },
+        "min_rsa_bits": {
+          "type": "integer",
+          "description": "MinRSABits sets minimum RSA key length requirement.\nRange: 1-8192; 0 uses the default of 2048. Values below 2048 are weak."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Required mandates a GPG or SSH signature block on all commits.\nDefault: false. This checks presence, not cryptographic validity."
+        },
+        "require_gpg": {
+          "type": "boolean",
+          "description": "RequireGPG mandates GPG signatures (excludes SSH signatures).\nDefault: false, Mutually exclusive with RequireSSH"
+        },
+        "require_ssh": {
+          "type": "boolean",
+          "description": "RequireSSH mandates SSH signatures (excludes GPG signatures).\nDefault: false, Mutually exclusive with RequireGPG"
+        },
+        "verify_format": {
+          "type": "boolean",
+          "description": "VerifyFormat validates signature format structure.\nDefault: false, Checks signature has proper BEGIN/END markers"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "CryptoSignatureConfig contains signature metadata and key-inventory policy."
+    },
+    "IdentityConfig": {
+      "properties": {
+        "allowed_authors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "AllowedAuthors restricts commits to specific author email addresses.\nEmpty list allows any author. Matching is case-insensitive.\nSupports domain wildcards: \"*@company.com\" matches any email from that domain.\nExample: [\"john@company.com\", \"*@company.com\"]"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "IdentityConfig contains configuration options for commit author identity validation."
+    },
+    "JiraConfig": {
+      "properties": {
+        "ignore_ticket_patterns": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "IgnoreTicketPatterns excludes JIRA tickets matching regex patterns from validation.\nMatched tickets are filtered out before checking requirements.\nExample: [\"^TEMP-.*\", \"^TEST-.*\"] ignores TEMP-123, TEST-456"
+        },
+        "project_prefixes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "ProjectPrefixes defines valid JIRA project prefixes for ticket references.\nExample: [\"PROJ\", \"DEV\"] matches \"PROJ-123\", \"DEV-456\"\nCase-sensitive matching, typically uppercase. When set, only a key with\na listed prefix counts as a reference."
+        },
+        "require_in_body": {
+          "type": "boolean",
+          "description": "RequireInBody mandates JIRA ticket reference in commit body.\nDefault: false, Useful for detailed change tracking"
+        },
+        "require_in_subject": {
+          "type": "boolean",
+          "description": "RequireInSubject mandates JIRA ticket reference in commit subject.\nDefault: false, Example: \"feat: add feature PROJ-123\""
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "JiraConfig contains configuration options for JIRA reference validation."
+    },
+    "LimitsConfig": {
+      "properties": {
+        "max_commit_count": {
+          "type": "integer",
+          "description": "MaxCommitCount limits how many commits can be validated in one run.\nDefault: 2000"
+        },
+        "max_key_files": {
+          "type": "integer",
+          "description": "MaxKeyFiles limits how many key files can be loaded from a directory.\nDefault: 200"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "LimitsConfig contains global guardrails for validation."
+    },
+    "ManagedSource": {
+      "properties": {
+        "destination": {
+          "type": "string",
+          "description": "Local path where the synced file is written, relative to this config file."
+        },
+        "headers": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object",
+          "description": "HTTP headers sent with the fetch request. Values support ${ENV_VAR}\nsubstitution so secrets stay out of the file. When set, the source URL\nmust be https://. Literal values remain configuration; environment-expanded\nvalues are not persisted or displayed, and config show redacts literals."
+        },
+        "id": {
+          "type": "string",
+          "description": "Stable identifier used by `gommitlint config sync --source \u003cid\u003e`."
+        },
+        "integrity": {
+          "$ref": "#/$defs/ManagedSourceIntegrity"
+        },
+        "resolved": {
+          "$ref": "#/$defs/ManagedSourceResolved",
+          "description": "Tool-managed sync metadata. Do not edit by hand — `gommitlint config\nsync` updates this block when content or resolved source metadata changes."
+        },
+        "source": {
+          "type": "string",
+          "description": "HTTPS URL or ${ENV_VAR} resolving to one."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ManagedSource is one remote configuration file synced by `gommitlint config sync` — schema validates the literal fields below, `gommitlint config check` reports problems with the resolved file."
+    },
+    "ManagedSourceIntegrity": {
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "description": "Lowercase hex-encoded SHA-256 of the fetched file. Required."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ManagedSourceIntegrity pins the expected content of a synced source."
+    },
+    "ManagedSourceResolved": {
+      "properties": {
+        "fetched_at": {
+          "type": "string",
+          "description": "RFC 3339 timestamp of the last persisted sync update."
+        },
+        "final_url": {
+          "type": "string",
+          "description": "Final URL after redirects."
+        },
+        "revision": {
+          "type": "string",
+          "description": "Upstream revision (commit SHA, tag, etc.) if the source advertises one."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ManagedSourceResolved holds tool-managed metadata written by `gommitlint config sync`."
+    },
+    "MessageConfig": {
+      "properties": {
+        "body": {
+          "$ref": "#/$defs/BodyConfig"
+        },
+        "subject": {
+          "$ref": "#/$defs/SubjectConfig"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "MessageConfig contains configuration for commit message validation."
+    },
+    "RepoConfig": {
+      "properties": {
+        "max_commits_ahead": {
+          "type": "integer",
+          "description": "MaxCommitsAhead limits how many commits the current branch can be ahead.\nRange: 1-1000, Default: 10, Prevents large feature branches\nTo disable this rule, add \"branchahead\" to rules.disabled list"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "RepoConfig contains configuration options for repository-level validation."
+    },
+    "RulesConfig": {
+      "properties": {
+        "disabled": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Disabled specifies rules to deactivate.\nTakes precedence over Enabled list: a rule in both lists is disabled."
+        },
+        "enabled": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Enabled specifies rules to activate beyond defaults.\nRule names: \"subject\", \"conventional\", \"cryptosignature\", etc."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "RulesConfig contains configuration for rule activation."
+    },
+    "SpellConfig": {
+      "properties": {
+        "ignore_words": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "IgnoreWords defines custom words to skip in spell checking.\nCase-insensitive matching, Common: [\"api\", \"url\", \"json\"]"
+        },
+        "locale": {
+          "type": "string",
+          "description": "Locale specifies language/region for spell checking dictionary.\nValid values (case-insensitive): \"both\", \"US\", \"UK\", \"GB\", or empty for \"both\".\nDefault: \"both\" — accept US and UK spellings without flagging cross-variant words."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "SpellConfig contains configuration options for spell checking."
+    },
+    "SubjectConfig": {
+      "properties": {
+        "case": {
+          "type": "string",
+          "description": "Case selects subject capitalization validation.\n\n  - \"lower\", \"upper\", \"sentence\" enforce that specific case.\n  - \"auto\" (the product default) enforces lower case for conventional\n    descriptions and sentence case for non-conventional subjects.\n  - \"any\" disables the check, equivalent to listing GL104 in\n    checks.disabled."
+        },
+        "forbid_endings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "ForbidEndings prevents specified suffixes in subject lines.\nEach entry contributes all characters to the forbidden set.\nDefault: [\".\", \",\", \";\", \":\", \"!\", \"?\"] (from GetDefaultForbiddenEndings).\nExample: [\".\", \"!?\", \"?\"] forbids '.', '!', and '?' endings."
+        },
+        "max_length": {
+          "type": "integer",
+          "description": "Positive character limit for commit subject lines (default: 100)."
+        },
+        "require_imperative": {
+          "type": "boolean",
+          "description": "RequireImperative enforces imperative mood in subject.\nThe product default is true. Example: \"Add feature\" rather than \"Added feature\"."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "SubjectConfig contains configuration options for commit subject validation."
+    }
+  },
+  "title": "Gommitlint configuration",
+  "description": "Configuration schema for gommitlint — the Git commit message linter. Applies to .gommitlint.yaml, .gommitlint.yml, and .gommitlint.toml."
+}

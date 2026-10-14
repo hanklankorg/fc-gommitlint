@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Gommitlint dogfoods its own commit policy. Every commit must carry a GPG or
+# SSH signature block. This checks presence, not cryptographic validity or signer
+# authorization. The cryptosignature rule is default-enabled; it is listed
+# explicitly for policy visibility, and required: true makes unsigned commits fail.
+gommitlint:
+  rules:
+    enabled:
+      - cryptosignature
+  crypto_signature:
+    required: true

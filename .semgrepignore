@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+#
+# Paths excluded from opengrep / semgrep scans. A .semgrepignore replaces the
+# scanner's built-in defaults, so the test exclusions are restated here: the
+# scan stays on what ships.
+*_test.go
+test/
+testdata/
+
+# Third-party verbatim text we do not author.
+LICENSES/
+node_modules/
+
+# Build and release output.
+/bin/
+/dist/
+/generated/

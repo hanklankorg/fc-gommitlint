@@ -1,0 +1,50 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# Package changelog in nfpm/chglog YAML format
+# This describes PACKAGING changes, not software changes.
+# For software changes, see CHANGELOG.md in the repository.
+
+- semver: 0.9.11
+  date: 2026-04-16T00:00:00Z
+  packager: Josef Andersson <janderssonse@proton.me>
+  deb:
+    distributions:
+      - unstable
+    urgency: medium
+  changes:
+    - note: New upstream release 0.9.11
+
+- semver: 0.9.1
+  date: 2026-02-09T00:00:00Z
+  packager: Josef Andersson <janderssonse@proton.me>
+  deb:
+    distributions:
+      - unstable
+    urgency: medium
+  changes:
+    - note: New upstream release 0.9.1
+
+- semver: 0.9.0
+  date: 2026-01-29T00:00:00Z
+  packager: Josef Andersson <janderssonse@proton.me>
+  deb:
+    distributions:
+      - unstable
+    urgency: low
+  changes:
+    - note: New upstream release 0.9.0
+    - note: Add Swedish man page and locale translations
+    - note: Add SHA-256 variant binary for SHA-256 git repositories
+
+- semver: 0.8.0
+  date: 2026-01-07T00:00:00Z
+  packager: Josef Andersson <janderssonse@proton.me>
+  deb:
+    distributions:
+      - unstable
+    urgency: low
+  changes:
+    - note: Initial package release
+    - note: Include bash, zsh, and fish shell completions
+    - note: Include man page documentation

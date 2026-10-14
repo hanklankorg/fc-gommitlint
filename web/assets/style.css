@@ -1,0 +1,387 @@
+/*
+ * SPDX-FileCopyrightText: The Gommitlint Authors
+ * SPDX-License-Identifier: CC0-1.0
+ *
+ * Single-file stylesheet for gommitlint.itiquette.org.
+ *
+ * Posture:
+ *   - No JavaScript, no analytics, no third-party assets.
+ *   - One self-hosted font (Atkinson Hyperlegible), rest is the system stack.
+ *   - License is CC0-1.0 — FSF-approved as a free license.
+ *
+ * WCAG 2.1 AA verified:
+ *   - All text ≥ 4.5:1 contrast against its background, in both colour schemes.
+ *   - Focus indicators ≥ 3:1 against the page background (1.4.11 non-text).
+ *   - Hover states keep ≥ 4.5:1 text contrast in both schemes.
+ *   - prefers-reduced-motion suppresses animations.
+ *   - prefers-color-scheme honoured automatically.
+ *   - Focus is always visible (2.4.7), distinct from default appearance.
+ */
+
+/* ─── Self-hosted Atkinson Hyperlegible (OFL-1.1) — designed for low-vision
+   readability. 400 + 700 Latin subsets, ~17 KB each. Falls back to the system
+   stack while loading (font-display: swap). ─── */
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/atkinson-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/atkinson-700.woff2") format("woff2");
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   tokens — design tokens
+   ───────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces — page is a subtle cool off-white, cards pop white on top. */
+  --color-bg: #f8fafc;
+  --color-text: #1a1a1a;             /* 16.3:1 on bg */
+  --color-muted: #475569;            /*  6.9:1 on bg */
+  --color-card-bg: #ffffff;
+  --color-card-border: #cbd5e1;      /* decorative — exempt from 1.4.11 */
+
+  /* Brand */
+  --color-primary: #1d6f7c;          /*  5.4:1 on bg */
+  --color-primary-hover: #14525c;    /*  8.4:1 on bg — primary-button hover */
+  --color-accent: #1d6f7c;           /*  5.4:1 on bg — feature headings */
+
+  /* Interaction */
+  --color-link: #1d4ed8;             /*  7.5:1 on bg */
+  --color-focus: #7C5316;            /*  7.0:1 on bg — replaces brand gold */
+  --color-btn-primary-text: #ffffff;
+
+  /* Code */
+  --color-code-bg: #0f172a;
+  --color-code-text: #f1f5f9;        /* 16:1 on code-bg */
+
+  /* Typography */
+  --font-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, monospace;
+
+  /* Layout */
+  --max-width: 64rem;
+  --radius: 0.75rem;
+
+  /* Tells the UA to render system controls in light or dark to match. */
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #0f172a;
+    --color-text: #f1f5f9;           /* 16:1 on bg */
+    --color-muted: #94a3b8;          /*  6.8:1 on bg */
+    --color-card-bg: #1e293b;
+    --color-card-border: #475569;    /* slightly higher to stay visible on dark */
+
+    --color-primary: #6dd0df;        /* 10:1 on bg */
+    --color-primary-hover: #a5e1ec;  /* 13:1 on bg — primary-button hover (lighter on dark) */
+    --color-accent: #6dd0df;         /* 10:1 on bg */
+
+    --color-link: #93c5fd;           /* 10:1 on bg */
+    --color-focus: #FBBF24;          /* 10.3:1 on bg */
+    --color-btn-primary-text: #0f172a;
+
+    --color-code-bg: #020617;        /* 18:1 on code text */
+  }
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   reset — modern minimal reset (zero-specificity via :where)
+   ───────────────────────────────────────────────────────────────────── */
+
+:where(*, *::before, *::after) { box-sizing: border-box; }
+:where(body, h1, h2, h3, h4, p, ul, ol, figure, blockquote) { margin: 0; }
+:where(ul[role="list"], ol[role="list"]) { list-style: none; padding: 0; }
+:where(img, svg, picture) { max-width: 100%; display: block; }
+:where(input, button, textarea, select) { font: inherit; }
+
+/* ═════════════════════════════════════════════════════════════════════
+   base — element defaults, page rhythm
+   ───────────────────────────────────────────────────────────────────── */
+
+html {
+  font-size: 16px;
+  /* Smooth in-page anchor scrolling, gated on motion preference below. */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+body > header,
+main {
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+body > header {
+  padding-block-start: 3rem;
+  text-align: center;
+}
+main { padding-block: 2rem; }
+
+h2 {
+  font-size: clamp(1.5rem, 3vw, 1.85rem);
+  margin-block-end: 1.5rem;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+a {
+  color: var(--color-link);
+  text-underline-offset: 0.15em;
+}
+a:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.2em;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.95em;
+}
+
+p > code,
+li > code {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  padding: 0.1em 0.35em;
+  border-radius: 0.3em;
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   components — named UI pieces
+   ───────────────────────────────────────────────────────────────────── */
+
+/* ─── Skip link (bypass blocks, WCAG 2.4.1) ─── */
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.75rem 1rem;
+  background: var(--color-text);
+  color: var(--color-bg);
+  text-decoration: none;
+  font-weight: 600;
+  z-index: 100;
+  transform: translateY(-100%);
+}
+.skip-link:focus { transform: translateY(0); }
+
+/* ─── Hero ─── */
+
+.hero-art {
+  max-width: 38rem;
+  margin-inline: auto;
+  margin-block-end: 1.5rem;
+}
+.hero-art img {
+  width: 100%;
+  height: auto;
+  /* Aspect ratio is reserved by the width/height attrs on the <img>
+     itself — per-site, so we don't hard-code one here. */
+}
+
+body > header h1 {
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  margin-block-end: 0.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  text-wrap: balance; /* avoids orphaned single words on the last line */
+}
+
+.tagline {
+  font-size: clamp(1.05rem, 2.2vw, 1.3rem);
+  color: var(--color-muted);
+  margin-block-end: 1rem;
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: 1.1rem;
+  max-width: 38rem;
+  margin-inline: auto;
+  margin-block-end: 2rem;
+  text-wrap: pretty; /* prettier rag, fewer orphans (Chrome 117+, Safari 17.5+) */
+}
+
+.status-note {
+  max-width: 38rem;
+  margin: 0 auto 1.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-focus);
+  border-radius: var(--radius);
+  color: var(--color-focus);
+  font-size: 0.95rem;
+}
+
+/* ─── Buttons ─── */
+
+.cta {
+  display: flex;
+  gap: 0.875rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.6rem;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid var(--color-primary);
+  transition: transform 0.1s ease, background-color 0.15s ease, color 0.15s ease;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-btn-primary-text);
+}
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+.btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* ─── Feature cards ─── */
+
+.feature-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+.feature-grid li {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius);
+  padding: 1.75rem 1.5rem;
+}
+
+.feature-grid h2 {
+  margin: 0 0 0.6rem;
+  color: var(--color-accent);
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+.feature-grid p { margin: 0; }
+
+/* ─── Footer ─── */
+
+footer {
+  margin-top: 6rem;
+  padding-block: 2.5rem 3rem;
+  padding-inline: 0;
+  border-top: 1px solid var(--color-card-border);
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.footer-nav {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  max-width: var(--max-width);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  margin-block-end: 2.5rem;
+}
+.footer-col {
+  text-align: center;
+}
+.footer-col h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+.footer-col ul { list-style: none; padding: 0; margin: 0; }
+.footer-col li { margin: 0.35rem 0; }
+.footer-col a {
+  color: var(--color-muted);
+  text-decoration: none;
+}
+.footer-col a:hover {
+  color: var(--color-link);
+  text-decoration: underline; /* non-colour-only — WCAG 1.4.1 */
+}
+
+.footer-copy {
+  text-align: center;
+  margin: 0.4rem auto;
+  max-width: var(--max-width);
+  padding-inline: 1.25rem;
+}
+.footer-copy a { color: var(--color-link); }
+
+/* ═════════════════════════════════════════════════════════════════════
+   a11y — motion + forced-colors overrides
+   ───────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* User opted into maximum contrast: collapse muted → full-contrast text,
+   and bump card borders toward body text so boundaries pop. */
+@media (prefers-contrast: more) {
+  :root {
+    --color-muted: var(--color-text);
+    --color-card-border: var(--color-text);
+  }
+}
+
+/* Windows High Contrast mode: the UA replaces our palette with system
+   colours. We just ensure interactive affordances stay visible. */
+@media (forced-colors: active) {
+  .btn {
+    border: 2px solid ButtonText;
+  }
+  .btn:focus-visible,
+  a:focus-visible {
+    outline: 3px solid Highlight;
+    outline-offset: 2px;
+  }
+  .feature-grid li {
+    border: 1px solid CanvasText;
+  }
+  .status-note {
+    border-color: Highlight;
+    color: Highlight;
+  }
+}

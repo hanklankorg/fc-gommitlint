@@ -1,0 +1,33 @@
+<!--
+SPDX-FileCopyrightText: The Gommitlint Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+<footer>
+  <nav class="footer-nav" aria-label="Footer">
+    <div class="footer-col">
+      <h3>Documentation</h3>
+      <ul role="list">
+        <li><a href="{{ site.Params.docs_url }}">All docs</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Project</h3>
+      <ul role="list">
+        <li><a href="{{ site.Params.source_url }}">Source</a></li>
+        <li><a href="{{ site.Params.source_url }}/issues">Issues</a></li>
+        <li><a href="{{ site.Params.releases_url }}">Releases</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>CI actions</h3>
+      <ul role="list">
+        <li><a href="{{ site.Params.forgejo_action_url }}">Forgejo Action</a></li>
+        <li><a href="{{ site.Params.github_action_url }}">GitHub Action</a></li>
+      </ul>
+    </div>
+  </nav>
+  <p class="footer-copy">
+    {{ site.Title }} is Free Software.
+    &copy; {{ now.Year }} Itiquette &mdash; no analytics, no trackers.
+  </p>
+</footer>

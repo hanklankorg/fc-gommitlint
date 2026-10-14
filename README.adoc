@@ -1,0 +1,117 @@
+= Gommitlint
+:revdate: {docdatetime}
+:doctype: article
+:source-highlighter: rouge
+ifndef::env-vscode[]
+:repo-base: https://codefloe.com/itiquette/gommitlint/src/branch/main
+endif::[]
+ifdef::env-vscode[]
+:repo-base: .
+endif::[]
+:release-badge: https://img.shields.io/gitea/v/release/itiquette/gommitlint?gitea_url=https%3A%2F%2Fcodefloe.com&style=for-the-badge&color=green
+
+:license-badge: https://img.shields.io/badge/License-EUPL--1.2_OR_GPL--3.0--or--later-blue?style=for-the-badge
+:reuse-badge: https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.reuse.software%2Fstatus%2Fcodefloe.com%2Fitiquette%2Fgommitlint&query=status&style=for-the-badge&label=REUSE&color=lightblue
+
+:openssf-badge: https://img.shields.io/badge/OpenSSF%20Best%20Practices-pending-lightgrey?style=for-the-badge
+:releases-url: https://codefloe.com/itiquette/gommitlint/releases
+
+:reuse-url: https://api.reuse.software/info/codefloe.com/itiquette/gommitlint
+
+// OpenSSF Best Practices — pending registration; replace the dummy badge with the real project URL and ID once registered at https://www.bestpractices.dev/
+// Forgejo has no .text-center stylesheet rule, so AsciiDoc roles do not centre
+// there. Raw HTML with align="center" survives its sanitiser and centres in both
+// Asciidoctor and Forgejo.
+[subs="attributes+"]
+++++
+<p align="center">
+<a href="{releases-url}"><img src="{release-badge}" alt="Release"></a></br>
+<a href="{repo-base}/LICENSE"><img src="{license-badge}" alt="EUPL-1.2 OR GPL-3.0-or-later"></a>
+<a href="{reuse-url}"><img src="{reuse-badge}" alt="REUSE"></a></br>
+<img src="{openssf-badge}" alt="OpenSSF Best Practices">
+</p>
+<p align="center"><img src="assets/logo.png" alt="gommitlint logo" width="100"></p>
+++++
+
+[.text-center]
+Gommitlint validates Git commit messages against a set of (configurable) rules.
+For CLI-user, CI-pipe, Human or AI-agent, solo-devs or teams.
+
+'''
+
+* Out of the box validation based on best practices
+* Simple to use and get started with, powerful features if you need them
+
+== Quick Start
+
+image::assets/gommitlint-onboarding.gif[Gommitlint onboarding demo,width=820]
+
+Install with https://mise.jdx.dev/[mise]:
+
+[source,bash]
+----
+mise use "forgejo:itiquette/gommitlint@<version>"
+----
+
+Packages (`.deb`, `.rpm`, `.apk`), BSD and macOS archives, the container image, and SHA-256 repository support are covered in link:{repo-base}/docs/modules/ROOT/pages/install.adoc[Install].
+
+Then validate:
+
+[source,bash]
+----
+# Validate last commit
+gommitlint validate --ref HEAD --no-ci-detect
+
+# Validate all commits in feature branch against main
+gommitlint validate --base-branch=main
+
+# Validate specific commit range
+gommitlint validate --range=main..feature-branch --no-ci-detect
+----
+
+Choose one target mode. Without `--no-ci-detect`, a detected CI base can override an explicit range, ref, or count.
+
+== Validation Rules
+
+Gommitlint works out of the box with these rules; no configuration file is required.
+
+[cols="1,1,3,^1",options="header"]
+|===
+| Rule ID | Display | Description | Default
+
+| `branchahead` | Branch Ahead | Max commits ahead of an effective base branch, explicit or CI-detected (default limit: 10) | ✓
+| `commitbody` | Commit body | Commit body requirements (presence, length, line width) | ✓
+| `conventional` | Commit type | https://conventionalcommits.org[Conventional Commits] format | ✓
+| `cryptosignature` | Signature | Signature presence, armor, type, and optional key-inventory policy | ✓
+| `identity` | Identity | Allows commit author emails by exact address or domain wildcard |
+| `jirareference` | JIRA reference | Requires JIRA ticket references |
+| `linearhistory` | Linear History | Requires linear history (no merge commits) |
+| `signoff` | Sign-off | Requires https://developercertificate.org/[Signed-off-by] trailer | ✓
+| `spell` | Spelling | Spell checking | ✓
+| `subject` | Subject | Subject line length (default: max 100) and format | ✓
+|===
+
+Each failure also carries a stable `GLxxx` check ID; see link:{repo-base}/docs/modules/ROOT/pages/reference/rules.adoc[Validation Rules] for the catalog and link:{repo-base}/docs/modules/ROOT/pages/reference/configuration.adoc[Configuration] for enabling, disabling, and tuning rules.
+
+== Using Gommitlint
+
+The user documentation is published at https://docs.itiquette.org/gommitlint/[docs.itiquette.org/gommitlint].
+The same pages are readable here in the repository:
+
+* *link:{repo-base}/docs/modules/ROOT/pages/tutorial.adoc[Tutorial]* • Configure and validate your first commit
+* *How-to* • link:{repo-base}/docs/modules/ROOT/pages/install.adoc[Install] · link:{repo-base}/docs/modules/ROOT/pages/verify.adoc[Verify Releases] · link:{repo-base}/docs/modules/ROOT/pages/config-troubleshooting.adoc[Configuration Troubleshooting] · link:{repo-base}/docs/modules/ROOT/pages/sha256-repositories.adoc[SHA-256 Repositories] · link:{repo-base}/docs/modules/ROOT/pages/output-formats.adoc[Output Formats and Themes] · link:{repo-base}/docs/modules/ROOT/pages/shell-completion.adoc[Shell Completion] · link:{repo-base}/docs/modules/ROOT/pages/uninstall.adoc[Uninstall] · link:{repo-base}/docs/modules/ROOT/pages/usecases/ci-pipeline.adoc[CI/CD Pipelines] · link:{repo-base}/docs/modules/ROOT/pages/usecases/hook-lifecycle.adoc[Git Hook Lifecycle] · link:{repo-base}/docs/modules/ROOT/pages/usecases/cross-repository.adoc[Cross-Repository Patterns]
+* *Reference* • link:{repo-base}/docs/modules/ROOT/pages/reference/commands.adoc[Commands] · link:{repo-base}/docs/modules/ROOT/pages/reference/configuration.adoc[Configuration] · link:{repo-base}/docs/modules/ROOT/pages/reference/rules.adoc[Validation Rules] · link:{repo-base}/docs/modules/ROOT/pages/reference.adoc[Supported Platforms]
+* *Concepts* • link:{repo-base}/docs/modules/ROOT/pages/architecture.adoc[Architecture] · link:{repo-base}/docs/modules/ROOT/pages/cli-conventions.adoc[CLI Conventions]
+* *link:{repo-base}/docs/manpages/gommitlint.1.md[Man Page]* • GNU/Linux/Unix manual page (`man gommitlint`)
+* *CI/CD Actions* • https://codefloe.com/itiquette/gommitlint-action[gommitlint-action] (Forgejo) · https://github.com/itiquette/gommitlint-action[gommitlint-action] (GitHub)
+
+== Working on Gommitlint
+
+* *link:{repo-base}/CONTRIBUTING.md[Contributing]* • Contribution policy, DCO sign-off, and commit signing
+* *link:{repo-base}/docs/contributing/development.md[Development]* • Setup, source layout, checks, and tests
+* *link:{repo-base}/docs/contributing/packaging.md[Packaging]* · *link:{repo-base}/docs/contributing/releasing.md[Releasing]*
+* *https://codefloe.com/itiquette/gommitlint/issues[Issues]* • Report bugs or request features
+
+== License
+
+Code is licensed `EUPL-1.2 OR GPL-3.0-or-later`; documentation and configuration are CC0-1.0. Full license texts are in link:{repo-base}/LICENSES[`LICENSES/`].

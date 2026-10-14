@@ -1,0 +1,234 @@
+= CLI Conventions
+:description: How Gommitlint aligns with the Command Line Interface Guidelines (clig.dev)
+:relfilesuffix: .adoc
+Gommitlint uses the link:https://clig.dev[Command Line Interface Guidelines (clig.dev)] as a design reference.
+This page describes this checkout's implemented contracts and their limits.
+Older releases can differ; pin the producer version when writing automation.
+
+== Philosophy
+
+Gommitlint is human-readable by default and exposes machine formats through explicit options.
+Results, diagnostics, and exit statuses have separate roles; the local contracts below define them, including quiet-mode behavior and recovery hints.
+
+== The basics
+
+* The standard release configuration builds one Go binary per selected platform with `CGO_ENABLED=0`.
+  This is not a guarantee of identical linking behavior on every platform.
+* Repository opening detects the object format at runtime; detected SHA-256 repositories use the system Git adapter.
+  Detection failure falls back to go-git; it does not prove the repository uses SHA-1.
+* Long flags use kebab-case (`--config`, `--log-level`, `--base-branch`).
+* Short aliases for high-frequency flags: `-q` `--quiet`, `-v` `--verbose` (`-vv` for extra verbosity), `-h` `--help`.
+* Value-taking flags accept both `--flag VALUE` and `--flag=VALUE`.
+* Boolean flags accept a bare flag for true or an explicit `=true`/`=false`, such as `--quiet=false`.
+  A separate `false` argument does not turn a boolean flag off.
+* `--version` on the root command (subcommands do not accept `--version`).
+* link:https://github.com/urfave/cli[urfave/cli v3]-based parsing with typo suggestions enabled.
+
+== Help
+
+* `--help` on every command and subcommand.
+* `-h` short form on every command.
+* Command help can include worked examples, such as `validate --base-branch main`, `hook install`, and `config init --preset conventional`.
+  Examples that install hooks or create configuration perform those operations; they are not previews.
+* `help <command>` is a supported invocation.
+* Flags grouped under named categories (`Configuration Control`, `Input Control`, `Output Control`, `Debug and Logging`) for scannability.
+* Unknown commands and flags fail. Relevant typo suggestions can accompany the failure; a suggestion is not guaranteed for every input.
+
+== Documentation
+
+* Terminal: `--help`, `help <command>`, per-command examples.
+* System: installed man page at `man gommitlint` (packaged in the `.deb`, `.rpm`, and `.apk` distributions).
+* Web: xref:index.adoc[Antora documentation] organized by Diátaxis.
+
+== Output
+
+* `stdout` — primary validation output, the data a script wants to consume.
+* `stderr` — logs, progress updates, warnings.
+* Validation supports `text`, `plain`, `json`, `sarif`, `github`, `gitlab`, `forgejo`, and `table` formats.
+  Other commands expose their own formats; the validation list does not apply to every subcommand.
+* Machine and CI reports normally use stdout; `validate --report-file` selects a file and can replace existing contents.
+  Setup, write, or close failures can leave missing or partial output.
+* Quiet mode suppresses successful validation reports, including JSON and SARIF.
+  Empty stdout under quiet mode is not proof of failure or complete coverage.
+* `-v` and `-vv` control validation detail; `--log-level` controls logging separately.
+  Global `--quiet` forces error-level logging even with an explicit debug or trace setting.
+* Diagnostic context appears on failure, under `-v`, or in situations the reader
+  could not have predicted. It does not appear on every clean run. This context
+  answers questions that arise when something is wrong, such as which
+  configuration is in effect.
+
+Retain Gommitlint's exit status and validate the command-specific report; successful parsing alone does not establish success.
+Native validation JSON has no numeric schema-version field; config-show JSON uses a different schema.
+Plain validation output is CSV, not a generic line-oriented success/error stream.
+Details: xref:output-formats.adoc[Output Formats] and xref:reference/commands.adoc[Commands and Output].
+
+== Color
+
+* `NO_COLOR` (link:https://no-color.org[no-color.org] convention) disables colors when set to any non-empty value.
+* `TERM=dumb` disables colors automatically.
+* `--color=auto|always|never` controls color explicitly; `auto` is the default.
+  Nonempty `NO_COLOR` and `TERM=dumb` take precedence even over `--color=always`.
+* Color is only applied when writing to a TTY under `--color=auto` when none of the above overrides are set.
+* Log lines on `stderr` have no `--color` of their own; they follow `NO_COLOR`, `TERM=dumb`, and whether stderr is a terminal.
+  A redirected stderr never receives escape sequences.
+
+Implementation: `internal/adapters/cli/outputoptions.go` and `internal/adapters/logging/cli.go`.
+
+== Errors
+
+* Errors are prefixed and descriptive.
+* Recoverable errors suggest a next step (bad flag value, missing repo, unreadable config).
+* Class-based exit codes distinguish validation failure from misuse from missing input from permission issues from configuration errors (see *Signals and exit codes* below).
+* Machine-readable formats (`--format json` and friends) emit validation reports on `stdout`. Errors that happen before a report can be produced are diagnostics on `stderr`; stdout may therefore be empty on setup, usage, or internal failure.
+* A failing run never stays silent on `stderr`, whatever the format.
+  When the report reached `stdout` first — routinely redirected to a file for the machine formats — the conclusion is repeated on `stderr` as an error-level log line.
+  It carries the public conclusion only, never commit text or an internal cause.
+* Panics that unwind through the process-boundary recovery handler produce `EX_SOFTWARE` (70) and a safe internal-error message on stderr.
+  This is not recovery from every goroutine panic, fatal runtime failure, or external termination.
+  Gommitlint attempts to write a bounded private diagnostic with mode `0600` under `$XDG_STATE_HOME/gommitlint/crash` (normally `~/.local/state/gommitlint/crash`). The prefilled Codefloe issue URL requests that report only when persistence succeeded; otherwise stderr and the issue template state that the report is unavailable.
+
+Review private diagnostics before sharing them. Repair suggestions are not authorization to overwrite configuration, install hooks, or change Git settings.
+
+== Arguments and flags
+
+Standard flag names per clig.dev:
+
+* `--quiet` / `-q` - reduced diagnostics and suppressed successful validation reports (global)
+* `--color=auto|always|never` — color control (global)
+* `--format` — machine-readable output (per command)
+* `--log-level=error|warn|info|debug|trace` — logging verbosity (global)
+* `--config FILE` — explicit config path (global)
+* `--ignore-config` — ignore all config files (global)
+* `--repo-path PATH` — target git repository (global)
+
+Flags carry non-obvious inputs; positional arguments are reserved for command nouns.
+
+Repository and configuration selection do not apply to user-wide hook state. `--repo-path`, `--config`, and `--ignore-config` remain accepted for compatibility with the global flag contract, but they do not affect `hook install --global` or `hook remove --global`.
+
+Validation has no `--dry-run` flag. It does not rewrite commit history, but output files and diagnostics can still be written.
+Mutating commands have different preview and overwrite contracts:
+
+* `config init --stdout` previews a template; ordinary `config init` creates a file and requires `--force` to replace it.
+* `config sync --check` and `--dry-run` fetch upstream policies and can send configured headers without refreshing vendored files.
+* `completion` installs by default; `completion --stdout` prints without installing.
+* Global hook removal has no `--dry-run`; its scope is user-wide, not the selected repository.
+
+See xref:shell-completion.adoc[Shell Completion] and xref:usecases/hook-lifecycle.adoc[Hook Lifecycle] before changing those assets.
+
+== Interactivity
+
+* Built-in commands do not request interactive confirmation. Explicit mutation commands can change files or hooks without a prompt.
+* `validate --message-file -` reads a message from stdin; use a selected message file rather than assuming `.git` is a directory.
+* Non-interactive behavior does not establish safe CI scope, correct credentials, or the intended configuration.
+  CI base detection can override explicit refs or counts; use `--no-ci-detect` when an independently selected range must control validation.
+
+For a message file whose path you have already selected:
+
+[source,bash]
+----
+gommitlint validate --message-file - < "$MESSAGE_FILE"
+----
+
+This checks the supplied message, not an authenticated commit object or its cryptographic signature.
+
+== Subcommands
+
+* Top-level commands include `validate`, `config`, `hook`, `doctor`, `man`, `translations`, `completion`, and `help`.
+* Namespaced grouping: `config {init|show|check|schema|sync}`, `hook {install|remove|status}`.
+* Global flags (`--quiet`, `--color`, `--log-level`, `--config`, `--ignore-config`, `--repo-path`) are accepted consistently across every subcommand; repository and configuration selection have no effect on global hook operations, as noted above.
+* Per-command flags (like `--format`) keep their shape across commands where they appear.
+
+== Robustness
+
+* Validation reads commit/message data and local configuration; it is not a filesystem or subprocess sandbox.
+* `config check` inspects local configuration health, not live upstream content or proof that the intended policy was selected.
+* `config sync --check` compares managed sources with fetched upstream content; it is not an offline check or publisher-authentication step.
+* Unknown commands and flags fail rather than continuing silently.
+
+== Signals and exit codes
+
+* `SIGINT` (Ctrl+C) → exit `130`
+* `SIGQUIT` → exit `131`
+* `SIGTERM` → exit `143`
+
+Exit selection uses the returned error's type, not a timestamped race between application errors and signals:
+
+. Bare invocation and typed CLI misuse take precedence.
+. Typed signal cancellation or a returned `context.Canceled` with a recorded signal cause supplies the known signal code.
+. Unclassified cancellation/deadline errors fall back to `2`; ordinary validation errors use their diagnostic-reason classification.
+. Output-write errors use `70`; otherwise a valid explicit child/error status from `1` through `255` is preserved.
+. Unclassified errors use `70`. If the command returns no error, the boundary returns `0` without a separate final signal check.
+
+Gommitlint suppresses a duplicate diagnostic only when its error/context records a known signal cancellation.
+A child status in the `128`-`255` range remains an ordinary child failure with one safe diagnostic.
+The numeric range alone does not prove that Gommitlint received a signal.
+Cancellation and cleanup are best effort, not rollback of earlier writes or hook changes.
+
+.Exit-code contract (`cmd/gommitlint/main.go`; validation-reason classification in `internal/domain/errors.go`)
+[cols="1,3"]
+|===
+|Code |Meaning
+|`0`   |Success
+|`1`   |Commit or repository validation failure (`EX_VALIDATION`)
+|`2`   |CLI misuse or non-signal cancellation (`EX_USAGE`)
+|`64`  |Bare invocation with no subcommand (`EX_USAGE`)
+|`65`  |Malformed input (`EX_DATAERR`)
+|`66`  |Named input does not exist (`EX_NOINPUT`)
+|`69`  |Required git environment missing or failed (`EX_UNAVAILABLE`)
+|`70`  |Internal subsystem failure or panic recovery (`EX_SOFTWARE`)
+|`77`  |Signing-key directory permission or key-inventory policy failure (`EX_NOPERM`)
+|`78`  |Bad configuration file (`EX_CONFIG`)
+|`130` |Terminated by SIGINT (128 + signum(2))
+|`131` |Terminated by SIGQUIT (128 + signum(3))
+|`143` |Terminated by SIGTERM (128 + signum(15))
+|===
+
+The table lists named application classes, not every possible forwarded child status.
+
+Full matrix: xref:reference/commands.adoc[Commands and Output].
+
+== Configuration
+
+* Respects the link:https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html[XDG Base Directory Specification] (`XDG_CONFIG_HOME`, defaulting to `~/.config`).
+* Default discovery merges built-in defaults → user config (`$XDG_CONFIG_HOME/gommitlint/settings.{yaml,yml,toml}`) → project config (`.gommitlint.{yaml,yml,toml}` in the selected repository). Later sources override earlier ones.
+* `--config FILE` bypasses discovery and loads built-in defaults plus the explicit file and its imports.
+* `--ignore-config` skips discovery entirely and runs with built-in defaults.
+* Gommitlint ships a sensible default rule set out of the box, so the tool is usable with no config at all.
+
+Discovery uses the first existing YAML/YML/TOML file at each level, not every matching file.
+A discovered load failure can warn and skip that source; it does not retry the next extension.
+An explicit configuration failure is fatal. Inspect warnings and effective sources before trusting a successful result.
+Global configuration is not an enforced policy floor: project values can override it, and explicit/defaults-only loading can bypass it.
+
+Full rules: xref:reference/configuration.adoc[Configuration]; xref:usecases/config-resolution.adoc[Config Discovery and Precedence].
+
+== Future-proofing and stability
+
+* Exit codes are documented and treated as contract.
+* Machine-readable formats are tied to the producer version.
+  Review that version's output contract before upgrading an automated consumer.
+* `--version` surfaces the installed build so scripts can verify compatibility.
+* Releases are SemVer-aligned.
+
+== Distribution
+
+* The release matrix includes GNU/Linux and BSD builds plus an untested, unsupported Apple Silicon macOS build.
+  SHA-256 repositories require system Git at runtime.
+* Multiple install paths: system packages (`.deb`, `.rpm`, `.apk`), tar archives, OCI images, mise, and build-from-source.
+* Current release configuration defines checksums, signatures, SBOMs, and provenance; older releases can contain different evidence.
+  No published Gommitlint release uses the current signer, and production release remains blocked until the pinned Forge CI revision is independently authenticated.
+
+Verification: xref:verify.adoc[Verify Releases].
+
+== No calling home
+
+Gommitlint has no analytics, telemetry, or update-check feature.
+Validation loads vendored managed configuration locally; explicit `config sync`, including its check and dry-run modes, contacts configured sources.
+This is not network isolation for subprocesses or an assurance about inherited Git and proxy settings.
+
+== See also
+
+* link:https://codefloe.com/itiquette/docs/src/branch/main/development/notes/cli-output-and-logging.adoc[CLI output and logging] — optional design background
+* xref:reference/commands.adoc[Commands and Output] — flags, streams, exit codes
+* xref:reference/configuration.adoc[Configuration] — schema and precedence
+* xref:architecture.adoc[Architecture] — module layout and runtime flow

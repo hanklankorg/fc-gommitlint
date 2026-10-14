@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# The default container image, published under the plain release tag: Alpine
+# with git, so it validates SHA-1 and SHA-256 repositories.
+# The binary must be built with the musl ELF interpreter
+# (-ldflags "-I /lib/ld-musl-<arch>.so.1") to run natively on Alpine without
+# libc6-compat. See the "Build musl PIE binaries" step in release.yml.
+
+ARG BASE_IMAGE=alpine:3.24@sha256:294b683cb724975bec92580e1e685676bd4b50bda910ddb8c51d4cabeaec77e6
+FROM ${BASE_IMAGE}
+
+# Runtime dependencies: git, which SHA-256 repositories require, and
+# ca-certificates for HTTPS. The versions are pinned so the same commit installs
+# the same top-level packages. Renovate updates them from the annotations below
+# (the shared preset's dockerfileVersions manager) and opens a pull request for
+# review. The annotations name the Alpine release, so they change together with
+# BASE_IMAGE; `just check-alpine-pins` fails when they disagree.
+#
+# renovate: datasource=repology depName=alpine_3_24/git versioning=loose
+ARG GIT_VERSION="2.54.0-r0"
+# renovate: datasource=repology depName=alpine_3_24/ca-certificates versioning=loose
+ARG CACERTS_VERSION="20260909-r0"
+#
+# Git refuses a repository owned by another user, which is what a bind mount
+# from the host is to this image's user. /repo is the one place the image
+# trusts: mounting a repository there is the user's explicit decision, and
+# `podman run -v "$PWD:/repo:ro" <image> validate` then works without --user.
+# A repository mounted elsewhere still needs the container to run as its owner.
+RUN apk add --no-cache \
+    git="${GIT_VERSION}" \
+    ca-certificates="${CACERTS_VERSION}" \
+    && git config --system --add safe.directory /repo
+WORKDIR /repo
+
+# Directory holding the musl binary, with a trailing slash. The release
+# workflow passes "dist/musl-<arch>/".
+ARG DIRPATH
+COPY --chmod=755 ${DIRPATH}gommitlint /usr/local/bin/gommitlint
+
+# Run as non-root (65534 = nobody, equivalent to distroless nonroot)
+USER 65534:65534
+
+ENTRYPOINT ["/usr/local/bin/gommitlint"]

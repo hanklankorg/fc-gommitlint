@@ -1,0 +1,35 @@
+Source: gommitlint
+Section: devel
+Priority: optional
+Maintainer: Josef Andersson <janderssonse@proton.me>
+Build-Depends: debhelper-compat (= 13),
+               golang-go (>= 2:1.23~) | golang-1.23-go,
+               go-md2man,
+               gettext,
+               bash,
+               git
+Standards-Version: 4.7.3
+Homepage: https://codefloe.com/itiquette/gommitlint
+Vcs-Git: https://codefloe.com/itiquette/gommitlint.git
+Vcs-Browser: https://codefloe.com/itiquette/gommitlint
+Rules-Requires-Root: no
+
+Package: gommitlint
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, git
+Recommends: ca-certificates
+Description: Git commit message linter and validator
+ Gommitlint validates git commit messages against configurable rules
+ including Conventional Commits format, subject/body length limits,
+ spell checking, imperative mood, and GPG/SSH signature policy checks.
+ .
+ It integrates with git hooks and CI/CD pipelines to enforce consistent
+ commit message standards across development teams.
+ .
+ Features:
+  * Conventional Commits validation
+  * Configurable subject/body length limits
+  * Spell checking with custom dictionaries
+  * Imperative mood enforcement
+  * GPG/SSH signature presence, format, type, and key-inventory policy
+  * Git hook integration

@@ -1,0 +1,25 @@
+gommitlint (0.9.11-1) unstable; urgency=medium
+
+  * New upstream release 0.9.11
+
+ -- Josef Andersson <janderssonse@proton.me>  Thu, 16 Apr 2026 00:00:00 +0200
+
+gommitlint (0.9.1-1) unstable; urgency=medium
+
+  * New upstream release 0.9.1
+
+ -- Josef Andersson <janderssonse@proton.me>  Mon, 09 Feb 2026 00:00:00 +0100
+
+gommitlint (0.9.0-1) unstable; urgency=low
+
+  * New upstream release 0.9.0
+  * Add Swedish man page and locale translations
+  * Add SHA-256 variant binary for SHA-256 git repositories
+
+ -- Josef Andersson <janderssonse@proton.me>  Thu, 29 Jan 2026 00:00:00 +0100
+
+gommitlint (0.8.0-1) unstable; urgency=low
+
+  * Initial release
+
+ -- Josef Andersson <janderssonse@proton.me>  Wed, 07 Jan 2026 00:00:00 +0100

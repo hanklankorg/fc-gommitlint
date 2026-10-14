@@ -1,0 +1,4690 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: gommitlint\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: internal/adapters/cli/commands/removehook.go:464
+msgid ""
+"\n"
+"Configuration:\n"
+msgstr ""
+"\n"
+"Configuration:\n"
+
+#: internal/adapters/cli/commands/removehook.go:303
+msgid ""
+"\n"
+"Custom hook preview (first %d line):\n"
+msgid_plural ""
+"\n"
+"Custom hook preview (first %d lines):\n"
+msgstr[0] ""
+"\n"
+"Custom hook preview (first %d line):\n"
+msgstr[1] ""
+"\n"
+"Custom hook preview (first %d lines):\n"
+
+#: internal/adapters/cli/commands/installhook.go:238
+msgid ""
+"\n"
+"How it works:\n"
+msgstr ""
+"\n"
+"How it works:\n"
+
+#: internal/adapters/cli/commands/installhook.go:245
+#: internal/adapters/cli/commands/removehook.go:319
+#: internal/adapters/cli/commands/removehook.go:341
+#: internal/adapters/cli/commands/removehook.go:423
+msgid ""
+"\n"
+"Next steps:\n"
+msgstr ""
+"\n"
+"Next steps:\n"
+
+#: internal/adapters/cli/commands/removehook.go:409
+msgid ""
+"\n"
+"No global hooks found to remove\n"
+"\n"
+msgstr ""
+"\n"
+"No global hooks found to remove\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:420
+msgid ""
+"\n"
+"No gommitlint hooks found to remove\n"
+"\n"
+msgstr ""
+"\n"
+"No gommitlint hooks found to remove\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:263
+msgid ""
+"\n"
+"Nothing to remove\n"
+msgstr ""
+"\n"
+"Nothing to remove\n"
+
+#: internal/adapters/cli/commands/removehook.go:392
+msgid ""
+"\n"
+"Other files kept in the global hooks directory:\n"
+msgstr ""
+"\n"
+"Other files kept in the global hooks directory:\n"
+
+#: internal/adapters/cli/commands/installhook.go:218
+msgid ""
+"\n"
+"Plugins installed:\n"
+msgstr ""
+"\n"
+"Plugins installed:\n"
+
+#: cmd/gommitlint/suggestions.go:65
+msgid ""
+"\n"
+"Run 'gommitlint --help' for more information\n"
+msgstr ""
+"\n"
+"Run 'gommitlint --help' for more information\n"
+
+#: internal/adapters/cli/commands/removehook.go:329
+msgid ""
+"\n"
+"Would remove:\n"
+msgstr ""
+"\n"
+"Would remove:\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:241
+msgid "      Modified: %s\n"
+msgstr "      Modified: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:237
+msgid "      Path: %s\n"
+msgstr "      Path: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:251
+msgid "      Preview: %s\n"
+msgstr "      Preview: %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:245
+msgid "      Size: %d bytes\n"
+msgstr "      Size: %d bytes\n"
+
+#: internal/adapters/cli/commands/removehook.go:449
+msgid "    • %s\n"
+msgstr "    • %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:100
+msgid "  ! Git runs hooks from %s; local entries under %s are inactive\n"
+msgstr "  ! Git runs hooks from %s; local entries under %s are inactive\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:130
+msgid "  %s %-12s %s\n"
+msgstr "  %s %-12s %s\n"
+
+#: internal/adapters/output/textformatter.go:106
+msgid "  %s checked:\n"
+msgstr "  %s checked:\n"
+
+#: internal/adapters/cli/commands/doctor.go:106
+msgid "  - %-12s %s\n"
+msgstr "  - %-12s %s\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:120
+msgid "  - %-12s not installed\n"
+msgstr "  - %-12s not installed\n"
+
+#: internal/adapters/cli/commands/doctor.go:147
+#: internal/adapters/cli/commands/doctor.go:151
+msgid "  - install hooks: gommitlint hook install\n"
+msgstr "  - install hooks: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/doctor.go:99
+msgid "  - no hook directory found\n"
+msgstr "  - no hook directory found\n"
+
+#: internal/adapters/cli/commands/doctor.go:140
+msgid "  - review config warnings: gommitlint config check\n"
+msgstr "  - review config warnings: gommitlint config check\n"
+
+#: internal/adapters/cli/commands/doctor.go:123
+msgid "  - sign-off required: %s\n"
+msgstr "  - sign-off required: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:124
+msgid "  - signature required: %s\n"
+msgstr "  - signature required: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:125
+msgid "  - test command: %s\n"
+msgstr "  - test command: %s\n"
+
+#: internal/adapters/cli/commands/doctor.go:155
+msgid "  - validate commits: gommitlint validate\n"
+msgstr "  - validate commits: gommitlint validate\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:111
+msgid "  No hooks directory found\n"
+msgstr "  No hooks directory found\n"
+
+#: internal/adapters/cli/commands/removehook.go:395
+msgid "  • %s\n"
+msgstr "  • %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:215
+#: internal/adapters/cli/commands/installhook.go:222
+msgid "  • %s: %s\n"
+msgstr "  • %s: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:240
+msgid "  • A global core.hooksPath disables per-repository .git/hooks (husky, lefthook, ...)\n"
+msgstr "  • A global core.hooksPath disables per-repository .git/hooks (husky, lefthook, ...)\n"
+
+#: internal/adapters/cli/commands/removehook.go:295
+msgid "  • Action: Would refuse removal\n"
+msgstr "  • Action: Would refuse removal\n"
+
+#: internal/adapters/cli/commands/removehook.go:292
+msgid "  • Action: Would remove\n"
+msgstr "  • Action: Would remove\n"
+
+#: internal/adapters/cli/commands/installhook.go:243
+msgid "  • Add more tools by placing scripts in *.d/ directories\n"
+msgstr "  • Add more tools by placing scripts in *.d/ directories\n"
+
+#: internal/adapters/cli/commands/installhook.go:239
+msgid "  • All repositories now use these global hooks\n"
+msgstr "  • All repositories now use these global hooks\n"
+
+#: internal/adapters/cli/commands/removehook.go:323
+#: internal/adapters/cli/commands/removehook.go:345
+msgid "  • Check hook status: gommitlint hook status\n"
+msgstr "  • Check hook status: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/removehook.go:547
+#: internal/adapters/cli/commands/removehook.go:552
+msgid "  • Check status: gommitlint hook status\n"
+msgstr "  • Check status: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/installhook.go:242
+msgid "  • Dispatcher pattern allows multiple tools to coexist\n"
+msgstr "  • Dispatcher pattern allows multiple tools to coexist\n"
+
+#: internal/adapters/cli/commands/removehook.go:330
+msgid "  • File: %s\n"
+msgstr "  • File: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:230
+msgid "  • Git config 'core.hooksPath' already pointed here: %s\n"
+msgstr "  • Git config 'core.hooksPath' already pointed here: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:473
+msgid "  • Git config 'core.hooksPath' left unchanged\n"
+msgstr "  • Git config 'core.hooksPath' left unchanged\n"
+
+#: internal/adapters/cli/commands/removehook.go:471
+msgid "  • Git config 'core.hooksPath' restored to: %s\n"
+msgstr "  • Git config 'core.hooksPath' restored to: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:232
+#: internal/adapters/cli/commands/installhook.go:235
+msgid "  • Git config 'core.hooksPath' set to: %s\n"
+msgstr "  • Git config 'core.hooksPath' set to: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:468
+msgid "  • Git config 'core.hooksPath' unset\n"
+msgstr "  • Git config 'core.hooksPath' unset\n"
+
+#: internal/adapters/cli/commands/removehook.go:288
+msgid "  • Hook exists: %s (%d byte)\n"
+msgid_plural "  • Hook exists: %s (%d bytes)\n"
+msgstr[0] "  • Hook exists: %s (%d byte)\n"
+msgstr[1] "  • Hook exists: %s (%d bytes)\n"
+
+#: internal/adapters/cli/commands/removehook.go:335
+msgid "  • Impact: Commit messages will no longer be automatically validated\n"
+msgstr "  • Impact: Commit messages will no longer be automatically validated\n"
+
+#: internal/adapters/cli/commands/removehook.go:333
+msgid "  • Impact: Configured signature validation will no longer run automatically before pushes\n"
+msgstr "  • Impact: Configured signature validation will no longer run automatically before pushes\n"
+
+#: internal/adapters/cli/commands/installhook.go:246
+msgid "  • Inspect a repository: gommitlint doctor\n"
+msgstr "  • Inspect a repository: gommitlint doctor\n"
+
+#: internal/adapters/cli/commands/installhook.go:286
+msgid "  • Inspect setup: gommitlint doctor\n"
+msgstr "  • Inspect setup: gommitlint doctor\n"
+
+#: internal/adapters/cli/commands/removehook.go:411
+msgid "  • Install globally: gommitlint hook install --global\n"
+msgstr "  • Install globally: gommitlint hook install --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:551
+msgid "  • Install hooks: gommitlint hook install\n"
+msgstr "  • Install hooks: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/removehook.go:412
+#: internal/adapters/cli/commands/removehook.go:425
+msgid "  • Install locally: gommitlint hook install\n"
+msgstr "  • Install locally: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/installhook.go:271
+msgid "  • Installed: %s\n"
+msgstr "  • Installed: %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:241
+msgid "  • Keep per-repository hooks where needed: git config core.hooksPath .git/hooks\n"
+msgstr "  • Keep per-repository hooks where needed: git config core.hooksPath .git/hooks\n"
+
+#: internal/adapters/cli/commands/removehook.go:320
+msgid "  • Keep the custom hook, or remove it manually after review\n"
+msgstr "  • Keep the custom hook, or remove it manually after review\n"
+
+#: internal/adapters/cli/commands/removehook.go:343
+msgid "  • Proceed with removal: gommitlint hook remove\n"
+msgstr "  • Proceed with removal: gommitlint hook remove\n"
+
+#: internal/adapters/cli/commands/removehook.go:338
+msgid "  • Recovery: Can reinstall with 'gommitlint hook install'\n"
+msgstr "  • Recovery: Can reinstall with 'gommitlint hook install'\n"
+
+#: internal/adapters/cli/commands/removehook.go:424
+msgid "  • Reinstall globally: gommitlint hook install --global\n"
+msgstr "  • Reinstall globally: gommitlint hook install --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:546
+msgid "  • Reinstall: gommitlint hook install\n"
+msgstr "  • Reinstall: gommitlint hook install\n"
+
+#: internal/adapters/cli/commands/removehook.go:321
+msgid "  • Remove manually if needed: rm -- %s\n"
+msgstr "  • Remove manually if needed: rm -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:244
+msgid "  • Remove with: gommitlint hook remove --global\n"
+msgstr "  • Remove with: gommitlint hook remove --global\n"
+
+#: internal/adapters/cli/commands/removehook.go:469
+msgid "  • Repositories now use local .git/hooks/ again\n"
+msgstr "  • Repositories now use local .git/hooks/ again\n"
+
+#: internal/adapters/cli/commands/installhook.go:285
+msgid "  • Status: gommitlint hook status\n"
+msgstr "  • Status: gommitlint hook status\n"
+
+#: internal/adapters/cli/commands/installhook.go:247
+msgid "  • Test after reviewing that repository's active config\n"
+msgstr "  • Test after reviewing that repository's active config\n"
+
+#: internal/adapters/cli/commands/installhook.go:284
+msgid "  • Test: %s\n"
+msgstr "  • Test: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:294
+msgid "  • Type: custom hook (not installed by gommitlint)\n"
+msgstr "  • Type: custom hook (not installed by gommitlint)\n"
+
+#: internal/adapters/cli/commands/removehook.go:291
+msgid "  • Type: gommitlint hook\n"
+msgstr "  • Type: gommitlint hook\n"
+
+#: internal/adapters/cli/commands/removehook.go:322
+#: internal/adapters/cli/commands/removehook.go:344
+msgid "  • View current hook: cat -- %s\n"
+msgstr "  • View current hook: cat -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:248
+msgid "  • View dispatchers: ls -la -- %s\n"
+msgstr "  • View dispatchers: ls -la -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:251
+msgid "  • View plugins: ls -la -- %s\n"
+msgstr "  • View plugins: ls -la -- %s\n"
+
+#: internal/adapters/cli/commands/installhook.go:280
+msgid "  • commit-msg: message rules from active config\n"
+msgstr "  • commit-msg: message rules from active config\n"
+
+#: internal/adapters/cli/commands/installhook.go:281
+msgid "  • pre-push: signature checks only when configured\n"
+msgstr "  • pre-push: signature checks only when configured\n"
+
+#: internal/adapters/output/textformatter.go:234
+msgid " - %s"
+msgstr " - %s"
+
+#: internal/adapters/output/textformatter.go:230
+msgid " in %d commit"
+msgid_plural " in %d commits"
+msgstr[0] " in %d commit"
+msgstr[1] " in %d commits"
+
+#: internal/adapters/output/summaryformatter.go:68
+msgid ""
+"## ✅ %s: All Checks Passed\n"
+"\n"
+msgstr ""
+"## ✅ %s: All Checks Passed\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:72
+msgid ""
+"## ❌ %s: %d Commit Failed\n"
+"\n"
+msgid_plural ""
+"## ❌ %s: %d Commits Failed\n"
+"\n"
+msgstr[0] ""
+"## ❌ %s: %d Commit Failed\n"
+"\n"
+msgstr[1] ""
+"## ❌ %s: %d Commits Failed\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:70
+msgid ""
+"## ❌ %s: Validation Failed\n"
+"\n"
+msgstr ""
+"## ❌ %s: Validation Failed\n"
+"\n"
+
+#: internal/adapters/output/summaryformatter.go:128
+msgid "### Commits"
+msgstr "### Commits"
+
+#: internal/adapters/output/summaryformatter.go:161
+msgid "### Failed Commits Details"
+msgstr "### Failed Commits Details"
+
+#: internal/adapters/output/summaryformatter.go:189
+msgid "### Repository Validation"
+msgstr "### Repository Validation"
+
+#: internal/adapters/output/summaryformatter.go:168
+msgid ""
+"#### `%s` - %s\n"
+"\n"
+msgstr ""
+"#### `%s` - %s\n"
+"\n"
+
+#: internal/adapters/output/textformatter.go:448
+msgid "#%d"
+msgstr "#%d"
+
+#: internal/adapters/output/reportview.go:51
+#: internal/adapters/output/reportview.go:52
+#: internal/adapters/output/textformatter.go:68
+msgid "%d commit"
+msgid_plural "%d commits"
+msgstr[0] "%d commit"
+msgstr[1] "%d commits"
+
+#: internal/adapters/output/reportview.go:53
+#: internal/adapters/output/textformatter.go:72
+msgid "%d ignored"
+msgid_plural "%d ignored"
+msgstr[0] "%d ignored"
+msgstr[1] "%d ignored"
+
+#: internal/adapters/output/textformatter.go:221
+#: internal/adapters/output/textformatter.go:67
+msgid "%d issue"
+msgid_plural "%d issues"
+msgstr[0] "%d issue"
+msgstr[1] "%d issues"
+
+#: internal/adapters/output/reportview.go:55
+#: internal/adapters/output/textformatter.go:180
+msgid "%d repository rule skipped"
+msgid_plural "%d repository rules skipped"
+msgstr[0] "%d repository rule skipped"
+msgstr[1] "%d repository rules skipped"
+
+#: internal/adapters/output/textformatter.go:105
+#: internal/adapters/output/textformatter.go:195
+msgid "%d rule"
+msgid_plural "%d rules"
+msgstr[0] "%d rule"
+msgstr[1] "%d rules"
+
+#: internal/adapters/output/reportview.go:54
+msgid "%d warning"
+msgid_plural "%d warnings"
+msgstr[0] "%d warning"
+msgstr[1] "%d warnings"
+
+#: internal/adapters/cli/commands/errors.go:346
+#: internal/adapters/cli/commands/validate_execute.go:283
+msgid "%s"
+msgstr "%s"
+
+#: internal/adapters/output/gitlabformatter.go:146
+#: internal/adapters/output/gitlabformatter.go:151
+msgid "%s\n"
+msgstr "%s\n"
+
+#: internal/adapters/output/gitlabformatter.go:194
+msgid "%s %d rule failed\n"
+msgid_plural "%s %d rules failed\n"
+msgstr[0] "%s %d rule failed\n"
+msgstr[1] "%s %d rules failed\n"
+
+#: internal/adapters/output/gitlabformatter.go:103
+#: internal/adapters/output/gitlabformatter.go:135
+msgid "%s %s\n"
+msgstr "%s %s\n"
+
+#: internal/adapters/output/gitlabformatter.go:131
+msgid "%s %s - %s\n"
+msgstr "%s %s - %s\n"
+
+#: internal/adapters/output/gitlabformatter.go:186
+msgid "%s %s - %s: %s\n"
+msgstr "%s %s - %s: %s\n"
+
+#: cmd/gommitlint/completion_command.go:709
+msgid "%s %s completion at %s"
+msgstr "%s %s completion at %s"
+
+#: internal/adapters/cli/commands/validate_output.go:144
+#: internal/adapters/cli/commands/validate_output.go:179
+#: internal/adapters/cli/commands/validate_output.go:200
+#: internal/adapters/cli/commands/validate_output.go:97
+msgid "%s '%s'"
+msgstr "%s '%s'"
+
+#: internal/adapters/output/gitlabformatter.go:192
+msgid "%s All rules passed\n"
+msgstr "%s All rules passed\n"
+
+#: internal/adapters/output/warningformatting_messages.go:110
+msgid "%s has insecure permissions (group-writable); loaded anyway. Run 'chmod g-w %s' to silence this warning."
+msgstr "%s has insecure permissions (group-writable); loaded anyway. Run 'chmod g-w %s' to silence this warning."
+
+#: internal/adapters/cli/commands/errors.go:68
+msgid "%s hook installation failed: %s"
+msgstr "%s hook installation failed: %s"
+
+#: internal/adapters/cli/commands/removehook.go:170
+msgid "%s hook removal failed"
+msgstr "%s hook removal failed"
+
+#: internal/adapters/cli/commands/removehook.go:434
+msgid "%s hook:"
+msgstr "%s hook:"
+
+#: internal/adapters/cli/commands/installhook.go:270
+#: internal/adapters/cli/commands/removehook.go:493
+msgid "%s hook:\n"
+msgstr "%s hook:\n"
+
+#: internal/adapters/output/summaryformatter.go:81
+msgid "%s | **Repo Failed:** %d"
+msgstr "%s | **Repo Failed:** %d"
+
+#: internal/adapters/output/textformatter.go:286
+msgid "%s ×%d"
+msgstr "%s ×%d"
+
+#: internal/adapters/output/reportview.go:94
+msgid "%s, %d repository rule failed"
+msgid_plural "%s, %d repository rules failed"
+msgstr[0] "%s, %d repository rule failed"
+msgstr[1] "%s, %d repository rules failed"
+
+#: internal/adapters/output/warningformatting_messages.go:94
+msgid "%s: 'gommitlint:' value is not a mapping, so the file is ignored — its contents must be a YAML/TOML object"
+msgstr "%s: 'gommitlint:' value is not a mapping, so the file is ignored — its contents must be a YAML/TOML object"
+
+#: internal/adapters/output/warningformatting_messages.go:92
+msgid "%s: top-level 'gommitlint:' key is missing, so the file is ignored — wrap your settings under a 'gommitlint:' mapping"
+msgstr "%s: top-level 'gommitlint:' key is missing, so the file is ignored — wrap your settings under a 'gommitlint:' mapping"
+
+#: internal/adapters/output/warningformatting_messages.go:71
+msgid "%s: unknown key 'gommitlint.%s' will be ignored (check spelling or remove)"
+msgstr "%s: unknown key 'gommitlint.%s' will be ignored (check spelling or remove)"
+
+#: internal/adapters/output/errorformatting_messages.go:612
+msgid "'%s' appears to be misspelled"
+msgstr "'%s' appears to be misspelled"
+
+#: internal/adapters/output/errorformatting_messages.go:526
+#: internal/adapters/output/errorformatting_messages.go:532
+msgid "'%s' does not follow conventional format"
+msgstr "'%s' does not follow conventional format"
+
+#: internal/adapters/output/errorformatting_messages.go:275
+msgid "'%s' is a gerund (use '%s')"
+msgstr "'%s' is a gerund (use '%s')"
+
+#: internal/adapters/output/warningformatting_messages.go:32
+msgid "'%s' is not a valid commit SHA in ignore_commits, skipping it"
+msgstr "'%s' is not a valid commit SHA in ignore_commits, skipping it"
+
+#: internal/adapters/output/errorformatting_messages.go:492
+msgid "'%s' is not a valid commit type. Use one of: %s"
+msgstr "'%s' is not a valid commit type. Use one of: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:575
+msgid "'%s' is not a valid scope"
+msgstr "'%s' is not a valid scope"
+
+#: internal/adapters/output/errorformatting_messages.go:564
+msgid "'%s' is not a verb"
+msgstr "'%s' is not a verb"
+
+#: internal/adapters/output/errorformatting_messages.go:507
+msgid "'%s' is not valid — use one of: %s"
+msgstr "'%s' is not valid — use one of: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:264
+msgid "'%s' is past tense (use '%s')"
+msgstr "'%s' is past tense (use '%s')"
+
+#: internal/adapters/output/errorformatting_messages.go:286
+msgid "'%s' is third person (use '%s')"
+msgstr "'%s' is third person (use '%s')"
+
+#: internal/adapters/cli/commands/config_show_text.go:128
+#: internal/adapters/cli/commands/config_show_text.go:191
+#: internal/adapters/cli/commands/config_show_text.go:232
+#: internal/adapters/cli/commands/config_show_text.go:277
+#: internal/adapters/cli/commands/config_show_text.go:361
+msgid "(none)"
+msgstr "(none)"
+
+#: internal/adapters/output/textformatter.go:76
+msgid ")"
+msgstr ")"
+
+#: internal/adapters/cli/commands/removehook.go:233
+msgid "* Dry-run mode: showing what would be removed"
+msgstr "* Dry-run mode: showing what would be removed"
+
+#: internal/adapters/output/summaryformatter.go:97
+msgid "**Config Sources:**"
+msgstr "**Config Sources:**"
+
+#: internal/adapters/output/summaryformatter.go:87
+msgid "**Config Warnings:**"
+msgstr "**Config Warnings:**"
+
+#: internal/adapters/output/summaryformatter.go:77
+msgid "**Validated:** %s | **Ignored:** %d | **Passed:** %d | **Failed:** %d"
+msgstr "**Validated:** %s | **Ignored:** %d | **Passed:** %d | **Failed:** %d"
+
+#: internal/adapters/output/textformatter.go:290
+msgid "+%d more"
+msgstr "+%d more"
+
+#: internal/adapters/output/textformatter.go:199
+#: internal/adapters/output/textformatter.go:73
+msgid ", %s"
+msgstr ", %s"
+
+#: internal/adapters/output/textformatter.go:93
+msgid "- %s: %d failure\n"
+msgid_plural "- %s: %d failures\n"
+msgstr[0] "- %s: %d failure\n"
+msgstr[1] "- %s: %d failures\n"
+
+#: internal/adapters/output/summaryformatter.go:173
+#: internal/adapters/output/summaryformatter.go:193
+msgid "- **%s**: %s\n"
+msgstr "- **%s**: %s\n"
+
+#: internal/adapters/cli/commands/config_check.go:296
+#: internal/adapters/cli/commands/config_check.go:320
+#: internal/adapters/cli/commands/config_check.go:366
+msgid "- none"
+msgstr "- none"
+
+#: internal/adapters/cli/commands/validate_setup.go:202
+msgid "--%s contains unknown rule(s): %s"
+msgstr "--%s contains unknown rule(s): %s"
+
+#: internal/adapters/cli/commands/validate_setup.go:147
+msgid "--%s value %q contains no rule names"
+msgstr "--%s value %q contains no rule names"
+
+#: internal/adapters/cli/commands/removehook.go:76
+msgid "--global and --dry-run cannot be used together"
+msgstr "--global and --dry-run cannot be used together"
+
+#: internal/adapters/cli/commands/config_init.go:122
+msgid "--stdout and --output are mutually exclusive"
+msgstr "--stdout and --output are mutually exclusive"
+
+#: internal/adapters/cli/commands/config.go:232
+msgid "--timeout must be a positive duration"
+msgstr "--timeout must be a positive duration"
+
+#: internal/adapters/cli/commands/removehook.go:312
+msgid "... (%d more line)\n"
+msgid_plural "... (%d more lines)\n"
+msgstr[0] "... (%d more line)\n"
+msgstr[1] "... (%d more lines)\n"
+
+#: internal/adapters/output/githubformatter.go:107
+#: internal/adapters/output/githubformatter.go:126
+msgid "::error title=%s::%s\n"
+msgstr "::error title=%s::%s\n"
+
+#: internal/adapters/output/githubformatter.go:133
+msgid "::error title=%s::%s [%s]\n"
+msgstr "::error title=%s::%s [%s]\n"
+
+#: internal/adapters/output/githubformatter.go:61
+msgid "::group::%s Summary\n"
+msgstr "::group::%s Summary\n"
+
+#: internal/adapters/output/githubformatter.go:86
+msgid "::group::Commit #%d: %s - %s\n"
+msgstr "::group::Commit #%d: %s - %s\n"
+
+#: internal/adapters/output/githubformatter.go:75
+msgid "::group::Configuration Warnings\n"
+msgstr "::group::Configuration Warnings\n"
+
+#: internal/adapters/output/githubformatter.go:102
+msgid "::group::Repository Validation\n"
+msgstr "::group::Repository Validation\n"
+
+#: internal/adapters/output/githubformatter.go:120
+msgid "::notice title=%s::All commit validation rules passed\n"
+msgstr "::notice title=%s::All commit validation rules passed\n"
+
+#: internal/adapters/output/githubformatter.go:78
+msgid "::warning::%s\n"
+msgstr "::warning::%s\n"
+
+#: internal/adapters/output/errorformatting_messages.go:347
+msgid "A body line is longer than the configured width"
+msgstr "A body line is longer than the configured width"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "AUTHOR"
+msgstr "AUTHOR"
+
+#: internal/adapters/cli/commands/installhook.go:279
+msgid "Active policy:\n"
+msgstr "Active policy:\n"
+
+#: internal/adapters/output/errorformatting.go:275
+#: internal/adapters/output/textformatter.go:771
+#: internal/adapters/output/textformatter.go:797
+msgid "Actual: %s"
+msgstr "Actual: %s"
+
+#: internal/adapters/cli/commands/errors.go:245
+msgid "Add 'gommitlint validate --message-file \"$1\"' to that hook manager's commit-msg hook"
+msgstr "Add 'gommitlint validate --message-file \"$1\"' to that hook manager's commit-msg hook"
+
+#: internal/adapters/output/helpregistry.go:204
+msgid "Add DCO sign-off line: 'Signed-off-by: Your Real Name <your.email@domain.com>'"
+msgstr "Add DCO sign-off line: 'Signed-off-by: Your Real Name <your.email@domain.com>'"
+
+#: internal/adapters/output/helpregistry.go:242
+msgid "Add JIRA reference like 'Refs: PROJ-123' in the body"
+msgstr "Add JIRA reference like 'Refs: PROJ-123' in the body"
+
+#: internal/adapters/output/helpregistry.go:239
+msgid "Add JIRA ticket to subject (e.g., 'PROJ-123: description')"
+msgstr "Add JIRA ticket to subject (e.g., 'PROJ-123: description')"
+
+#: internal/adapters/output/helpregistry.go:236
+msgid "Add a JIRA ticket reference like 'PROJ-123' to your commit message"
+msgstr "Add a JIRA ticket reference like 'PROJ-123' to your commit message"
+
+#: internal/adapters/output/helpregistry.go:173
+msgid "Add a blank line after the subject, followed by a detailed description"
+msgstr "Add a blank line after the subject, followed by a detailed description"
+
+#: internal/adapters/output/helpregistry.go:194
+msgid "Add a detailed description before the sign-off line"
+msgstr "Add a detailed description before the sign-off line"
+
+#: internal/adapters/output/helpregistry.go:107
+msgid "Add a meaningful description explaining what the commit does"
+msgstr "Add a meaningful description explaining what the commit does"
+
+#: internal/adapters/output/helpregistry.go:49
+msgid "Add a non-empty subject line"
+msgstr "Add a non-empty subject line"
+
+#: internal/adapters/cli/commands/translations_errors.go:163
+msgid "Add a regular %s.po file under a real locale directory"
+msgstr "Add a regular %s.po file under a real locale directory"
+
+#: internal/adapters/output/helpregistry.go:313
+msgid "Add eligible public keys to the key directory"
+msgstr "Add eligible public keys to the key directory"
+
+#: internal/adapters/output/helpregistry.go:180
+msgid "Add more detail to the commit body"
+msgstr "Add more detail to the commit body"
+
+#: internal/adapters/output/helpregistry.go:320
+msgid "Add valid %s public keys to the key directory"
+msgstr "Add valid %s public keys to the key directory"
+
+#: internal/adapters/output/helpregistry.go:317
+msgid "Add valid %s public keys to the key directory — keys rejected: %s"
+msgstr "Add valid %s public keys to the key directory — keys rejected: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:518
+msgid "Allow fixup commits: %t"
+msgstr "Allow fixup commits: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:418
+msgid "Allow multi-scope: %t"
+msgstr "Allow multi-scope: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:411
+msgid "Allow signoff only: %t"
+msgstr "Allow signoff only: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:459
+msgid "Allowed authors: %v"
+msgstr "Allowed authors: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:461
+msgid "Allowed authors: (any)"
+msgstr "Allowed authors: (any)"
+
+#: internal/adapters/cli/commands/config_show_text.go:440
+msgid "Allowed signers: %v"
+msgstr "Allowed signers: %v"
+
+#: internal/adapters/output/errorformatting_messages.go:319
+msgid "Author '%s' is not in the allowed list"
+msgstr "Author '%s' is not in the allowed list"
+
+#: internal/adapters/output/errorformatting_messages.go:322
+msgid "Author is not in the allowed list"
+msgstr "Author is not in the allowed list"
+
+#: internal/adapters/cli/commands/validate_output.go:145
+msgid "Available --color values: %s"
+msgstr "Available --color values: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:181
+msgid "Available --log-level values: %s"
+msgstr "Available --log-level values: %s"
+
+#: cmd/gommitlint/suggestions.go:59
+msgid "Available commands:\n"
+msgstr "Available commands:\n"
+
+#: internal/adapters/cli/commands/validate.go:238
+#: internal/adapters/cli/commands/validate.go:246
+msgid "Available rules:"
+msgstr "Available rules:"
+
+#: cmd/gommitlint/completion_command.go:765
+msgid "Available shells: %s"
+msgstr "Available shells: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:98
+msgid "Available themes: %s"
+msgstr "Available themes: %s"
+
+#: internal/adapters/cli/commands/errors.go:193
+msgid "Backup custom hook: cp %s %s.backup"
+msgstr "Backup custom hook: cp %s %s.backup"
+
+#: internal/adapters/output/errorformatting_messages.go:297
+msgid "Body contains only sign-off lines"
+msgstr "Body contains only sign-off lines"
+
+#: internal/adapters/output/errorformatting_messages.go:126
+msgid "Body has no JIRA reference"
+msgstr "Body has no JIRA reference"
+
+#: internal/adapters/output/errorformatting_messages.go:299
+msgid "Body has no descriptive content"
+msgstr "Body has no descriptive content"
+
+#: internal/adapters/output/errorformatting_messages.go:357
+msgid "Body is %s characters (min %s)"
+msgstr "Body is %s characters (min %s)"
+
+#: internal/adapters/output/errorformatting_messages.go:107
+msgid "Body is required but missing"
+msgstr "Body is required but missing"
+
+#: internal/adapters/output/errorformatting_messages.go:360
+msgid "Body is shorter than the configured minimum"
+msgstr "Body is shorter than the configured minimum"
+
+#: internal/adapters/cli/commands/config_show_text.go:410
+msgid "Body max line length: %d"
+msgstr "Body max line length: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:409
+msgid "Body min length: %d"
+msgstr "Body min length: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:408
+msgid "Body required: %t"
+msgstr "Body required: %t"
+
+#: internal/adapters/output/errorformatting_messages.go:295
+msgid "Body starts with a sign-off line"
+msgstr "Body starts with a sign-off line"
+
+#: internal/domain/rulecatalog/catalog.go:51
+msgid "Branch Ahead"
+msgstr "Branch Ahead"
+
+#: internal/adapters/output/errorformatting_messages.go:586
+msgid "Branch has %s commits over the limit"
+msgstr "Branch has %s commits over the limit"
+
+#: internal/adapters/output/errorformatting_messages.go:81
+msgid "Breaking change marker (!) is not allowed"
+msgstr "Breaking change marker (!) is not allowed"
+
+#: cmd/gommitlint/main.go:246
+msgid "By default, gommitlint validates the HEAD commit. Use --base-branch to validate all commits in a feature branch, or --count to validate multiple recent commits."
+msgstr "By default, gommitlint validates the HEAD commit. Use --base-branch to validate all commits in a feature branch, or --count to validate multiple recent commits."
+
+#: cmd/gommitlint/help_printer.go:415 cmd/gommitlint/help_printer.go:444
+msgid "CATEGORY"
+msgstr "CATEGORY"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:444
+#: cmd/gommitlint/help_printer.go:558
+msgid "COMMANDS"
+msgstr "COMMANDS"
+
+#: internal/adapters/output/textformatter.go:481
+msgid "COMMIT #%d [%s] %s"
+msgstr "COMMIT #%d [%s] %s"
+
+#: internal/adapters/output/textformatter.go:484
+msgid "COMMIT %s"
+msgstr "COMMIT %s"
+
+#: internal/adapters/output/textformatter.go:486
+msgid "COMMIT [%s] %s"
+msgstr "COMMIT [%s] %s"
+
+#: cmd/gommitlint/help_printer.go:558
+msgid "COMMON FLAGS"
+msgstr "COMMON FLAGS"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "COPYRIGHT"
+msgstr "COPYRIGHT"
+
+#: internal/adapters/cli/commands/errors.go:265
+msgid "Change to a git repository: cd /path/to/repo"
+msgstr "Change to a git repository: cd /path/to/repo"
+
+#: internal/adapters/output/errorformatting.go:218
+msgid "Check ID: %s"
+msgstr "Check ID: %s"
+
+#: internal/adapters/cli/commands/errors.go:309
+msgid "Check config syntax: gommitlint config show"
+msgstr "Check config syntax: gommitlint config show"
+
+#: internal/adapters/cli/commands/errors.go:268
+msgid "Check current directory: pwd"
+msgstr "Check current directory: pwd"
+
+#: internal/adapters/cli/commands/config_init.go:179
+#: internal/adapters/cli/commands/config_init.go:210
+#: internal/adapters/cli/commands/validate_output.go:61
+msgid "Check directory permissions"
+msgstr "Check directory permissions"
+
+#: internal/adapters/cli/commands/errors.go:358
+msgid "Check git log: git log --oneline -10"
+msgstr "Check git log: git log --oneline -10"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:275
+#: internal/adapters/cli/commands/hook_lifecycle.go:284
+msgid "Check hook file permissions"
+msgstr "Check hook file permissions"
+
+#: internal/adapters/cli/commands/errors.go:172
+#: internal/adapters/cli/commands/errors.go:208
+#: internal/adapters/cli/commands/errors.go:69
+msgid "Check hook status: gommitlint hook status"
+msgstr "Check hook status: gommitlint hook status"
+
+#: internal/adapters/cli/commands/config_sync.go:144
+msgid "Check managed_sources configuration, URL reachability, and integrity.sha256 values"
+msgstr "Check managed_sources configuration, URL reachability, and integrity.sha256 values"
+
+#: internal/adapters/cli/commands/config_init.go:275
+#: internal/adapters/cli/commands/config_show.go:201
+#: internal/adapters/cli/commands/config_show.go:74
+#: internal/adapters/cli/commands/errors.go:407
+#: internal/adapters/cli/commands/translations_errors.go:174
+msgid "Check output destination"
+msgstr "Check output destination"
+
+#: internal/adapters/cli/commands/globalhooks.go:167
+msgid "Check permissions and global git config"
+msgstr "Check permissions and global git config"
+
+#: internal/adapters/cli/commands/validate_execute.go:234
+#: internal/adapters/cli/commands/validate_output.go:71
+msgid "Check report file path or permissions"
+msgstr "Check report file path or permissions"
+
+#: internal/adapters/cli/commands/hookstatus.go:71
+msgid "Check repository path and hook directory"
+msgstr "Check repository path and hook directory"
+
+#: internal/adapters/cli/commands/removehook.go:567
+msgid "Check repository path and hook permissions"
+msgstr "Check repository path and hook permissions"
+
+#: internal/adapters/cli/commands/config.go:308
+#: internal/adapters/cli/commands/validate.go:292
+msgid "Check spell locale in configuration"
+msgstr "Check spell locale in configuration"
+
+#: internal/adapters/cli/commands/validate_execute.go:196
+msgid "Check that Git can read it: git -C <path> rev-parse --show-object-format"
+msgstr "Check that Git can read it: git -C <path> rev-parse --show-object-format"
+
+#: internal/adapters/output/errorformatting_messages.go:207
+msgid "Check that you are in a valid Git repository"
+msgstr "Check that you are in a valid Git repository"
+
+#: internal/adapters/output/helpregistry.go:71
+msgid "Check the case of the first character of your commit subject"
+msgstr "Check the case of the first character of your commit subject"
+
+#: internal/adapters/cli/commands/translations_errors.go:114
+msgid "Check the locale directory path, type, and permissions"
+msgstr "Check the locale directory path, type, and permissions"
+
+#: internal/adapters/cli/commands/errors.go:347
+msgid "Check the path and re-run"
+msgstr "Check the path and re-run"
+
+#: internal/adapters/cli/commands/translations_errors.go:103
+msgid "Check the source directory path and permissions"
+msgstr "Check the source directory path and permissions"
+
+#: internal/adapters/output/errorformatting_messages.go:226
+msgid "Check your configuration file path"
+msgstr "Check your configuration file path"
+
+#: internal/adapters/output/errorformatting_messages.go:556
+msgid "Check your rule configuration"
+msgstr "Check your rule configuration"
+
+#: internal/adapters/output/errorformatting_messages.go:544
+msgid "Check your signature policy configuration"
+msgstr "Check your signature policy configuration"
+
+#: internal/adapters/output/texthelpers.go:69
+msgid "Column"
+msgstr "Column"
+
+#: internal/adapters/output/gitlabformatter.go:112
+msgid "Commit #%d: %s - %s"
+msgstr "Commit #%d: %s - %s"
+
+#: internal/domain/rulecatalog/catalog.go:54
+msgid "Commit body"
+msgstr "Commit body"
+
+#: internal/adapters/output/errorformatting_messages.go:147
+msgid "Commit is not cryptographically signed"
+msgstr "Commit is not cryptographically signed"
+
+#: internal/adapters/output/errorformatting_messages.go:305
+msgid "Commit is not signed with %s"
+msgstr "Commit is not signed with %s"
+
+#: internal/adapters/output/errorformatting_messages.go:43
+msgid "Commit message has no subject"
+msgstr "Commit message has no subject"
+
+#: internal/adapters/output/errorformatting_messages.go:150
+msgid "Commit signature is invalid"
+msgstr "Commit signature is invalid"
+
+#: internal/adapters/output/errorformatting_messages.go:153
+msgid "Commit signature is malformed"
+msgstr "Commit signature is malformed"
+
+#: internal/domain/rulecatalog/catalog.go:48
+msgid "Commit type"
+msgstr "Commit type"
+
+#: internal/adapters/output/tableformatter.go:120
+msgid "Commits: %d"
+msgstr "Commits: %d"
+
+#: internal/adapters/output/tableformatter.go:186
+msgid "Commits: Validated %d   Ignored %d"
+msgstr "Commits: Validated %d   Ignored %d"
+
+#: internal/adapters/cli/commands/translations_compile.go:105
+msgid "Compiled %d translation catalog\n"
+msgid_plural "Compiled %d translation catalogs\n"
+msgstr[0] "Compiled %d translation catalog\n"
+msgstr[1] "Compiled %d translation catalogs\n"
+
+#: internal/adapters/cli/commands/translations_compile.go:36
+msgid ""
+"Compiles each locale/<lang>/gommitlint.po to a binary\n"
+"generated/locale/<lang>/LC_MESSAGES/gommitlint.mo via msgfmt --check.\n"
+"The --check flag fails on syntax errors and on incomplete plural\n"
+"forms — caught at build time, never at runtime.\n"
+"\n"
+"Run-host requirement: msgfmt (GNU gettext-tools)."
+msgstr ""
+"Compiles each locale/<lang>/gommitlint.po to a binary\n"
+"generated/locale/<lang>/LC_MESSAGES/gommitlint.mo via msgfmt --check.\n"
+"The --check flag fails on syntax errors and on incomplete plural\n"
+"forms — caught at build time, never at runtime.\n"
+"\n"
+"Run-host requirement: msgfmt (GNU gettext-tools)."
+
+#: cmd/gommitlint/completion_command.go:751
+msgid "Completions are registered for '%s' (the binary name)."
+msgstr "Completions are registered for '%s' (the binary name)."
+
+#: internal/adapters/output/textformatter.go:371
+msgid "Config: %s"
+msgstr "Config: %s"
+
+#: internal/adapters/cli/globalflags.go:26
+#: internal/adapters/cli/globalflags.go:31
+msgid "Configuration Control"
+msgstr "Configuration Control"
+
+#: internal/adapters/cli/commands/config_show_text.go:229
+msgid "Configuration Graph:"
+msgstr "Configuration Graph:"
+
+#: internal/adapters/cli/commands/config_check.go:361
+msgid "Configuration Issues:"
+msgstr "Configuration Issues:"
+
+#: internal/adapters/cli/commands/config_show_text.go:274
+msgid "Configuration Provenance:"
+msgstr "Configuration Provenance:"
+
+#: internal/adapters/cli/commands/config_check.go:268
+#: internal/adapters/cli/commands/config_show_text.go:181
+msgid "Configuration Source: %s"
+msgstr "Configuration Source: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:170
+msgid "Configuration Sources (in precedence order):"
+msgstr "Configuration Sources (in precedence order):"
+
+#: internal/adapters/output/gitlabformatter.go:100
+msgid "Configuration Warnings"
+msgstr "Configuration Warnings"
+
+#: internal/adapters/output/warningformatting_messages.go:74
+msgid "Configuration file contains an unknown key (ignored)"
+msgstr "Configuration file contains an unknown key (ignored)"
+
+#: internal/adapters/output/warningformatting_messages.go:101
+msgid "Configuration file structure does not match the expected schema"
+msgstr "Configuration file structure does not match the expected schema"
+
+#: internal/adapters/output/warningformatting_messages.go:63
+msgid "Configuration file was skipped"
+msgstr "Configuration file was skipped"
+
+#: internal/adapters/cli/commands/config_show.go:151
+msgid "Configuration source: %s"
+msgstr "Configuration source: %s"
+
+#: internal/adapters/cli/commands/installhook.go:226
+msgid "Configuration:\n"
+msgstr "Configuration:\n"
+
+#: internal/adapters/cli/commands/doctor.go:76
+msgid "Configuration: %s\n"
+msgstr "Configuration: %s\n"
+
+#: internal/adapters/output/helpregistry.go:303
+msgid "Configure GPG signing: git config --global commit.gpgsign true"
+msgstr "Configure GPG signing: git config --global commit.gpgsign true"
+
+#: internal/adapters/output/helpregistry.go:306
+msgid "Configure SSH signing: git config --global gpg.format ssh"
+msgstr "Configure SSH signing: git config --global gpg.format ssh"
+
+#: internal/adapters/cli/commands/config_show_text.go:204
+#: internal/adapters/cli/commands/config_sync.go:105
+#: internal/adapters/cli/commands/config_sync.go:93
+msgid "Configured source: %s"
+msgstr "Configured source: %s"
+
+#: internal/adapters/output/helpregistry.go:379
+msgid "Consider smaller PRs or rebase: 'git rebase -i %s'%s"
+msgstr "Consider smaller PRs or rebase: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:375
+msgid "Consider squashing %d excess commits: 'git rebase -i %s'%s"
+msgstr "Consider squashing %d excess commits: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:367
+msgid "Consider squashing excess commits before merging"
+msgstr "Consider squashing excess commits before merging"
+
+#: internal/adapters/output/errorformatting_messages.go:98
+msgid "Content appears after sign-off lines"
+msgstr "Content appears after sign-off lines"
+
+#: internal/adapters/cli/commands/config_show_text.go:417
+msgid "Conventional Commit Configuration:"
+msgstr "Conventional Commit Configuration:"
+
+#: internal/adapters/output/errorformatting_messages.go:64
+msgid "Conventional commit description is empty"
+msgstr "Conventional commit description is empty"
+
+#: internal/adapters/output/warningformatting_messages.go:48
+msgid "Could not parse %s config file %s (%s), using defaults instead"
+msgstr "Could not parse %s config file %s (%s), using defaults instead"
+
+#: internal/adapters/output/warningformatting_messages.go:51
+msgid "Could not parse %s config file %s, using defaults instead"
+msgstr "Could not parse %s config file %s, using defaults instead"
+
+#: internal/adapters/output/warningformatting_messages.go:59
+msgid "Could not parse configuration file, using defaults instead"
+msgstr "Could not parse configuration file, using defaults instead"
+
+#: internal/adapters/cli/commands/config_sync.go:61
+msgid "Create a project config file: gommitlint config init"
+msgstr "Create a project config file: gommitlint config init"
+
+#: internal/adapters/cli/commands/errors.go:310
+msgid "Create default config: gommitlint config init"
+msgstr "Create default config: gommitlint config init"
+
+#: internal/adapters/cli/commands/config_show_text.go:435
+msgid "Crypto Signature Configuration:"
+msgstr "Crypto Signature Configuration:"
+
+#: internal/adapters/output/texthelpers.go:107
+msgid "Current Word"
+msgstr "Current Word"
+
+#: internal/adapters/output/errorformatting.go:286
+msgid "Current length: %s characters"
+msgstr "Current length: %s characters"
+
+#: internal/adapters/cli/commands/removehook.go:285
+msgid "Current state:\n"
+msgstr "Current state:\n"
+
+#: internal/adapters/output/errorformatting.go:314
+msgid "Current: '%s'"
+msgstr "Current: '%s'"
+
+#: internal/adapters/cli/commands/config_show.go:163
+msgid "Customize values for your project as needed"
+msgstr "Customize values for your project as needed"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "DESCRIPTION"
+msgstr "DESCRIPTION"
+
+#: internal/adapters/output/tableformatter.go:132
+msgid "DETAILS"
+msgstr "DETAILS"
+
+#: internal/adapters/cli/globalflags.go:61
+#: internal/adapters/cli/globalflags.go:66
+msgid "Debug and Logging"
+msgstr "Debug and Logging"
+
+#: internal/adapters/cli/commands/config_init.go:291
+msgid "Default values are commented out. Uncomment and modify settings you want to change."
+msgstr "Default values are commented out. Uncomment and modify settings you want to change."
+
+#: internal/adapters/output/errorformatting_messages.go:327
+msgid "Description is longer than %d characters"
+msgstr "Description is longer than %d characters"
+
+#: internal/adapters/output/errorformatting_messages.go:330
+msgid "Description is too long"
+msgstr "Description is too long"
+
+#: internal/adapters/cli/commands/config_show_text.go:208
+msgid "Destination: %s"
+msgstr "Destination: %s"
+
+#: internal/adapters/cli/commands/translations.go:25
+msgid ""
+"Developer-facing translation catalog management.\n"
+"\n"
+"Commands:\n"
+"  update   Refresh locale/<lang>/gommitlint.po from source code\n"
+"           (the built-in extractor finds msgids; msgmerge folds them into existing\n"
+"           catalogs while preserving translator-edited msgstr entries).\n"
+"\n"
+"  compile  Compile every locale/<lang>/gommitlint.po to a binary\n"
+"           gommitlint.mo catalog under generated/locale/<lang>/LC_MESSAGES/.\n"
+"\n"
+"The scripts/lint/translation-drift.sh gate re-runs extraction and reports\n"
+"catalogs that were not refreshed after source strings changed."
+msgstr ""
+"Developer-facing translation catalog management.\n"
+"\n"
+"Commands:\n"
+"  update   Refresh locale/<lang>/gommitlint.po from source code\n"
+"           (the built-in extractor finds msgids; msgmerge folds them into existing\n"
+"           catalogs while preserving translator-edited msgstr entries).\n"
+"\n"
+"  compile  Compile every locale/<lang>/gommitlint.po to a binary\n"
+"           gommitlint.mo catalog under generated/locale/<lang>/LC_MESSAGES/.\n"
+"\n"
+"The scripts/lint/translation-drift.sh gate re-runs extraction and reports\n"
+"catalogs that were not refreshed after source strings changed."
+
+#: internal/adapters/cli/commands/config_show_text.go:371
+msgid "Disabled (not in active config):"
+msgstr "Disabled (not in active config):"
+
+#: internal/adapters/cli/commands/config_show_text.go:390
+msgid "Disabled: %v"
+msgstr "Disabled: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:392
+msgid "Disabled: (none)"
+msgstr "Disabled: (none)"
+
+#: internal/adapters/cli/commands/config_show_text.go:419
+msgid "Disallow breaking changes: %t"
+msgstr "Disallow breaking changes: %t"
+
+#: internal/adapters/cli/commands/installhook.go:206
+msgid "Dispatchers installed:\n"
+msgstr "Dispatchers installed:\n"
+
+#: internal/adapters/cli/commands/translations_errors.go:74
+msgid "Do not use '.', '..', absolute paths, drive prefixes, or control characters"
+msgstr "Do not use '.', '..', absolute paths, drive prefixes, or control characters"
+
+#: internal/adapters/output/gitlabformatter.go:132
+#: internal/adapters/output/gitlabformatter.go:187
+msgid "ERROR:"
+msgstr "ERROR:"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444 cmd/gommitlint/help_printer.go:558
+msgid "EXAMPLES"
+msgstr "EXAMPLES"
+
+#: internal/adapters/output/helpregistry.go:213
+msgid "Each sign-off must be from a different person"
+msgstr "Each sign-off must be from a different person"
+
+#: internal/adapters/cli/commands/config_init.go:202
+msgid "Edit existing config in your editor"
+msgstr "Edit existing config in your editor"
+
+#: internal/adapters/cli/commands/config_show_text.go:358
+msgid "Enabled Rules (%d of %d):"
+msgstr "Enabled Rules (%d of %d):"
+
+#: internal/adapters/cli/commands/config_show_text.go:384
+msgid "Enabled: %v"
+msgstr "Enabled: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:386
+msgid "Enabled: (none)"
+msgstr "Enabled: (none)"
+
+#: cmd/gommitlint/completion_command.go:730
+msgid "Ensure %s is in your fpath"
+msgstr "Ensure %s is in your fpath"
+
+#: internal/adapters/output/helpregistry.go:329
+msgid "Ensure %s public keys are present in the key directory"
+msgstr "Ensure %s public keys are present in the key directory"
+
+#: internal/adapters/output/helpregistry.go:296
+msgid "Ensure GPG signature includes complete BEGIN/END markers"
+msgstr "Ensure GPG signature includes complete BEGIN/END markers"
+
+#: internal/adapters/output/helpregistry.go:299
+msgid "Ensure SSH signature includes complete BEGIN/END markers"
+msgstr "Ensure SSH signature includes complete BEGIN/END markers"
+
+#: internal/adapters/output/helpregistry.go:347
+msgid "Ensure all ignore_ticket_patterns are valid regular expressions"
+msgstr "Ensure all ignore_ticket_patterns are valid regular expressions"
+
+#: internal/adapters/output/helpregistry.go:326
+msgid "Ensure public keys are present in the key directory"
+msgstr "Ensure public keys are present in the key directory"
+
+#: cmd/gommitlint/completion_command.go:752
+#: internal/adapters/cli/commands/translations_errors.go:93
+msgid "Ensure that name is on your PATH when invoking the command."
+msgstr "Ensure that name is on your PATH when invoking the command."
+
+#: internal/adapters/output/helpregistry.go:358
+msgid "Ensure the branch '%s' exists, or use a full ref like 'origin/%s' if only the remote branch exists"
+msgstr "Ensure the branch '%s' exists, or use a full ref like 'origin/%s' if only the remote branch exists"
+
+#: internal/adapters/cli/commands/errors.go:320
+msgid "Ensure the config file is owned by your user"
+msgstr "Ensure the config file is owned by your user"
+
+#: internal/adapters/output/helpregistry.go:293
+msgid "Ensure the key directory exists and is readable"
+msgstr "Ensure the key directory exists and is readable"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:260
+#: internal/adapters/cli/commands/hook_lifecycle.go:304
+msgid "Ensure the repository path is within your workspace"
+msgstr "Ensure the repository path is within your workspace"
+
+#: internal/adapters/output/helpregistry.go:226
+msgid "Ensure the spell checker is properly configured"
+msgstr "Ensure the spell checker is properly configured"
+
+#: internal/adapters/output/helpregistry.go:81
+msgid "Ensure your commit message contains only valid UTF-8 characters"
+msgstr "Ensure your commit message contains only valid UTF-8 characters"
+
+#: internal/adapters/output/helpregistry.go:290
+msgid "Ensure your signing key is properly configured"
+msgstr "Ensure your signing key is properly configured"
+
+#: internal/adapters/cli/commands/config_show_text.go:203
+#: internal/adapters/cli/commands/config_sync.go:92
+msgid "Env var: %s"
+msgstr "Env var: %s"
+
+#: internal/adapters/output/errorformatting.go:223
+msgid "Error Message: %s"
+msgstr "Error Message: %s"
+
+#: cmd/gommitlint/suggestions.go:58
+msgid ""
+"Error: Unknown command %q\n"
+"\n"
+msgstr ""
+"Error: Unknown command %q\n"
+"\n"
+
+#: cmd/gommitlint/suggestions.go:55
+msgid ""
+"Error: Unknown command %q\n"
+"\n"
+"Did you mean %q?\n"
+"\n"
+msgstr ""
+"Error: Unknown command %q\n"
+"\n"
+"Did you mean %q?\n"
+"\n"
+
+#: cmd/gommitlint/help_printer.go:467
+msgid "Examples:"
+msgstr "Examples:"
+
+#: cmd/gommitlint/main.go:248
+msgid ""
+"Examples:\n"
+"   # Validate the HEAD commit\n"
+"   gommitlint validate\n"
+"\n"
+"   # Validate the last 5 commits\n"
+"   gommitlint validate --count 5\n"
+"\n"
+"   # Validate every commit on a feature branch\n"
+"   gommitlint validate --base-branch main\n"
+"\n"
+"   # Read a commit message from stdin (commit-msg hook)\n"
+"   cat .git/COMMIT_EDITMSG | gommitlint validate --message-file -\n"
+"\n"
+"   # Machine-readable output for CI pipelines\n"
+"   gommitlint validate --format json"
+msgstr ""
+"Examples:\n"
+"   # Validate the HEAD commit\n"
+"   gommitlint validate\n"
+"\n"
+"   # Validate the last 5 commits\n"
+"   gommitlint validate --count 5\n"
+"\n"
+"   # Validate every commit on a feature branch\n"
+"   gommitlint validate --base-branch main\n"
+"\n"
+"   # Read a commit message from stdin (commit-msg hook)\n"
+"   cat .git/COMMIT_EDITMSG | gommitlint validate --message-file -\n"
+"\n"
+"   # Machine-readable output for CI pipelines\n"
+"   gommitlint validate --format json"
+
+#: internal/adapters/output/texthelpers.go:71
+#: internal/adapters/output/texthelpers.go:84
+msgid "Expected"
+msgstr "Expected"
+
+#: internal/adapters/output/texthelpers.go:105
+msgid "Expected word"
+msgstr "Expected word"
+
+#: internal/adapters/output/errorformatting.go:276
+#: internal/adapters/output/textformatter.go:766
+#: internal/adapters/output/textformatter.go:793
+msgid "Expected: %s"
+msgstr "Expected: %s"
+
+#: internal/adapters/output/errorformatting.go:315
+msgid "Expected: '%s'"
+msgstr "Expected: '%s'"
+
+#: internal/adapters/output/tableformatter.go:233
+msgid "FAIL"
+msgstr "FAIL"
+
+#: internal/adapters/cli/commands/prepush.go:241
+msgid "Fetch the remote and retry the push"
+msgstr "Fetch the remote and retry the push"
+
+#: internal/adapters/cli/commands/config_show_text.go:219
+msgid "Fetched at: %s"
+msgstr "Fetched at: %s"
+
+#: internal/adapters/cli/commands/config.go:205
+msgid ""
+"Fetches remote managed_sources, verifies integrity, vendors them locally,\n"
+"and updates the inline resolved metadata in the active config file.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config sync\n"
+"  gommitlint config sync --source team-policy\n"
+"  gommitlint config sync --check"
+msgstr ""
+"Fetches remote managed_sources, verifies integrity, vendors them locally,\n"
+"and updates the inline resolved metadata in the active config file.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config sync\n"
+"  gommitlint config sync --source team-policy\n"
+"  gommitlint config sync --check"
+
+#: internal/adapters/cli/commands/config_show_text.go:211
+msgid "Final URL: %s"
+msgstr "Final URL: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:446
+msgid "First word does not match the configured case"
+msgstr "First word does not match the configured case"
+
+#: internal/adapters/output/errorformatting_messages.go:278
+msgid "First word is a gerund (-ing form)"
+msgstr "First word is a gerund (-ing form)"
+
+#: internal/adapters/output/errorformatting_messages.go:416
+msgid "First word is not a lowercase imperative verb"
+msgstr "First word is not a lowercase imperative verb"
+
+#: internal/adapters/output/errorformatting_messages.go:444
+msgid "First word is not an imperative verb in the configured case"
+msgstr "First word is not an imperative verb in the configured case"
+
+#: internal/adapters/output/errorformatting_messages.go:397
+msgid "First word is not capitalized"
+msgstr "First word is not capitalized"
+
+#: internal/adapters/output/errorformatting_messages.go:418
+msgid "First word is not lowercase"
+msgstr "First word is not lowercase"
+
+#: internal/adapters/output/errorformatting_messages.go:267
+msgid "First word is past tense"
+msgstr "First word is past tense"
+
+#: internal/adapters/output/errorformatting_messages.go:289
+msgid "First word is third person"
+msgstr "First word is third person"
+
+#: internal/adapters/output/errorformatting_messages.go:394
+#: internal/adapters/output/errorformatting_messages.go:414
+#: internal/adapters/output/errorformatting_messages.go:442
+msgid "First word should be '%s'"
+msgstr "First word should be '%s'"
+
+#: internal/adapters/output/errorformatting_messages.go:437
+msgid "First word should be '%s' (imperative verb)"
+msgstr "First word should be '%s' (imperative verb)"
+
+#: internal/adapters/output/errorformatting_messages.go:409
+msgid "First word should be '%s' (lowercase, imperative verb)"
+msgstr "First word should be '%s' (lowercase, imperative verb)"
+
+#: internal/adapters/cli/commands/errors.go:319
+msgid "Fix config file permissions: chmod o-w -- %s"
+msgstr "Fix config file permissions: chmod o-w -- %s"
+
+#: internal/adapters/output/errorformatting_messages.go:609
+msgid "Fix spelling in the commit message"
+msgstr "Fix spelling in the commit message"
+
+#: internal/adapters/output/helpregistry.go:281
+msgid "Fix the allowed_authors entry '%s'"
+msgstr "Fix the allowed_authors entry '%s'"
+
+#: internal/adapters/output/helpregistry.go:278
+msgid "Fix the allowed_authors entry '%s' — use %s"
+msgstr "Fix the allowed_authors entry '%s' — use %s"
+
+#: internal/adapters/output/errorformatting_messages.go:552
+msgid "Fix the invalid entry in your configuration"
+msgstr "Fix the invalid entry in your configuration"
+
+#: internal/adapters/output/errorformatting_messages.go:548
+msgid "Fix the invalid regex in your configuration"
+msgstr "Fix the invalid regex in your configuration"
+
+#: internal/adapters/cli/commands/translations_errors.go:152
+msgid "Fix the reported catalog or gettext error, then rerun the compile"
+msgstr "Fix the reported catalog or gettext error, then rerun the compile"
+
+#: internal/adapters/cli/commands/translations_errors.go:133
+msgid "Fix the reported catalog, path, or gettext error, then rerun the update"
+msgstr "Fix the reported catalog, path, or gettext error, then rerun the update"
+
+#: internal/adapters/output/helpregistry.go:223
+msgid "Fix the spelling error"
+msgstr "Fix the spelling error"
+
+#: internal/adapters/output/errorformatting.go:190
+msgid "Fix the test error"
+msgstr "Fix the test error"
+
+#: internal/adapters/cli/commands/config_init.go:292
+msgid "For more information, see: https://codefloe.com/itiquette/gommitlint"
+msgstr "For more information, see: https://codefloe.com/itiquette/gommitlint"
+
+#: internal/adapters/cli/commands/config_show_text.go:405
+msgid "Forbid endings: %v"
+msgstr "Forbid endings: %v"
+
+#: internal/adapters/cli/commands/errors.go:173
+msgid "Force overwrite: gommitlint hook install --force"
+msgstr "Force overwrite: gommitlint hook install --force"
+
+#: internal/adapters/cli/commands/errors.go:209
+msgid "Force overwrite: gommitlint hook install --global --force"
+msgstr "Force overwrite: gommitlint hook install --global --force"
+
+#: internal/adapters/output/helpregistry.go:84
+msgid "Format your commit message according to the proper convention"
+msgstr "Format your commit message according to the proper convention"
+
+#: internal/adapters/cli/commands/config_show_text.go:502
+msgid "Format: %s"
+msgstr "Format: %s"
+
+#: internal/adapters/output/texthelpers.go:73
+msgid "Found"
+msgstr "Found"
+
+#: internal/adapters/output/warningformatting_messages.go:35
+msgid "Found an invalid commit SHA in ignore_commits"
+msgstr "Found an invalid commit SHA in ignore_commits"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+msgid "GLOBAL OPTIONS"
+msgstr "GLOBAL OPTIONS"
+
+#: internal/adapters/output/errorformatting_messages.go:169
+msgid "GPG signature is incomplete"
+msgstr "GPG signature is incomplete"
+
+#: internal/adapters/cli/commands/config_show_text.go:517
+msgid "General Configuration:"
+msgstr "General Configuration:"
+
+#: internal/adapters/cli/commands/config_init.go:289
+msgid "Generated by: gommitlint config init"
+msgstr "Generated by: gommitlint config init"
+
+#: internal/adapters/cli/commands/config_init.go:236
+msgid "Generated by: gommitlint config init --preset %s"
+msgstr "Generated by: gommitlint config init --preset %s"
+
+#: internal/adapters/cli/commands/config_show.go:147
+msgid "Generated by: gommitlint config show --format=yaml"
+msgstr "Generated by: gommitlint config show --format=yaml"
+
+#: internal/adapters/output/helpregistry.go:170
+msgid "Git convention requires a blank line between subject and body"
+msgstr "Git convention requires a blank line between subject and body"
+
+#: internal/adapters/output/errorformatting_messages.go:223
+msgid "Git operation failed — check repository state"
+msgstr "Git operation failed — check repository state"
+
+#: internal/adapters/cli/commands/installhook.go:203
+#: internal/adapters/cli/commands/removehook.go:385
+msgid ""
+"Global hooks directory: %s\n"
+"\n"
+msgstr ""
+"Global hooks directory: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/config_init.go:235
+#: internal/adapters/cli/commands/config_init.go:288
+#: internal/adapters/cli/commands/config_show.go:143
+#: internal/adapters/cli/commands/config_show_text.go:163
+msgid "Gommitlint Configuration"
+msgstr "Gommitlint Configuration"
+
+#: internal/adapters/cli/commands/config_check.go:266
+msgid "Gommitlint Configuration Check"
+msgstr "Gommitlint Configuration Check"
+
+#: internal/adapters/cli/commands/doctor.go:73
+msgid "Gommitlint Doctor\n"
+msgstr "Gommitlint Doctor\n"
+
+#: internal/adapters/cli/commands/hookstatus.go:97
+msgid "Gommitlint Git Hooks:\n"
+msgstr "Gommitlint Git Hooks:\n"
+
+#: internal/adapters/output/gitlabformatter.go:86
+msgid "Gommitlint Summary"
+msgstr "Gommitlint Summary"
+
+#: cmd/gommitlint/main.go:247
+msgid "Gommitlint includes built-in defaults. Discovery mode merges user configuration from $XDG_CONFIG_HOME/gommitlint/settings.{yaml,yml,toml} and project configuration from .gommitlint.{yaml,yml,toml}. --config selects defaults plus one explicit file and its imports without discovered files; --ignore-config uses defaults only. Dedicated environment variables affect discovery and runtime flags, not a general configuration overlay."
+msgstr "Gommitlint includes built-in defaults. Discovery mode merges user configuration from $XDG_CONFIG_HOME/gommitlint/settings.{yaml,yml,toml} and project configuration from .gommitlint.{yaml,yml,toml}. --config selects defaults plus one explicit file and its imports without discovered files; --ignore-config uses defaults only. Dedicated environment variables affect discovery and runtime flags, not a general configuration overlay."
+
+#: internal/adapters/cli/commands/validate.go:236
+#: internal/adapters/cli/commands/validate.go:244
+msgid "Help for rule: %s"
+msgstr "Help for rule: %s"
+
+#: internal/adapters/output/errorformatting.go:248
+#: internal/adapters/output/textformatter.go:889
+msgid "Help:"
+msgstr "Help:"
+
+#: internal/adapters/output/errorformatting_messages.go:192
+msgid "History contains a fixup commit"
+msgstr "History contains a fixup commit"
+
+#: internal/adapters/output/errorformatting_messages.go:189
+msgid "History contains a merge commit"
+msgstr "History contains a merge commit"
+
+#: internal/adapters/cli/commands/validate_output.go:146
+msgid "Honor terminal capability: --color=auto"
+msgstr "Honor terminal capability: --color=auto"
+
+#: internal/adapters/cli/commands/removehook.go:281
+msgid "Hook type: %s\n"
+msgstr "Hook type: %s\n"
+
+#: internal/adapters/cli/commands/removehook.go:244
+msgid ""
+"Hook type: %s\n"
+"\n"
+msgstr ""
+"Hook type: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/doctor.go:89
+msgid "Hooks:\n"
+msgstr "Hooks:\n"
+
+#: internal/domain/rulecatalog/catalog.go:55
+msgid "Identity"
+msgstr "Identity"
+
+#: internal/adapters/cli/commands/config_show_text.go:456
+msgid "Identity Configuration:"
+msgstr "Identity Configuration:"
+
+#: internal/adapters/cli/commands/config_show_text.go:483
+msgid "Ignore ticket patterns: %v"
+msgstr "Ignore ticket patterns: %v"
+
+#: internal/adapters/cli/commands/config_show_text.go:494
+msgid "Ignore words: %v"
+msgstr "Ignore words: %v"
+
+#: internal/adapters/output/reportview.go:72
+msgid "Ignored: %s"
+msgstr "Ignored: %s"
+
+#: internal/adapters/cli/commands/errors.go:266
+msgid "Initialize git repository: git init"
+msgstr "Initialize git repository: git init"
+
+#: internal/adapters/cli/globalflags.go:37
+msgid "Input Control"
+msgstr "Input Control"
+
+#: internal/adapters/cli/commands/validate.go:100
+#: internal/adapters/cli/commands/validate.go:106
+#: internal/adapters/cli/commands/validate.go:113
+#: internal/adapters/cli/commands/validate.go:118
+#: internal/adapters/cli/commands/validate.go:123
+#: internal/adapters/cli/commands/validate.go:128
+#: internal/adapters/cli/commands/validate.go:84
+#: internal/adapters/cli/commands/validate.go:89
+#: internal/adapters/cli/commands/validate.go:95
+msgid "Input Selection"
+msgstr "Input Selection"
+
+#: internal/adapters/cli/commands/config_init.go:238
+msgid "Inspect active rules: gommitlint config show --view=compact"
+msgstr "Inspect active rules: gommitlint config show --view=compact"
+
+#: internal/adapters/cli/commands/errors.go:221
+msgid "Inspect that directory: ls -la -- %s"
+msgstr "Inspect that directory: ls -la -- %s"
+
+#: internal/adapters/cli/commands/errors.go:298
+msgid "Inspect the effective config: gommitlint config show --format=yaml"
+msgstr "Inspect the effective config: gommitlint config show --format=yaml"
+
+#: internal/adapters/cli/commands/doctor.go:32
+msgid ""
+"Inspects the current repository without modifying files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint doctor\n"
+"  gommitlint --repo-path /path/to/repo doctor"
+msgstr ""
+"Inspects the current repository without modifying files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint doctor\n"
+"  gommitlint --repo-path /path/to/repo doctor"
+
+#: internal/adapters/cli/commands/translations_errors.go:92
+msgid "Install GNU gettext (apt install gettext / brew install gettext)"
+msgstr "Install GNU gettext (apt install gettext / brew install gettext)"
+
+#: internal/adapters/cli/commands/validate_execute.go:194
+msgid "Install Git, or use the container image that includes it"
+msgstr "Install Git, or use the container image that includes it"
+
+#: internal/adapters/cli/commands/doctor.go:149
+#: internal/adapters/cli/commands/errors.go:237
+msgid "Install globally instead: gommitlint hook install --global"
+msgstr "Install globally instead: gommitlint hook install --global"
+
+#: cmd/gommitlint/completion_command.go:704
+msgid "Installed"
+msgstr "Installed"
+
+#: internal/adapters/cli/commands/installhook.go:266
+msgid ""
+"Installing git hooks...\n"
+"\n"
+msgstr ""
+"Installing git hooks...\n"
+"\n"
+
+#: internal/adapters/cli/commands/installhook.go:204
+msgid ""
+"Installing global git hooks using dispatcher pattern...\n"
+"\n"
+msgstr ""
+"Installing global git hooks using dispatcher pattern...\n"
+"\n"
+
+#: internal/adapters/cli/commands/installhook.go:34
+msgid ""
+"Installs commit-msg and pre-push Git hooks for automatic validation.\n"
+"\n"
+"Examples:\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Replace existing Gommitlint hooks\n"
+"  gommitlint hook install --force\n"
+"\n"
+"  # Install global hooks\n"
+"  gommitlint hook install --global"
+msgstr ""
+"Installs commit-msg and pre-push Git hooks for automatic validation.\n"
+"\n"
+"Examples:\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Replace existing Gommitlint hooks\n"
+"  gommitlint hook install --force\n"
+"\n"
+"  # Install global hooks\n"
+"  gommitlint hook install --global"
+
+#: cmd/gommitlint/completion_command.go:116
+msgid "Installs shell completion for bash, zsh, or fish. Use --all to install all supported shells."
+msgstr "Installs shell completion for bash, zsh, or fish. Use --all to install all supported shells."
+
+#: internal/adapters/cli/commands/config_show_text.go:222
+msgid "Integrity: %s"
+msgstr "Integrity: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:474
+msgid "JIRA Configuration:"
+msgstr "JIRA Configuration:"
+
+#: internal/adapters/output/errorformatting_messages.go:142
+msgid "JIRA key in Refs: line is not uppercase"
+msgstr "JIRA key in Refs: line is not uppercase"
+
+#: internal/adapters/output/errorformatting_messages.go:132
+msgid "JIRA key is not at an allowed position"
+msgstr "JIRA key is not at an allowed position"
+
+#: internal/domain/rulecatalog/catalog.go:53
+msgid "JIRA reference"
+msgstr "JIRA reference"
+
+#: internal/adapters/output/errorformatting_messages.go:129
+msgid "JIRA reference is not in the PROJ-123 format"
+msgstr "JIRA reference is not in the PROJ-123 format"
+
+#: internal/adapters/output/helpregistry.go:98
+msgid "Keep description under %s characters"
+msgstr "Keep description under %s characters"
+
+#: internal/adapters/cli/commands/errors.go:222
+msgid "Keep the current hooks directory and add gommitlint through its hook manager"
+msgstr "Keep the current hooks directory and add gommitlint through its hook manager"
+
+#: internal/adapters/output/helpregistry.go:101
+msgid "Keep the description under the maximum allowed length"
+msgstr "Keep the description under the maximum allowed length"
+
+#: internal/adapters/cli/commands/config_show_text.go:444
+msgid "Key directory: %s"
+msgstr "Key directory: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:508
+msgid "Limits Configuration:"
+msgstr "Limits Configuration:"
+
+#: internal/adapters/output/texthelpers.go:67
+#: internal/adapters/output/texthelpers.go:88
+msgid "Line"
+msgstr "Line"
+
+#: internal/adapters/output/errorformatting_messages.go:344
+msgid "Line %s is %s characters (max %s)"
+msgstr "Line %s is %s characters (max %s)"
+
+#: internal/domain/rulecatalog/catalog.go:56
+msgid "Linear History"
+msgstr "Linear History"
+
+#: internal/adapters/cli/commands/validate_execute.go:131
+#: internal/adapters/cli/commands/validate_execute.go:181
+msgid "List available branches: git branch -a"
+msgstr "List available branches: git branch -a"
+
+#: internal/adapters/cli/commands/validate_execute.go:284
+msgid "List configured rules: gommitlint config show"
+msgstr "List configured rules: gommitlint config show"
+
+#: internal/adapters/cli/commands/validate_execute.go:132
+msgid "List recent commits: git log --oneline -10"
+msgstr "List recent commits: git log --oneline -10"
+
+#: internal/adapters/output/texthelpers.go:86
+msgid "Locale"
+msgstr "Locale"
+
+#: internal/adapters/cli/commands/config_show_text.go:491
+#: internal/adapters/output/errorformatting.go:305
+msgid "Locale: %s"
+msgstr "Locale: %s"
+
+#: internal/adapters/cli/commands/hook.go:27
+msgid ""
+"Manage Gommitlint Git hooks for automatic commit message and signature validation.\n"
+"\n"
+"Gommitlint manages two hooks:\n"
+"  commit-msg   Validates message format (blocks invalid commits)\n"
+"  pre-push     Validates signatures when required by the active configuration\n"
+"\n"
+"Examples:\n"
+"  # Show current hook status\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Install hooks globally\n"
+"  gommitlint hook install --global\n"
+"\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove"
+msgstr ""
+"Manage Gommitlint Git hooks for automatic commit message and signature validation.\n"
+"\n"
+"Gommitlint manages two hooks:\n"
+"  commit-msg   Validates message format (blocks invalid commits)\n"
+"  pre-push     Validates signatures when required by the active configuration\n"
+"\n"
+"Examples:\n"
+"  # Show current hook status\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Install hooks in the current repository\n"
+"  gommitlint hook install\n"
+"\n"
+"  # Install hooks globally\n"
+"  gommitlint hook install --global\n"
+"\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove"
+
+#: internal/adapters/cli/commands/config_check.go:315
+msgid "Managed Source Summary:"
+msgstr "Managed Source Summary:"
+
+#: internal/adapters/cli/commands/config_show_text.go:125
+#: internal/adapters/cli/commands/config_show_text.go:188
+msgid "Managed Sources:"
+msgstr "Managed Sources:"
+
+#: internal/adapters/cli/commands/config_check.go:269
+msgid "Managed Sources: %d"
+msgstr "Managed Sources: %d"
+
+#: internal/adapters/output/texthelpers.go:94
+msgid "Max"
+msgstr "Max"
+
+#: internal/adapters/cli/commands/config_show_text.go:511
+msgid "Max commit count: %d"
+msgstr "Max commit count: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:469
+msgid "Max commits ahead: %d"
+msgstr "Max commits ahead: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:420
+msgid "Max description length: %d"
+msgstr "Max description length: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:512
+msgid "Max key files: %d"
+msgstr "Max key files: %d"
+
+#: internal/adapters/output/errorformatting.go:287
+msgid "Maximum allowed: %s characters"
+msgstr "Maximum allowed: %s characters"
+
+#: internal/adapters/cli/commands/config_show_text.go:399
+msgid "Message Configuration:"
+msgstr "Message Configuration:"
+
+#: internal/adapters/output/errorformatting_messages.go:197
+msgid "Message contains invalid UTF-8"
+msgstr "Message contains invalid UTF-8"
+
+#: internal/adapters/output/errorformatting_messages.go:235
+msgid "Message file does not exist"
+msgstr "Message file does not exist"
+
+#: internal/adapters/output/errorformatting_messages.go:115
+msgid "Message is not structured as subject, blank line, body"
+msgstr "Message is not structured as subject, blank line, body"
+
+#: internal/adapters/output/texthelpers.go:96
+msgid "Min"
+msgstr "Min"
+
+#: internal/adapters/cli/commands/config_show_text.go:447
+msgid "Min EC bits: %d"
+msgstr "Min EC bits: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:448
+msgid "Min RSA bits: %d"
+msgstr "Min RSA bits: %d"
+
+#: internal/adapters/cli/commands/config_show_text.go:412
+msgid "Min signoff count: %d"
+msgstr "Min signoff count: %d"
+
+#: internal/adapters/output/errorformatting_messages.go:78
+msgid "Missing single space after the type colon"
+msgstr "Missing single space after the type colon"
+
+#: internal/adapters/output/errorformatting.go:297
+msgid "Misspelled: '%s'"
+msgstr "Misspelled: '%s'"
+
+#: internal/adapters/output/helpregistry.go:248
+msgid "Move JIRA to end: 'feat: description PROJ-123' or in scope: 'feat(PROJ-123): description'"
+msgstr "Move JIRA to end: 'feat: description PROJ-123' or in scope: 'feat(PROJ-123): description'"
+
+#: internal/adapters/output/helpregistry.go:254
+msgid "Move Refs lines before Signed-off-by lines"
+msgstr "Move Refs lines before Signed-off-by lines"
+
+#: internal/adapters/output/helpregistry.go:210
+msgid "Move all sign-off lines to the end"
+msgstr "Move all sign-off lines to the end"
+
+#: internal/adapters/output/errorformatting_messages.go:87
+msgid "Multiple scopes are not allowed"
+msgstr "Multiple scopes are not allowed"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "NAME"
+msgstr "NAME"
+
+#: internal/adapters/cli/commands/errors.go:142
+msgid "Next steps:"
+msgstr "Next steps:"
+
+#: internal/adapters/cli/commands/doctor.go:137
+#: internal/adapters/cli/commands/installhook.go:283
+#: internal/adapters/cli/commands/removehook.go:410
+#: internal/adapters/cli/commands/removehook.go:545
+#: internal/adapters/cli/commands/removehook.go:550
+msgid "Next steps:\n"
+msgstr "Next steps:\n"
+
+#: internal/adapters/cli/commands/config_show_text.go:159
+msgid "Next: %s"
+msgstr "Next: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:120
+msgid "No JIRA reference found"
+msgstr "No JIRA reference found"
+
+#: internal/adapters/output/errorformatting_messages.go:92
+msgid "No Signed-off-by trailer found"
+msgstr "No Signed-off-by trailer found"
+
+#: internal/adapters/output/errorformatting_messages.go:110
+msgid "No blank line between subject and body"
+msgstr "No blank line between subject and body"
+
+#: internal/adapters/output/errorformatting_messages.go:160
+msgid "No eligible public key found in key directory"
+msgstr "No eligible public key found in key directory"
+
+#: internal/adapters/cli/commands/validate.go:237
+#: internal/adapters/cli/commands/validate.go:245
+msgid "No help available for rule '%s'."
+msgstr "No help available for rule '%s'."
+
+#: internal/adapters/cli/commands/removehook.go:549
+msgid "No local hooks found to remove"
+msgstr "No local hooks found to remove"
+
+#: internal/adapters/cli/commands/config_sync.go:157
+msgid "No managed sources configured"
+msgstr "No managed sources configured"
+
+#: internal/adapters/output/warningformatting_messages.go:125
+msgid "None of the base branches exist (%s), validating HEAD only"
+msgstr "None of the base branches exist (%s), validating HEAD only"
+
+#: internal/adapters/cli/commands/errors.go:196
+msgid "Note: --force will NOT work for custom hooks (safety feature)"
+msgstr "Note: --force will NOT work for custom hooks (safety feature)"
+
+#: cmd/gommitlint/help_printer.go:415 cmd/gommitlint/help_printer.go:444
+msgid "OPTIONS"
+msgstr "OPTIONS"
+
+#: internal/adapters/output/errorformatting_messages.go:210
+msgid "Operation cancelled"
+msgstr "Operation cancelled"
+
+#: internal/adapters/output/errorformatting_messages.go:213
+msgid "Operation cancelled by user or timeout"
+msgstr "Operation cancelled by user or timeout"
+
+#: internal/adapters/cli/commands/config.go:87
+msgid ""
+"Operations for viewing and managing gommitlint configuration.\n"
+"\n"
+"Configuration has three load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration files.\n"
+"\n"
+"Examples:\n"
+"  # Show current effective configuration\n"
+"  gommitlint config show\n"
+"\n"
+"  # Generate complete config template with all options\n"
+"  gommitlint config init\n"
+"\n"
+"  # Generate a small config using an existing preset\n"
+"  gommitlint config init --preset minimal\n"
+"\n"
+"  # Create user-specific configuration (XDG)\n"
+"  mkdir -p ~/.config/gommitlint\n"
+"  gommitlint config init --output ~/.config/gommitlint/settings.yaml\n"
+"\n"
+"  # Show current config in YAML format\n"
+"  gommitlint config show --format=yaml\n"
+"\n"
+"  # Show configuration in JSON format\n"
+"  gommitlint config show --format=json"
+msgstr ""
+"Operations for viewing and managing gommitlint configuration.\n"
+"\n"
+"Configuration has three load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration files.\n"
+"\n"
+"Examples:\n"
+"  # Show current effective configuration\n"
+"  gommitlint config show\n"
+"\n"
+"  # Generate complete config template with all options\n"
+"  gommitlint config init\n"
+"\n"
+"  # Generate a small config using an existing preset\n"
+"  gommitlint config init --preset minimal\n"
+"\n"
+"  # Create user-specific configuration (XDG)\n"
+"  mkdir -p ~/.config/gommitlint\n"
+"  gommitlint config init --output ~/.config/gommitlint/settings.yaml\n"
+"\n"
+"  # Show current config in YAML format\n"
+"  gommitlint config show --format=yaml\n"
+"\n"
+"  # Show configuration in JSON format\n"
+"  gommitlint config show --format=json"
+
+#: internal/adapters/cli/commands/errors.go:224
+msgid "Or install per repository instead: gommitlint hook install"
+msgstr "Or install per repository instead: gommitlint hook install"
+
+#: internal/adapters/cli/commands/validate_setup.go:149
+msgid "Or omit --%s to run all configured rules"
+msgstr "Or omit --%s to run all configured rules"
+
+#: internal/adapters/cli/commands/config_init.go:148
+msgid "Or print to stdout: gommitlint config init --stdout"
+msgstr "Or print to stdout: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/doctor.go:146
+#: internal/adapters/cli/commands/errors.go:238
+#: internal/adapters/cli/commands/errors.go:246
+msgid "Or run per-repository hooks here: git config core.hooksPath .git/hooks"
+msgstr "Or run per-repository hooks here: git config core.hooksPath .git/hooks"
+
+#: internal/adapters/cli/commands/config_show_text.go:501
+msgid "Output Configuration:"
+msgstr "Output Configuration:"
+
+#: internal/adapters/cli/commands/validate.go:136
+#: internal/adapters/cli/commands/validate.go:142
+#: internal/adapters/cli/commands/validate.go:147
+#: internal/adapters/cli/commands/validate.go:152
+#: internal/adapters/cli/globalflags.go:43
+#: internal/adapters/cli/globalflags.go:49
+#: internal/adapters/cli/globalflags.go:55
+msgid "Output Control"
+msgstr "Output Control"
+
+#: internal/adapters/cli/commands/config_sync.go:178
+msgid "Overall: %s"
+msgstr "Overall: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:292
+msgid "Overrides:"
+msgstr "Overrides:"
+
+#: internal/adapters/cli/commands/config_init.go:201
+msgid "Overwrite: gommitlint config init --force"
+msgstr "Overwrite: gommitlint config init --force"
+
+#: internal/adapters/cli/commands/installhook.go:274
+msgid "Overwritten: previous hook replaced"
+msgstr "Overwritten: previous hook replaced"
+
+#: internal/adapters/output/tableformatter.go:228
+msgid "PASS"
+msgstr "PASS"
+
+#: internal/adapters/cli/commands/translations_compile.go:55
+#: internal/adapters/cli/commands/translations_update.go:53
+msgid "PO domain name (also the PO/MO filename stem)"
+msgstr "PO domain name (also the PO/MO filename stem)"
+
+#: internal/adapters/output/reportview.go:75
+msgid "Passed: %d, Failed: %d"
+msgstr "Passed: %d, Failed: %d"
+
+#: internal/adapters/cli/commands/config_init.go:159
+msgid "Place the config at the repo root: .gommitlint.yaml"
+msgstr "Place the config at the repo root: .gommitlint.yaml"
+
+#: internal/adapters/cli/commands/doctor.go:122
+msgid "Policy:\n"
+msgstr "Policy:\n"
+
+#: internal/adapters/output/texthelpers.go:65
+msgid "Position"
+msgstr "Position"
+
+#: internal/adapters/cli/commands/config_init.go:203
+msgid "Print instead of write: gommitlint config init --stdout"
+msgstr "Print instead of write: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/config_init.go:180
+#: internal/adapters/cli/commands/config_init.go:211
+msgid "Print to stdout instead: gommitlint config init --stdout"
+msgstr "Print to stdout instead: gommitlint config init --stdout"
+
+#: internal/adapters/cli/commands/config.go:184
+msgid ""
+"Prints the JSON Schema that describes the gommitlint configuration file.\n"
+"\n"
+"The schema is generated from the Go config types and embedded in the binary,\n"
+"so the output matches this exact gommitlint version. Pipe it to a file to\n"
+"validate configs in editors (VS Code, JetBrains) without relying on the\n"
+"network-fetched copy from SchemaStore.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config schema > .gommitlint.schema.json\n"
+"  gommitlint config schema --compact | jq ."
+msgstr ""
+"Prints the JSON Schema that describes the gommitlint configuration file.\n"
+"\n"
+"The schema is generated from the Go config types and embedded in the binary,\n"
+"so the output matches this exact gommitlint version. Pipe it to a file to\n"
+"validate configs in editors (VS Code, JetBrains) without relying on the\n"
+"network-fetched copy from SchemaStore.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config schema > .gommitlint.schema.json\n"
+"  gommitlint config schema --compact | jq ."
+
+#: internal/adapters/cli/commands/man.go:44
+msgid ""
+"Prints the gommitlint manual to standard output.\n"
+"\n"
+"This is a convenience for environments where man(1) is not installed. The\n"
+"content is identical to 'man gommitlint'. The manual source ships only in a\n"
+"source checkout; from a packaged install use 'man gommitlint' or see the\n"
+"online manual."
+msgstr ""
+"Prints the gommitlint manual to standard output.\n"
+"\n"
+"This is a convenience for environments where man(1) is not installed. The\n"
+"content is identical to 'man gommitlint'. The manual source ships only in a\n"
+"source checkout; from a packaged install use 'man gommitlint' or see the\n"
+"online manual."
+
+#: internal/adapters/cli/commands/config_show_text.go:479
+msgid "Project prefixes: %v"
+msgstr "Project prefixes: %v"
+
+#: internal/adapters/output/helpregistry.go:361
+msgid "Provide a base branch with --base-branch (e.g., --base-branch main)"
+msgstr "Provide a base branch with --base-branch (e.g., --base-branch main)"
+
+#: internal/adapters/cli/commands/validate_execute.go:118
+msgid "Provide a commit subject line, e.g. 'feat: add feature'"
+msgstr "Provide a commit subject line, e.g. 'feat: add feature'"
+
+#: internal/adapters/output/helpregistry.go:46
+msgid "Provide a non-empty commit message subject"
+msgstr "Provide a non-empty commit message subject"
+
+#: internal/adapters/output/helpregistry.go:177
+msgid "Provide at least %s characters of detail explaining the change"
+msgstr "Provide at least %s characters of detail explaining the change"
+
+#: internal/adapters/output/tableformatter.go:130
+msgid "RULE"
+msgstr "RULE"
+
+#: internal/adapters/cli/commands/translations_update.go:33
+msgid ""
+"Re-extracts translatable strings from Go source with the built-in\n"
+"extractor (it understands the project's Localizer API and Msg\n"
+"constructors), then folds the new template into each locale's existing\n"
+".po with msgmerge. Translator-edited msgstr entries are preserved;\n"
+"obsolete msgids are removed; new untranslated msgids land with empty\n"
+"msgstr.\n"
+"\n"
+"Run-host requirements (build-time only — not needed by end users):\n"
+"  msgmerge  GNU gettext-tools\n"
+"  msgen     GNU gettext-tools\n"
+"  msgattrib GNU gettext-tools"
+msgstr ""
+"Re-extracts translatable strings from Go source with the built-in\n"
+"extractor (it understands the project's Localizer API and Msg\n"
+"constructors), then folds the new template into each locale's existing\n"
+".po with msgmerge. Translator-edited msgstr entries are preserved;\n"
+"obsolete msgids are removed; new untranslated msgids land with empty\n"
+"msgstr.\n"
+"\n"
+"Run-host requirements (build-time only — not needed by end users):\n"
+"  msgmerge  GNU gettext-tools\n"
+"  msgen     GNU gettext-tools\n"
+"  msgattrib GNU gettext-tools"
+
+#: internal/adapters/cli/commands/config_check.go:174
+msgid "Re-sync '%s' or inspect the vendored file manually"
+msgstr "Re-sync '%s' or inspect the vendored file manually"
+
+#: internal/adapters/cli/commands/errors.go:348
+msgid "Read the commit message from stdin instead: echo \"feat: message\" | gommitlint validate -f -"
+msgstr "Read the commit message from stdin instead: echo \"feat: message\" | gommitlint validate -f -"
+
+#: internal/adapters/cli/commands/config_show_text.go:288
+msgid "Reason: %s"
+msgstr "Reason: %s"
+
+#: internal/adapters/output/helpregistry.go:383
+msgid ""
+"Rebase your branch instead of merging: 'git rebase <target-branch>', or use 'git merge --ff-only <target-branch>' for fast-forward only. Note: rebase recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --signoff as needed. Disable rule:\n"
+"  Config File: rules.disabled: [\"linearhistory\"]\n"
+"  CLI Flag: --exclude-rule linearhistory"
+msgstr ""
+"Rebase your branch instead of merging: 'git rebase <target-branch>', or use 'git merge --ff-only <target-branch>' for fast-forward only. Note: rebase recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --signoff as needed. Disable rule:\n"
+"  Config File: rules.disabled: [\"linearhistory\"]\n"
+"  CLI Flag: --exclude-rule linearhistory"
+
+#: internal/adapters/cli/commands/config_check.go:276
+msgid "Recommended next command: %s"
+msgstr "Recommended next command: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:589
+msgid "Reduce the number of commits on this branch"
+msgstr "Reduce the number of commits on this branch"
+
+#: internal/adapters/output/texthelpers.go:92
+msgid "Reference"
+msgstr "Reference"
+
+#: internal/adapters/output/errorformatting_messages.go:597
+msgid "Reference branch '%s' not found"
+msgstr "Reference branch '%s' not found"
+
+#: internal/adapters/output/errorformatting_messages.go:136
+msgid "Refs: lines appear after sign-offs"
+msgstr "Refs: lines appear after sign-offs"
+
+#: internal/adapters/output/errorformatting_messages.go:139
+msgid "Refs: trailer is not in 'Refs: PROJ-123' format"
+msgstr "Refs: trailer is not in 'Refs: PROJ-123' format"
+
+#: cmd/gommitlint/completion_command.go:726
+#: cmd/gommitlint/completion_command.go:735
+msgid "Reload your shell or run: source %s"
+msgstr "Reload your shell or run: source %s"
+
+#: internal/adapters/cli/commands/errors.go:194
+msgid "Remove custom hook manually: rm %s"
+msgstr "Remove custom hook manually: rm %s"
+
+#: internal/adapters/output/helpregistry.go:110
+msgid "Remove the breaking change indicator (!) from the commit type"
+msgstr "Remove the breaking change indicator (!) from the commit type"
+
+#: internal/adapters/output/helpregistry.go:78
+msgid "Remove the punctuation or special character from the end of your subject line"
+msgstr "Remove the punctuation or special character from the end of your subject line"
+
+#: internal/adapters/output/helpregistry.go:75
+msgid "Remove the punctuation or special character from the end of your subject line — it should end with a letter or number, not: %s"
+msgstr "Remove the punctuation or special character from the end of your subject line — it should end with a letter or number, not: %s"
+
+#: internal/adapters/cli/commands/removehook.go:36
+msgid ""
+"Removes Gommitlint-managed Git hooks while preserving custom hooks.\n"
+"\n"
+"Examples:\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove\n"
+"\n"
+"  # Remove global hooks\n"
+"  gommitlint hook remove --global"
+msgstr ""
+"Removes Gommitlint-managed Git hooks while preserving custom hooks.\n"
+"\n"
+"Examples:\n"
+"  # Remove hooks from the current repository\n"
+"  gommitlint hook remove\n"
+"\n"
+"  # Remove global hooks\n"
+"  gommitlint hook remove --global"
+
+#: internal/adapters/cli/commands/removehook.go:486
+msgid ""
+"Removing git hooks...\n"
+"\n"
+msgstr ""
+"Removing git hooks...\n"
+"\n"
+
+#: internal/adapters/cli/commands/removehook.go:386
+msgid ""
+"Removing global git hooks...\n"
+"\n"
+msgstr ""
+"Removing global git hooks...\n"
+"\n"
+
+#: internal/adapters/output/helpregistry.go:220
+msgid "Replace %q with %q"
+msgstr "Replace %q with %q"
+
+#: internal/adapters/cli/commands/errors.go:223
+msgid "Replace it (previous value is recorded and restored by 'hook remove --global'): gommitlint hook install --global --force"
+msgstr "Replace it (previous value is recorded and restored by 'hook remove --global'): gommitlint hook install --global --force"
+
+#: internal/adapters/cli/commands/config_show_text.go:468
+msgid "Repository Configuration:"
+msgstr "Repository Configuration:"
+
+#: internal/adapters/output/gitlabformatter.go:126
+msgid "Repository Validation"
+msgstr "Repository Validation"
+
+#: internal/adapters/output/reportview.go:78
+msgid "Repository failures: %d"
+msgstr "Repository failures: %d"
+
+#: internal/adapters/output/reportview.go:82
+msgid "Repository rules skipped: %d"
+msgstr "Repository rules skipped: %d"
+
+#: internal/adapters/cli/commands/doctor.go:75
+#: internal/adapters/cli/commands/installhook.go:265
+#: internal/adapters/cli/commands/removehook.go:234
+#: internal/adapters/cli/commands/removehook.go:485
+msgid "Repository: %s\n"
+msgstr "Repository: %s\n"
+
+#: internal/adapters/cli/commands/config_show_text.go:449
+msgid "Require GPG: %t"
+msgstr "Require GPG: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:450
+msgid "Require SSH: %t"
+msgstr "Require SSH: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:402
+msgid "Require imperative: %t"
+msgstr "Require imperative: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:476
+msgid "Require in body: %t"
+msgstr "Require in body: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:475
+msgid "Require in subject: %t"
+msgstr "Require in subject: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:421
+msgid "Require scope: %t"
+msgstr "Require scope: %t"
+
+#: internal/adapters/cli/commands/config_show_text.go:436
+msgid "Required: %t"
+msgstr "Required: %t"
+
+#: internal/adapters/cli/commands/config_sync.go:106
+msgid "Resolved URL: %s"
+msgstr "Resolved URL: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:205
+msgid "Resolved from env during last sync: %t"
+msgstr "Resolved from env during last sync: %t"
+
+#: internal/adapters/cli/commands/validate_execute.go:141
+#: internal/adapters/cli/commands/validate_execute.go:149
+msgid "Retry validation"
+msgstr "Retry validation"
+
+#: internal/adapters/cli/commands/installhook.go:148
+#: internal/adapters/cli/commands/installhook.go:155
+msgid "Retry with: gommitlint hook install --force"
+msgstr "Retry with: gommitlint hook install --force"
+
+#: internal/adapters/cli/commands/installhook.go:92
+msgid "Retry with: gommitlint hook install --global --force"
+msgstr "Retry with: gommitlint hook install --global --force"
+
+#: internal/adapters/cli/commands/config_sync.go:129
+msgid "Review fetched content and update integrity.sha256 only if the change is trusted"
+msgstr "Review fetched content and update integrity.sha256 only if the change is trusted"
+
+#: internal/adapters/cli/commands/config_check.go:81
+msgid "Review the reported config warnings and managed source statuses"
+msgstr "Review the reported config warnings and managed source statuses"
+
+#: internal/adapters/cli/commands/removehook.go:403
+msgid "Review the statuses above before retrying.\n"
+msgstr "Review the statuses above before retrying.\n"
+
+#: internal/adapters/cli/commands/config_check.go:159
+msgid "Review the warning and update your config if needed"
+msgstr "Review the warning and update your config if needed"
+
+#: internal/adapters/cli/commands/config_show_text.go:215
+msgid "Revision: %s"
+msgstr "Revision: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:381
+msgid "Rules Configuration:"
+msgstr "Rules Configuration:"
+
+#: internal/adapters/output/tableformatter.go:183
+msgid "Rules: Total %d   Passed %d   Failed %d"
+msgstr "Rules: Total %d   Passed %d   Failed %d"
+
+#: internal/adapters/cli/commands/help.go:12
+msgid "Run '%s --help' for more information"
+msgstr "Run '%s --help' for more information"
+
+#: cmd/gommitlint/completion_command.go:767
+msgid "Run '%s completion --help' for more information"
+msgstr "Run '%s completion --help' for more information"
+
+#: cmd/gommitlint/suggestions.go:56
+msgid "Run 'gommitlint --help' for available commands\n"
+msgstr "Run 'gommitlint --help' for available commands\n"
+
+#: internal/adapters/cli/commands/validate_output.go:147
+#: internal/adapters/cli/commands/validate_output.go:182
+#: internal/adapters/cli/commands/validate_output.go:99
+msgid "Run 'gommitlint --help' to see global options"
+msgstr "Run 'gommitlint --help' to see global options"
+
+#: internal/adapters/cli/commands/config.go:309
+#: internal/adapters/cli/commands/validate.go:293
+msgid "Run 'gommitlint config show' to inspect settings"
+msgstr "Run 'gommitlint config show' to inspect settings"
+
+#: internal/adapters/cli/commands/validate_setup.go:187
+msgid "Run 'gommitlint config show' to see active rules"
+msgstr "Run 'gommitlint config show' to see active rules"
+
+#: internal/adapters/cli/commands/config_check.go:167
+msgid "Run 'gommitlint config sync --source %s'"
+msgstr "Run 'gommitlint config sync --source %s'"
+
+#: internal/adapters/cli/commands/config_check.go:183
+msgid "Run 'gommitlint config sync --source %s' or update integrity.sha256 if the change is intentional"
+msgstr "Run 'gommitlint config sync --source %s' or update integrity.sha256 if the change is intentional"
+
+#: internal/adapters/cli/commands/config_sync.go:132
+msgid "Run 'gommitlint config sync' to refresh vendored managed source files"
+msgstr "Run 'gommitlint config sync' to refresh vendored managed source files"
+
+#: internal/adapters/cli/commands/validate_execute.go:195
+msgid "Run as the user that owns the repository; in the container image, mount the repository at /repo"
+msgstr "Run as the user that owns the repository; in the container image, mount the repository at /repo"
+
+#: internal/adapters/cli/commands/errors.go:389
+#: internal/adapters/cli/commands/validate_execute.go:165
+msgid "Run inside a git repository"
+msgstr "Run inside a git repository"
+
+#: internal/adapters/output/errorformatting_messages.go:238
+msgid "Run this command inside a Git repository or use --ignore-repo-rules"
+msgstr "Run this command inside a Git repository or use --ignore-repo-rules"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444
+msgid "SEE ALSO"
+msgstr "SEE ALSO"
+
+#: internal/adapters/output/tableformatter.go:117
+msgid "SHA: %s"
+msgstr "SHA: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:172
+msgid "SSH signature is incomplete"
+msgstr "SSH signature is incomplete"
+
+#: internal/adapters/output/tableformatter.go:131
+msgid "STATUS"
+msgstr "STATUS"
+
+#: internal/adapters/output/tableformatter.go:180
+msgid "SUMMARY"
+msgstr "SUMMARY"
+
+#: internal/adapters/output/errorformatting_messages.go:84
+msgid "Scope list is malformed (expected comma-separated without spaces)"
+msgstr "Scope list is malformed (expected comma-separated without spaces)"
+
+#: internal/adapters/cli/commands/config_show_text.go:424
+msgid "Scopes: %v"
+msgstr "Scopes: %v"
+
+#: internal/adapters/output/textformatter.go:633
+msgid "See examples: gommitlint validate --rule-help %s"
+msgstr "See examples: gommitlint validate --rule-help %s"
+
+#: internal/adapters/cli/commands/man.go:189
+msgid "See the online manual: %s"
+msgstr "See the online manual: %s"
+
+#: internal/adapters/cli/commands/config_sync.go:62
+msgid "Select a specific config: gommitlint --config <path> config sync"
+msgstr "Select a specific config: gommitlint --config <path> config sync"
+
+#: internal/adapters/cli/commands/validate_setup.go:196
+msgid "Separate rules with commas: --%s subject,signoff"
+msgstr "Separate rules with commas: --%s subject,signoff"
+
+#: internal/adapters/output/helpregistry.go:351
+msgid "Set only one of require_gpg or require_ssh to true, or set both to false to allow either type"
+msgstr "Set only one of require_gpg or require_ssh to true, or set both to false to allow either type"
+
+#: internal/adapters/output/helpregistry.go:354
+msgid "Set repo.max_commits_ahead to a positive number, or disable the rule by adding 'branchahead' to rules.disabled"
+msgstr "Set repo.max_commits_ahead to a positive number, or disable the rule by adding 'branchahead' to rules.disabled"
+
+#: internal/adapters/cli/commands/config_sync.go:130
+#: internal/adapters/cli/commands/config_sync.go:90
+msgid "Set the referenced environment variable before running 'gommitlint config sync'"
+msgstr "Set the referenced environment variable before running 'gommitlint config sync'"
+
+#: internal/adapters/output/helpregistry.go:59
+msgid "Shorten your commit message subject line"
+msgstr "Shorten your commit message subject line"
+
+#: internal/adapters/output/helpregistry.go:56
+msgid "Shorten your commit message subject line by %s characters — aim for under %s characters"
+msgstr "Shorten your commit message subject line by %s characters — aim for under %s characters"
+
+#: cmd/gommitlint/help_printer.go:381
+#: internal/adapters/cli/commands/validate_execute.go:285
+msgid "Show docs for a rule: gommitlint validate --rule-help <name>"
+msgstr "Show docs for a rule: gommitlint validate --rule-help <name>"
+
+#: cmd/gommitlint/help_printer.go:474
+msgid "Shows a list of commands or help for one command"
+msgstr "Shows a list of commands or help for one command"
+
+#: internal/adapters/cli/commands/hookstatus.go:25
+msgid ""
+"Shows the current state of local and global Gommitlint Git hooks for a repository.\n"
+"\n"
+"Examples:\n"
+"  # Show hook status for current repository\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Show hook status with details (timestamps and file size)\n"
+"  gommitlint hook status -v\n"
+"\n"
+"  # Show hook status for specific repository\n"
+"  gommitlint hook status --repo-path /path/to/repo"
+msgstr ""
+"Shows the current state of local and global Gommitlint Git hooks for a repository.\n"
+"\n"
+"Examples:\n"
+"  # Show hook status for current repository\n"
+"  gommitlint hook status\n"
+"\n"
+"  # Show hook status with details (timestamps and file size)\n"
+"  gommitlint hook status -v\n"
+"\n"
+"  # Show hook status for specific repository\n"
+"  gommitlint hook status --repo-path /path/to/repo"
+
+#: internal/adapters/cli/commands/config.go:118
+msgid ""
+"Shows the effective configuration produced by the selected load mode.\n"
+"\n"
+"Load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration files.\n"
+"\n"
+"Output formats:\n"
+"  text - Human-readable summary (default)\n"
+"  json - Machine-readable JSON\n"
+"  yaml - Config file format"
+msgstr ""
+"Shows the effective configuration produced by the selected load mode.\n"
+"\n"
+"Load modes:\n"
+"  Discovery (default): built-in defaults, then the user XDG config, then the project config.\n"
+"  Explicit file (--config PATH): built-in defaults plus PATH and its imports; discovered user and project configs are not loaded.\n"
+"  Defaults only (--ignore-config): built-in defaults and no configuration files.\n"
+"\n"
+"Output formats:\n"
+"  text - Human-readable summary (default)\n"
+"  json - Machine-readable JSON\n"
+"  yaml - Config file format"
+
+#: internal/adapters/output/helpregistry.go:287
+msgid "Sign your commits using 'git commit -S' for GPG or configure SSH signing"
+msgstr "Sign your commits using 'git commit -S' for GPG or configure SSH signing"
+
+#: internal/domain/rulecatalog/catalog.go:49
+msgid "Sign-off"
+msgstr "Sign-off"
+
+#: internal/adapters/output/errorformatting_messages.go:95
+msgid "Sign-off is not in 'Signed-off-by: Name <email>' format"
+msgstr "Sign-off is not in 'Signed-off-by: Name <email>' format"
+
+#: internal/domain/rulecatalog/catalog.go:52
+msgid "Signature"
+msgstr "Signature"
+
+#: internal/adapters/output/errorformatting_messages.go:156
+msgid "Signature format is not recognized"
+msgstr "Signature format is not recognized"
+
+#: internal/adapters/output/errorformatting_messages.go:308
+msgid "Signature type is not allowed"
+msgstr "Signature type is not allowed"
+
+#: internal/adapters/output/errorformatting_messages.go:166
+msgid "Signature verification failed"
+msgstr "Signature verification failed"
+
+#: internal/adapters/output/errorformatting_messages.go:175
+msgid "Signing key directory is not usable"
+msgstr "Signing key directory is not usable"
+
+#: internal/adapters/output/errorformatting_messages.go:202
+msgid "Signing key is weaker than the required minimum"
+msgstr "Signing key is weaker than the required minimum"
+
+#: internal/adapters/output/errorformatting_messages.go:163
+msgid "Signing keys could not be loaded"
+msgstr "Signing keys could not be loaded"
+
+#: internal/adapters/cli/commands/config_sync.go:104
+#: internal/adapters/cli/commands/config_sync.go:91
+msgid "Source id: %s"
+msgstr "Source id: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:200
+msgid "Source mode: %s"
+msgstr "Source mode: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:199
+#: internal/adapters/cli/commands/config_show_text.go:285
+msgid "Source: %s"
+msgstr "Source: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:600
+msgid "Specify a base branch with --base-branch"
+msgstr "Specify a base branch with --base-branch"
+
+#: internal/adapters/cli/commands/errors.go:312
+#: internal/adapters/cli/commands/errors.go:322
+msgid "Specify config file: gommitlint --config /path/to/settings.yaml"
+msgstr "Specify config file: gommitlint --config /path/to/settings.yaml"
+
+#: internal/adapters/cli/commands/errors.go:267
+msgid "Specify repository path: gommitlint --repo-path /path/to/repo"
+msgstr "Specify repository path: gommitlint --repo-path /path/to/repo"
+
+#: internal/adapters/cli/commands/errors.go:390
+#: internal/adapters/cli/commands/validate_execute.go:166
+msgid "Specify repository path: gommitlint validate --repo-path /path/to/repo"
+msgstr "Specify repository path: gommitlint validate --repo-path /path/to/repo"
+
+#: internal/adapters/cli/commands/config_show_text.go:490
+msgid "Spell Configuration:"
+msgstr "Spell Configuration:"
+
+#: internal/domain/rulecatalog/catalog.go:50
+msgid "Spelling"
+msgstr "Spelling"
+
+#: internal/adapters/output/helpregistry.go:377
+msgid "Squash related commits: 'git rebase -i %s'%s"
+msgstr "Squash related commits: 'git rebase -i %s'%s"
+
+#: internal/adapters/output/helpregistry.go:191
+msgid "Start with actual content explaining your changes, then add sign-off lines at the end"
+msgstr "Start with actual content explaining your changes, then add sign-off lines at the end"
+
+#: internal/adapters/output/helpregistry.go:140
+msgid "Start with an imperative verb like: add, fix, update, remove, implement"
+msgstr "Start with an imperative verb like: add, fix, update, remove, implement"
+
+#: internal/adapters/output/helpregistry.go:137
+msgid "Start your commit message with a verb"
+msgstr "Start your commit message with a verb"
+
+#: internal/adapters/cli/commands/config_check.go:262
+msgid "Status: FAIL (%d issue)"
+msgid_plural "Status: FAIL (%d issues)"
+msgstr[0] "Status: FAIL (%d issue)"
+msgstr[1] "Status: FAIL (%d issues)"
+
+#: internal/adapters/cli/commands/config_check.go:260
+msgid "Status: OK"
+msgstr "Status: OK"
+
+#: internal/domain/rulecatalog/catalog.go:47
+msgid "Subject"
+msgstr "Subject"
+
+#: internal/adapters/cli/commands/config_show_text.go:401
+msgid "Subject case: %s"
+msgstr "Subject case: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:69
+msgid "Subject does not follow the conventional commit format"
+msgstr "Subject does not follow the conventional commit format"
+
+#: internal/adapters/output/errorformatting_messages.go:567
+msgid "Subject does not start with a verb"
+msgstr "Subject does not start with a verb"
+
+#: internal/adapters/output/errorformatting_messages.go:54
+msgid "Subject does not start with a word"
+msgstr "Subject does not start with a word"
+
+#: internal/adapters/output/errorformatting_messages.go:253
+msgid "Subject ends with '%s'"
+msgstr "Subject ends with '%s'"
+
+#: internal/adapters/output/errorformatting_messages.go:256
+msgid "Subject ends with forbidden punctuation"
+msgstr "Subject ends with forbidden punctuation"
+
+#: internal/adapters/output/errorformatting_messages.go:123
+msgid "Subject has no JIRA reference"
+msgstr "Subject has no JIRA reference"
+
+#: internal/adapters/output/errorformatting_messages.go:40
+msgid "Subject is empty"
+msgstr "Subject is empty"
+
+#: internal/adapters/output/errorformatting_messages.go:246
+msgid "Subject is not in imperative mood"
+msgstr "Subject is not in imperative mood"
+
+#: internal/adapters/cli/commands/config_show_text.go:400
+msgid "Subject max length: %d"
+msgstr "Subject max length: %d"
+
+#: internal/adapters/output/tableformatter.go:118
+msgid "Subject: %s"
+msgstr "Subject: %s"
+
+#: internal/adapters/output/texthelpers.go:82
+msgid "Suggestion"
+msgstr "Suggestion"
+
+#: internal/adapters/output/errorformatting.go:301
+msgid "Suggestion: '%s'"
+msgstr "Suggestion: '%s'"
+
+#: internal/adapters/cli/commands/config_check.go:270
+#: internal/adapters/cli/commands/config_show_text.go:145
+msgid "Summary: %s"
+msgstr "Summary: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:201
+msgid "Supported formats: %s"
+msgstr "Supported formats: %s"
+
+#: internal/adapters/output/tableformatter.go:129
+msgid "TARGET"
+msgstr "TARGET"
+
+#: internal/adapters/output/tableformatter.go:128
+msgid "TYPE"
+msgstr "TYPE"
+
+#: internal/adapters/cli/commands/removehook.go:282
+msgid ""
+"Target path: %s\n"
+"\n"
+msgstr ""
+"Target path: %s\n"
+"\n"
+
+#: internal/adapters/cli/commands/config.go:271
+msgid "The 'config check' command doesn't accept arguments"
+msgstr "The 'config check' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/config.go:273
+msgid "The 'config init' command doesn't accept arguments"
+msgstr "The 'config init' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/config.go:275
+msgid "The 'config schema' command doesn't accept arguments"
+msgstr "The 'config schema' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/config.go:277
+msgid "The 'config show' command doesn't accept arguments"
+msgstr "The 'config show' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/config.go:279
+msgid "The 'config sync' command doesn't accept arguments"
+msgstr "The 'config sync' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/doctor.go:44
+msgid "The 'doctor' command doesn't accept arguments"
+msgstr "The 'doctor' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/removehook.go:65
+msgid "The 'hook remove' command doesn't accept arguments"
+msgstr "The 'hook remove' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/hookstatus.go:52
+msgid "The 'hook status' command doesn't accept arguments"
+msgstr "The 'hook status' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/man.go:174
+msgid "The 'man' command doesn't accept arguments"
+msgstr "The 'man' command doesn't accept arguments"
+
+#: internal/adapters/cli/commands/config_show_text.go:503
+msgid "Theme: %s"
+msgstr "Theme: %s"
+
+#: internal/adapters/cli/commands/errors.go:195
+msgid "Then install gommitlint: %s"
+msgstr "Then install gommitlint: %s"
+
+#: cmd/gommitlint/completion_command.go:731
+msgid "Then run: autoload -Uz compinit && compinit"
+msgstr "Then run: autoload -Uz compinit && compinit"
+
+#: internal/adapters/cli/commands/installhook.go:67
+#: internal/adapters/cli/commands/translations_errors.go:49
+msgid "This command does not accept positional arguments"
+msgstr "This command does not accept positional arguments"
+
+#: internal/adapters/output/textformatter.go:177
+msgid "Tip: to validate multiple commits, use --count, --range, or --base-branch"
+msgstr "Tip: to validate multiple commits, use --count, --range, or --base-branch"
+
+#: internal/adapters/output/textformatter.go:203
+msgid "Tip: use -v for rule details"
+msgstr "Tip: use -v for rule details"
+
+#: internal/adapters/cli/commands/errors.go:366
+msgid "To validate more commits, raise limits.max_commit_count in .gommitlint.yaml"
+msgstr "To validate more commits, raise limits.max_commit_count in .gommitlint.yaml"
+
+#: internal/adapters/output/errorformatting_messages.go:101
+msgid "Too few distinct sign-offs"
+msgstr "Too few distinct sign-offs"
+
+#: internal/adapters/cli/commands/man.go:188
+msgid "Try 'man gommitlint' if the man page is installed"
+msgstr "Try 'man gommitlint' if the man page is installed"
+
+#: internal/adapters/cli/commands/man.go:194
+msgid "Try 'man gommitlint' if the man page is installed, or see: %s"
+msgstr "Try 'man gommitlint' if the man page is installed, or see: %s"
+
+#: internal/adapters/output/errorformatting.go:472
+msgid "Try: \"%s\""
+msgstr "Try: \"%s\""
+
+#: internal/adapters/output/errorformatting.go:474
+msgid "Try: %s"
+msgstr "Try: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:74
+msgid "Type is missing a required scope"
+msgstr "Type is missing a required scope"
+
+#: internal/adapters/cli/commands/config_show_text.go:428
+msgid "Types: %v"
+msgstr "Types: %v"
+
+#: cmd/gommitlint/help_printer.go:317 cmd/gommitlint/help_printer.go:415
+#: cmd/gommitlint/help_printer.go:444 cmd/gommitlint/help_printer.go:558
+msgid "USAGE"
+msgstr "USAGE"
+
+#: internal/adapters/output/jsonformatter.go:238
+msgid "Unknown"
+msgstr "Unknown"
+
+#: cmd/gommitlint/completion_command.go:706
+msgid "Updated"
+msgstr "Updated"
+
+#: cmd/gommitlint/completion_command.go:766
+msgid "Usage: %s completion <shell>|--all"
+msgstr "Usage: %s completion <shell>|--all"
+
+#: internal/adapters/output/errorformatting_messages.go:510
+msgid "Use '%s' instead of '%s'"
+msgstr "Use '%s' instead of '%s'"
+
+#: internal/adapters/output/helpregistry.go:386
+msgid ""
+"Use 'git rebase -i <base>' and mark fixup commits as 'squash'. Note: rebase recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --signoff as needed. Disable rule:\n"
+"  Config File: allow_fixup_commits: true"
+msgstr ""
+"Use 'git rebase -i <base>' and mark fixup commits as 'squash'. Note: rebase recreates commits, removing signatures and signoffs. Add --gpg-sign and/or --signoff as needed. Disable rule:\n"
+"  Config File: allow_fixup_commits: true"
+
+#: internal/adapters/cli/commands/config_sync.go:128
+msgid "Use 'gommitlint config show --format=yaml' to inspect configured managed source ids"
+msgstr "Use 'gommitlint config show --format=yaml' to inspect configured managed source ids"
+
+#: internal/adapters/cli/commands/removehook.go:77
+msgid "Use --dry-run for repository-local hooks only"
+msgstr "Use --dry-run for repository-local hooks only"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:276
+msgid "Use --force to overwrite existing hooks"
+msgstr "Use --force to overwrite existing hooks"
+
+#: internal/adapters/cli/commands/validate_execute.go:204
+#: internal/adapters/cli/commands/validate_setup.go:82
+msgid "Use --format text for detailed output"
+msgstr "Use --format text for detailed output"
+
+#: internal/adapters/cli/commands/config.go:298
+msgid "Use --format to choose a supported format"
+msgstr "Use --format to choose a supported format"
+
+#: internal/adapters/cli/commands/config_show_text.go:523
+msgid "Use --format=json for machine-readable output"
+msgstr "Use --format=json for machine-readable output"
+
+#: internal/adapters/cli/commands/config_show_text.go:527
+msgid "Use --format=yaml to generate a config file output"
+msgstr "Use --format=yaml to generate a config file output"
+
+#: internal/adapters/cli/commands/validate_execute.go:235
+#: internal/adapters/cli/commands/validate_output.go:72
+msgid "Use --report-file - to write to stdout"
+msgstr "Use --report-file - to write to stdout"
+
+#: internal/adapters/cli/commands/validate_output.go:62
+msgid "Use --report-file to choose a different path"
+msgstr "Use --report-file to choose a different path"
+
+#: internal/adapters/cli/commands/config_show.go:225
+msgid "Use --view to choose a supported text view"
+msgstr "Use --view to choose a supported text view"
+
+#: internal/adapters/cli/commands/validate_output.go:109
+msgid "Use -v or --verbose for verbose output"
+msgstr "Use -v or --verbose for verbose output"
+
+#: internal/adapters/cli/commands/validate_output.go:110
+msgid "Use -vv for extra verbose output"
+msgstr "Use -vv for extra verbose output"
+
+#: internal/adapters/cli/commands/config_sync.go:134
+msgid "Use a direct HTTPS source URL or keep redirects on the same host"
+msgstr "Use a direct HTTPS source URL or keep redirects on the same host"
+
+#: internal/adapters/cli/commands/config_sync.go:103
+#: internal/adapters/cli/commands/config_sync.go:131
+msgid "Use a direct HTTPS source URL or resolve the environment variable to one"
+msgstr "Use a direct HTTPS source URL or resolve the environment variable to one"
+
+#: internal/adapters/cli/commands/translations_errors.go:73
+msgid "Use a filename stem without path separators, for example: --domain gommitlint"
+msgstr "Use a filename stem without path separators, for example: --domain gommitlint"
+
+#: internal/adapters/cli/commands/config_sync.go:133
+msgid "Use a relative destination path inside the config directory"
+msgstr "Use a relative destination path inside the config directory"
+
+#: internal/adapters/cli/commands/config_init.go:147
+msgid "Use a relative path inside the repo, e.g. .gommitlint.yaml"
+msgstr "Use a relative path inside the repo, e.g. .gommitlint.yaml"
+
+#: internal/adapters/output/helpregistry.go:116
+msgid "Use a single scope: %s"
+msgstr "Use a single scope: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:216
+#: internal/adapters/output/helpregistry.go:340
+msgid "Use a valid commit hash, branch name, or tag"
+msgstr "Use a valid commit hash, branch name, or tag"
+
+#: internal/adapters/output/errorformatting_messages.go:495
+msgid "Use a valid commit type like: %s"
+msgstr "Use a valid commit type like: %s"
+
+#: internal/adapters/output/errorformatting_messages.go:513
+msgid "Use a valid project key"
+msgstr "Use a valid project key"
+
+#: internal/adapters/output/errorformatting_messages.go:578
+msgid "Use a valid scope"
+msgstr "Use a valid scope"
+
+#: internal/adapters/output/helpregistry.go:271
+msgid "Use an authorized email address or add this email to allowed_authors"
+msgstr "Use an authorized email address or add this email to allowed_authors"
+
+#: internal/adapters/cli/commands/validate_execute.go:182
+msgid "Use an existing base branch: gommitlint validate --base-branch main"
+msgstr "Use an existing base branch: gommitlint validate --base-branch main"
+
+#: internal/adapters/output/helpregistry.go:164
+msgid "Use an imperative verb like: add, fix, update, remove, implement"
+msgstr "Use an imperative verb like: add, fix, update, remove, implement"
+
+#: internal/adapters/output/helpregistry.go:126
+msgid "Use comma-separated scopes without spaces: (scope1,scope2)"
+msgstr "Use comma-separated scopes without spaces: (scope1,scope2)"
+
+#: internal/adapters/cli/commands/validate_setup.go:148
+msgid "Use commas to separate rules: --%s subject,signoff"
+msgstr "Use commas to separate rules: --%s subject,signoff"
+
+#: internal/adapters/cli/commands/errors.go:311
+#: internal/adapters/cli/commands/errors.go:321
+msgid "Use default config: gommitlint validate --ignore-config"
+msgstr "Use default config: gommitlint validate --ignore-config"
+
+#: internal/adapters/cli/commands/config_init.go:123
+msgid "Use either --stdout to print, or --output PATH to write a file"
+msgstr "Use either --stdout to print, or --output PATH to write a file"
+
+#: internal/adapters/output/helpregistry.go:104
+msgid "Use exactly one space after the colon followed by description text"
+msgstr "Use exactly one space after the colon followed by description text"
+
+#: internal/adapters/cli/commands/validate_execute.go:309
+msgid "Use flags to specify validation targets: --ref REF, --range RANGE, --base-branch BRANCH, --count N"
+msgstr "Use flags to specify validation targets: --ref REF, --range RANGE, --base-branch BRANCH, --count N"
+
+#: internal/adapters/output/errorformatting_messages.go:535
+#: internal/adapters/output/helpregistry.go:113
+msgid "Use format: %s"
+msgstr "Use format: %s"
+
+#: internal/adapters/output/helpregistry.go:87
+msgid "Use format: %s (e.g., 'feat: add login')"
+msgstr "Use format: %s (e.g., 'feat: add login')"
+
+#: internal/adapters/output/helpregistry.go:260
+msgid "Use format: 'Refs: PROJ-123'"
+msgstr "Use format: 'Refs: PROJ-123'"
+
+#: internal/adapters/output/helpregistry.go:251
+msgid "Use format: 'Refs: PROJ-123' (with colon)"
+msgstr "Use format: 'Refs: PROJ-123' (with colon)"
+
+#: internal/adapters/output/errorformatting_messages.go:219
+#: internal/adapters/output/helpregistry.go:343
+msgid "Use format: <from>..<to> or <from>...<to>"
+msgstr "Use format: <from>..<to> or <from>...<to>"
+
+#: internal/adapters/output/helpregistry.go:167
+msgid "Use format: subject line, blank line, then detailed body"
+msgstr "Use format: subject line, blank line, then detailed body"
+
+#: internal/adapters/cli/commands/config_init.go:97
+msgid "Use full template instead: gommitlint config init"
+msgstr "Use full template instead: gommitlint config init"
+
+#: internal/adapters/output/helpregistry.go:62
+msgid "Use lowercase for the first character of your commit subject"
+msgstr "Use lowercase for the first character of your commit subject"
+
+#: internal/adapters/output/helpregistry.go:123
+msgid "Use one of the allowed commit scopes"
+msgstr "Use one of the allowed commit scopes"
+
+#: internal/adapters/output/helpregistry.go:94
+msgid "Use one of the allowed commit types"
+msgstr "Use one of the allowed commit types"
+
+#: internal/adapters/cli/commands/config_init.go:96
+#: internal/adapters/output/helpregistry.go:120
+#: internal/adapters/output/helpregistry.go:91
+msgid "Use one of: %s"
+msgstr "Use one of: %s"
+
+#: internal/adapters/cli/commands/errors.go:297
+msgid "Use one of: preset:minimal, preset:conventional, preset:ambitious, preset:secure"
+msgstr "Use one of: preset:minimal, preset:conventional, preset:ambitious, preset:secure"
+
+#: internal/adapters/output/helpregistry.go:68
+msgid "Use sentence case (uppercase first character) for your commit subject"
+msgstr "Use sentence case (uppercase first character) for your commit subject"
+
+#: internal/adapters/output/helpregistry.go:207
+msgid "Use strict DCO format: 'Signed-off-by: Your Real Name <your.email@domain.com>'"
+msgstr "Use strict DCO format: 'Signed-off-by: Your Real Name <your.email@domain.com>'"
+
+#: internal/adapters/output/helpregistry.go:147
+msgid "Use the base (imperative) form instead of past tense"
+msgstr "Use the base (imperative) form instead of past tense"
+
+#: internal/adapters/output/helpregistry.go:154
+msgid "Use the base (imperative) form instead of the gerund (present participle)"
+msgstr "Use the base (imperative) form instead of the gerund (present participle)"
+
+#: internal/adapters/output/helpregistry.go:161
+msgid "Use the base (imperative) form instead of third person singular"
+msgstr "Use the base (imperative) form instead of third person singular"
+
+#: internal/adapters/output/helpregistry.go:144
+msgid "Use the base form '%s' instead of past tense"
+msgstr "Use the base form '%s' instead of past tense"
+
+#: internal/adapters/output/helpregistry.go:151
+msgid "Use the base form '%s' instead of the gerund (present participle)"
+msgstr "Use the base form '%s' instead of the gerund (present participle)"
+
+#: internal/adapters/output/helpregistry.go:158
+msgid "Use the base form '%s' instead of third person singular"
+msgstr "Use the base form '%s' instead of third person singular"
+
+#: internal/adapters/cli/commands/config_show.go:159
+msgid "Use this as a starting point for gommitlint.yaml"
+msgstr "Use this as a starting point for gommitlint.yaml"
+
+#: internal/adapters/output/helpregistry.go:257
+msgid "Use uppercase for JIRA keys: 'Refs: PROJ-123'"
+msgstr "Use uppercase for JIRA keys: 'Refs: PROJ-123'"
+
+#: internal/adapters/output/helpregistry.go:65
+msgid "Use uppercase for the first character of your commit subject"
+msgstr "Use uppercase for the first character of your commit subject"
+
+#: internal/adapters/output/helpregistry.go:245
+msgid "Use valid JIRA format: PROJ-123 (uppercase letters, hyphen, numbers only)"
+msgstr "Use valid JIRA format: PROJ-123 (uppercase letters, hyphen, numbers only)"
+
+#: internal/adapters/output/warningformatting_messages.go:119
+msgid "Using '%s' as base branch ('%s' was not found)"
+msgstr "Using '%s' as base branch ('%s' was not found)"
+
+#: cmd/gommitlint/help_printer.go:317
+msgid "VERSION"
+msgstr "VERSION"
+
+#: internal/adapters/cli/commands/config.go:297
+msgid "Valid formats: %s"
+msgstr "Valid formats: %s"
+
+#: internal/adapters/cli/commands/validate_setup.go:186
+msgid "Valid rules: %s"
+msgstr "Valid rules: %s"
+
+#: internal/adapters/cli/commands/config_show.go:224
+msgid "Valid views: compact, verbose"
+msgstr "Valid views: compact, verbose"
+
+#: internal/adapters/cli/commands/errors.go:354
+msgid "Validate HEAD commit: gommitlint validate"
+msgstr "Validate HEAD commit: gommitlint validate"
+
+#: internal/adapters/cli/commands/validate_execute.go:121
+#: internal/adapters/cli/commands/validate_execute.go:133
+#: internal/adapters/cli/commands/validate_execute.go:183
+msgid "Validate HEAD instead: gommitlint validate"
+msgstr "Validate HEAD instead: gommitlint validate"
+
+#: internal/adapters/cli/commands/errors.go:357
+msgid "Validate branch: gommitlint validate --base-branch main"
+msgstr "Validate branch: gommitlint validate --base-branch main"
+
+#: internal/adapters/cli/commands/validate_execute.go:119
+msgid "Validate from a file: gommitlint validate --message-file commit-msg.txt"
+msgstr "Validate from a file: gommitlint validate --message-file commit-msg.txt"
+
+#: internal/adapters/cli/commands/errors.go:355
+#: internal/adapters/cli/commands/errors.go:391
+msgid "Validate from file: gommitlint validate -f commit-msg.txt"
+msgstr "Validate from file: gommitlint validate -f commit-msg.txt"
+
+#: internal/adapters/cli/commands/errors.go:356
+#: internal/adapters/cli/commands/errors.go:392
+msgid "Validate from stdin: echo \"feat: message\" | gommitlint validate -f -"
+msgstr "Validate from stdin: echo \"feat: message\" | gommitlint validate -f -"
+
+#: internal/adapters/cli/commands/validate_execute.go:120
+msgid "Validate from stdin: echo 'feat: message' | gommitlint validate --message-file -"
+msgstr "Validate from stdin: echo 'feat: message' | gommitlint validate --message-file -"
+
+#: internal/adapters/cli/commands/errors.go:349
+msgid "Validate the HEAD commit instead: gommitlint validate"
+msgstr "Validate the HEAD commit instead: gommitlint validate"
+
+#: internal/adapters/output/reportview.go:68
+msgid "Validated %s"
+msgstr "Validated %s"
+
+#: internal/adapters/cli/commands/config.go:136
+msgid ""
+"Validates the active configuration, reports config warnings,\n"
+"and checks vendored managed_sources files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config check"
+msgstr ""
+"Validates the active configuration, reports config warnings,\n"
+"and checks vendored managed_sources files.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config check"
+
+#: internal/adapters/output/errorformatting_messages.go:241
+msgid "Validation failed"
+msgstr "Validation failed"
+
+#: internal/adapters/output/reportview.go:90
+msgid "Validation failed: %d commit has violations"
+msgid_plural "Validation failed: %d commits have violations"
+msgstr[0] "Validation failed: %d commit has violations"
+msgstr[1] "Validation failed: %d commits have violations"
+
+#: internal/adapters/output/errorformatting_messages.go:31
+msgid "Validation failed: %s"
+msgstr "Validation failed: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:437
+msgid "Verify format: %t"
+msgstr "Verify format: %t"
+
+#: internal/adapters/cli/commands/errors.go:313
+#: internal/adapters/cli/commands/errors.go:323
+msgid "View config docs: https://codefloe.com/itiquette/gommitlint#configuration"
+msgstr "View config docs: https://codefloe.com/itiquette/gommitlint#configuration"
+
+#: internal/adapters/cli/commands/errors.go:171
+#: internal/adapters/cli/commands/errors.go:192
+#: internal/adapters/cli/commands/errors.go:207
+msgid "View current hook: cat %s"
+msgstr "View current hook: cat %s"
+
+#: internal/adapters/output/gitlabformatter.go:103
+msgid "WARNING:"
+msgstr "WARNING:"
+
+#: internal/adapters/cli/commands/configwarnings.go:31
+msgid "Warning: %s"
+msgstr "Warning: %s"
+
+#: internal/adapters/cli/commands/man.go:193
+msgid "Warning: the terminal manual source (%s) is not available outside a source checkout."
+msgstr "Warning: the terminal manual source (%s) is not available outside a source checkout."
+
+#: internal/adapters/cli/commands/config_check.go:291
+msgid "Warnings:"
+msgstr "Warnings:"
+
+#: internal/adapters/cli/commands/config_check.go:271
+msgid "Warnings: %d"
+msgstr "Warnings: %d"
+
+#: internal/adapters/cli/commands/doctor.go:77
+msgid ""
+"Warnings: %d\n"
+"\n"
+msgstr ""
+"Warnings: %d\n"
+"\n"
+
+#: internal/adapters/output/texthelpers.go:90
+msgid "Word"
+msgstr "Word"
+
+#: internal/adapters/output/helpregistry.go:184
+msgid "Wrap body lines at %s characters for better readability in git log"
+msgstr "Wrap body lines at %s characters for better readability in git log"
+
+#: internal/adapters/output/helpregistry.go:187
+msgid "Wrap long body lines for better readability in git log"
+msgstr "Wrap long body lines for better readability in git log"
+
+#: internal/adapters/cli/commands/config.go:147
+msgid ""
+"Writes a .gommitlint.yaml template in the current directory. By default it\n"
+"contains every option with defaults commented out. With --preset, it writes a\n"
+"small config that extends an existing built-in preset. Refuses to overwrite an\n"
+"existing file unless --force is set.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config init                          # write .gommitlint.yaml in CWD\n"
+"  gommitlint config init --preset minimal         # write a small preset config\n"
+"  gommitlint config init --force                  # overwrite existing\n"
+"  gommitlint config init --output custom.yaml     # write to a specific path\n"
+"  gommitlint config init --stdout                 # print to stdout, write nothing\n"
+"  gommitlint config init -o -                     # POSIX shorthand for --stdout"
+msgstr ""
+"Writes a .gommitlint.yaml template in the current directory. By default it\n"
+"contains every option with defaults commented out. With --preset, it writes a\n"
+"small config that extends an existing built-in preset. Refuses to overwrite an\n"
+"existing file unless --force is set.\n"
+"\n"
+"Examples:\n"
+"  gommitlint config init                          # write .gommitlint.yaml in CWD\n"
+"  gommitlint config init --preset minimal         # write a small preset config\n"
+"  gommitlint config init --force                  # overwrite existing\n"
+"  gommitlint config init --output custom.yaml     # write to a specific path\n"
+"  gommitlint config init --stdout                 # print to stdout, write nothing\n"
+"  gommitlint config init -o -                     # POSIX shorthand for --stdout"
+
+#: internal/adapters/output/errorformatting_messages.go:387
+msgid "Your commit message is %d characters too long"
+msgstr "Your commit message is %d characters too long"
+
+#: internal/adapters/output/errorformatting_messages.go:384
+msgid "Your commit message is 1 character too long"
+msgstr "Your commit message is 1 character too long"
+
+#: internal/adapters/output/errorformatting_messages.go:369
+#: internal/adapters/output/errorformatting_messages.go:374
+#: internal/adapters/output/errorformatting_messages.go:379
+msgid "Your commit message is too long"
+msgstr "Your commit message is too long"
+
+#: internal/adapters/cli/commands/validate_output.go:60
+msgid "cannot create output directory"
+msgstr "cannot create output directory"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:312
+msgid "cannot read hook file"
+msgstr "cannot read hook file"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:314
+msgid "cannot remove hook file"
+msgstr "cannot remove hook file"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:310
+msgid "cannot stat hook file"
+msgstr "cannot stat hook file"
+
+#: internal/adapters/cli/commands/config.go:135
+msgid "check configuration health"
+msgstr "check configuration health"
+
+#: internal/adapters/cli/commands/configdisplay.go:118
+msgid "cli"
+msgstr "cli"
+
+#: internal/adapters/cli/commands/config_check.go:411
+msgid "code: %s"
+msgstr "code: %s"
+
+#: internal/adapters/output/tableformatter.go:246
+msgid "commit"
+msgstr "commit"
+
+#: internal/adapters/cli/commands/translations_compile.go:35
+msgid "compile .po catalogs to binary .mo files"
+msgstr "compile .po catalogs to binary .mo files"
+
+#: internal/adapters/cli/commands/config_init.go:200
+msgid "config file already exists: %s"
+msgstr "config file already exists: %s"
+
+#: internal/adapters/cli/commands/config_check.go:80
+msgid "configuration issues found"
+msgstr "configuration issues found"
+
+#: internal/adapters/cli/commands/config.go:86
+msgid "configuration operations"
+msgstr "configuration operations"
+
+#: internal/adapters/cli/globalflags.go:42
+msgid "control colored output: %s"
+msgstr "control colored output: %s"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:283
+msgid "could not stat hook file"
+msgstr "could not stat hook file"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:274
+msgid "could not write hook file"
+msgstr "could not write hook file"
+
+#: internal/adapters/cli/commands/config.go:146
+msgid "create .gommitlint.yaml in the current directory"
+msgstr "create .gommitlint.yaml in the current directory"
+
+#: internal/adapters/cli/commands/errors.go:183
+msgid "custom hook exists at %s - will not overwrite"
+msgstr "custom hook exists at %s - will not overwrite"
+
+#: internal/adapters/cli/commands/config_show_text.go:257
+#: internal/adapters/cli/commands/configdisplay.go:108
+msgid "defaults"
+msgstr "defaults"
+
+#: internal/adapters/cli/commands/configdisplay.go:70
+msgid "defaults (no config file found)"
+msgstr "defaults (no config file found)"
+
+#: internal/adapters/cli/commands/config_check.go:340
+#: internal/adapters/cli/commands/config_sync.go:172
+msgid "destination: %s"
+msgstr "destination: %s"
+
+#: internal/adapters/cli/commands/validate.go:127
+msgid "disable automatic CI environment detection (also: GOMMITLINT_NO_CI_DETECT)"
+msgstr "disable automatic CI environment detection (also: GOMMITLINT_NO_CI_DETECT)"
+
+#: internal/adapters/cli/commands/config.go:197
+msgid "emit single-line JSON instead of indented"
+msgstr "emit single-line JSON instead of indented"
+
+#: internal/adapters/cli/commands/validate_execute.go:117
+msgid "empty commit message"
+msgstr "empty commit message"
+
+#: cmd/gommitlint/completion_command.go:784
+msgid "exactly one shell argument is required"
+msgstr "exactly one shell argument is required"
+
+#: internal/adapters/cli/commands/validate.go:122
+msgid "exclude specific `RULES` from validation (comma-separated). Applied after --rule"
+msgstr "exclude specific `RULES` from validation (comma-separated). Applied after --rule"
+
+#: internal/adapters/cli/commands/errors.go:54
+msgid "existing %s hook at %s was installed by another tool"
+msgstr "existing %s hook at %s was installed by another tool"
+
+#: internal/adapters/cli/commands/config_show_text.go:267
+msgid "explicit"
+msgstr "explicit"
+
+#: internal/adapters/cli/commands/configdisplay.go:110
+msgid "extended"
+msgstr "extended"
+
+#: internal/adapters/cli/commands/config_show_text.go:259
+msgid "extends"
+msgstr "extends"
+
+#: internal/adapters/cli/commands/config.go:223
+msgid "fail if vendored managed sources are out of date"
+msgstr "fail if vendored managed sources are out of date"
+
+#: internal/adapters/cli/commands/globalhooks.go:146
+msgid "failed to check global hooks directory"
+msgstr "failed to check global hooks directory"
+
+#: internal/adapters/cli/commands/config_init.go:319
+#: internal/adapters/cli/commands/config_show.go:180
+msgid "failed to close YAML encoder"
+msgstr "failed to close YAML encoder"
+
+#: internal/adapters/cli/commands/validate_execute.go:254
+msgid "failed to close validation output"
+msgstr "failed to close validation output"
+
+#: internal/adapters/cli/commands/translations_errors.go:151
+msgid "failed to compile translation catalogs: %s"
+msgstr "failed to compile translation catalogs: %s"
+
+#: internal/adapters/cli/commands/globalhooks.go:144
+msgid "failed to configure git"
+msgstr "failed to configure git"
+
+#: internal/adapters/cli/commands/config_init.go:178
+#: internal/adapters/cli/commands/config_init.go:209
+msgid "failed to create config file: %s"
+msgstr "failed to create config file: %s"
+
+#: internal/adapters/cli/commands/globalhooks.go:140
+msgid "failed to create global hooks directory"
+msgstr "failed to create global hooks directory"
+
+#: internal/adapters/cli/commands/validate_setup.go:80
+msgid "failed to create output options: %s"
+msgstr "failed to create output options: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:70
+msgid "failed to create report file"
+msgstr "failed to create report file"
+
+#: internal/adapters/cli/commands/validate_execute.go:164
+msgid "failed to create repository"
+msgstr "failed to create repository"
+
+#: internal/adapters/cli/commands/config.go:307
+#: internal/adapters/cli/commands/validate.go:291
+msgid "failed to create spell checker"
+msgstr "failed to create spell checker"
+
+#: internal/adapters/cli/commands/errors.go:376
+msgid "failed to create validation target: %s"
+msgstr "failed to create validation target: %s"
+
+#: internal/adapters/cli/commands/config_show.go:135
+msgid "failed to encode config as JSON"
+msgstr "failed to encode config as JSON"
+
+#: internal/adapters/cli/commands/config_show.go:185
+msgid "failed to encode config as YAML"
+msgstr "failed to encode config as YAML"
+
+#: internal/adapters/cli/commands/config_check.go:205
+msgid "failed to encode config check as JSON"
+msgstr "failed to encode config check as JSON"
+
+#: internal/adapters/cli/commands/config_check.go:213
+#: internal/adapters/cli/commands/config_check.go:218
+msgid "failed to encode config check as YAML"
+msgstr "failed to encode config check as YAML"
+
+#: internal/adapters/cli/commands/config_init.go:315
+msgid "failed to encode config template as YAML"
+msgstr "failed to encode config template as YAML"
+
+#: internal/adapters/cli/commands/config_sync.go:135
+msgid "failed to fetch managed source"
+msgstr "failed to fetch managed source"
+
+#: internal/adapters/cli/commands/config_init.go:219
+msgid "failed to finalize config file: %s"
+msgstr "failed to finalize config file: %s"
+
+#: internal/adapters/cli/commands/config_init.go:273
+msgid "failed to generate config template"
+msgstr "failed to generate config template"
+
+#: internal/adapters/cli/commands/hookstatus.go:69
+msgid "failed to get hook status"
+msgstr "failed to get hook status"
+
+#: internal/adapters/cli/commands/errors.go:296
+#: internal/adapters/cli/commands/errors.go:327
+msgid "failed to load configuration: %s"
+msgstr "failed to load configuration: %s"
+
+#: internal/adapters/cli/commands/config_show.go:72
+msgid "failed to print configuration"
+msgstr "failed to print configuration"
+
+#: internal/adapters/cli/commands/globalhooks.go:148
+msgid "failed to read global hook"
+msgstr "failed to read global hook"
+
+#: internal/adapters/cli/commands/man.go:187
+msgid "failed to read terminal manual"
+msgstr "failed to read terminal manual"
+
+#: internal/adapters/cli/commands/globalhooks.go:150
+msgid "failed to remove global hook"
+msgstr "failed to remove global hook"
+
+#: internal/adapters/cli/commands/globalhooks.go:125
+msgid "failed to resolve global hooks path"
+msgstr "failed to resolve global hooks path"
+
+#: internal/adapters/cli/commands/config_sync.go:144
+msgid "failed to sync managed sources"
+msgstr "failed to sync managed sources"
+
+#: internal/adapters/cli/commands/translations_errors.go:132
+msgid "failed to update translation catalogs: %s"
+msgstr "failed to update translation catalogs: %s"
+
+#: internal/adapters/cli/commands/errors.go:406
+#: internal/adapters/cli/commands/translations_errors.go:173
+msgid "failed to write command output"
+msgstr "failed to write command output"
+
+#: cmd/gommitlint/completion_command.go:786
+msgid "failed to write completion output"
+msgstr "failed to write completion output"
+
+#: internal/adapters/cli/commands/config_check.go:281
+#: internal/adapters/cli/commands/config_check.go:292
+#: internal/adapters/cli/commands/config_check.go:297
+#: internal/adapters/cli/commands/config_check.go:305
+#: internal/adapters/cli/commands/config_check.go:362
+#: internal/adapters/cli/commands/config_check.go:431
+msgid "failed to write config check output"
+msgstr "failed to write config check output"
+
+#: internal/adapters/cli/commands/config_schema.go:37
+#: internal/adapters/cli/commands/config_schema.go:44
+msgid "failed to write config schema"
+msgstr "failed to write config schema"
+
+#: internal/adapters/cli/commands/globalhooks.go:142
+msgid "failed to write global hook"
+msgstr "failed to write global hook"
+
+#: internal/adapters/cli/commands/config_show.go:231
+msgid "failed to write header"
+msgstr "failed to write header"
+
+#: internal/adapters/cli/commands/config_init.go:185
+#: internal/adapters/cli/commands/config_init.go:297
+#: internal/adapters/cli/commands/config_init.go:325
+#: internal/adapters/cli/commands/config_show_text.go:524
+#: internal/adapters/cli/commands/config_show_text.go:528
+msgid "failed to write output"
+msgstr "failed to write output"
+
+#: internal/adapters/cli/commands/config_init.go:247
+msgid "failed to write preset config template"
+msgstr "failed to write preset config template"
+
+#: internal/adapters/cli/commands/validate_execute.go:233
+msgid "failed to write report"
+msgstr "failed to write report"
+
+#: internal/adapters/cli/commands/config_sync.go:158
+#: internal/adapters/cli/commands/config_sync.go:174
+#: internal/adapters/cli/commands/config_sync.go:179
+msgid "failed to write sync output"
+msgstr "failed to write sync output"
+
+#: internal/adapters/cli/commands/config.go:219
+msgid "fetch and verify without writing files"
+msgstr "fetch and verify without writing files"
+
+#: cmd/gommitlint/main.go:282
+msgid "git commit linter"
+msgstr "git commit linter"
+
+#: internal/adapters/cli/commands/errors.go:220
+msgid "git config core.hooksPath already points to %s - will not take it over"
+msgstr "git config core.hooksPath already points to %s - will not take it over"
+
+#: internal/adapters/cli/commands/validate_execute.go:130
+msgid "git reference not found: %s"
+msgstr "git reference not found: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:263
+#: internal/adapters/cli/commands/configdisplay.go:114
+msgid "global"
+msgstr "global"
+
+#: internal/adapters/cli/commands/globalhooks.go:152
+msgid "global hook operation failed"
+msgstr "global hook operation failed"
+
+#: internal/adapters/cli/commands/removehook.go:105
+msgid "global hook removal failed"
+msgstr "global hook removal failed"
+
+#: cmd/gommitlint/help_printer.go:513
+msgid ""
+"gommitlint - git commit linter\n"
+"\n"
+"%s\n"
+"  gommitlint validate [--format FORMAT] [--count N] [options]\n"
+"\n"
+"%s\n"
+"  --format FORMAT       output format: %s\n"
+"  --count N             validate last N commits\n"
+"  --base-branch BRANCH  validate from branch to HEAD\n"
+"  --log-level LEVEL     logging level: %s\n"
+"\n"
+"%s\n"
+"  # Validate current commit\n"
+"  $ gommitlint validate\n"
+"  ✓ abc1234 feat: add new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"  # Validate multiple commits\n"
+"  $ gommitlint validate --count 3\n"
+"  #1 ✓ abc1234 feat: add feature\n"
+"  #2 ✓ def5678 fix: resolve bug\n"
+"  #3 ✗ bad7890 bad commit message\n"
+"  ✗ 1 issue found\n"
+"\n"
+"  # CI/CD automation with JSON output\n"
+"  $ gommitlint validate --format json | jq '.summary.allPassed'\n"
+"  true\n"
+"\n"
+"  # Validate feature branch commits\n"
+"  $ gommitlint validate --base-branch main\n"
+"  #1 ✓ abc1234 feat: new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"%s\n"
+"  validate    validate commit messages (primary command)\n"
+"  doctor      inspect configuration, hooks, and effective policy\n"
+"  config      configuration operations  \n"
+"  hook        manage Git hooks\n"
+"  --version   print version information\n"
+"\n"
+"Docs: https://docs.itiquette.org/gommitlint/\n"
+"Issues: https://codefloe.com/itiquette/gommitlint/issues\n"
+"Manual: man gommitlint\n"
+"\n"
+"Full options: gommitlint --help\n"
+msgstr ""
+"gommitlint - git commit linter\n"
+"\n"
+"%s\n"
+"  gommitlint validate [--format FORMAT] [--count N] [options]\n"
+"\n"
+"%s\n"
+"  --format FORMAT       output format: %s\n"
+"  --count N             validate last N commits\n"
+"  --base-branch BRANCH  validate from branch to HEAD\n"
+"  --log-level LEVEL     logging level: %s\n"
+"\n"
+"%s\n"
+"  # Validate current commit\n"
+"  $ gommitlint validate\n"
+"  ✓ abc1234 feat: add new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"  # Validate multiple commits\n"
+"  $ gommitlint validate --count 3\n"
+"  #1 ✓ abc1234 feat: add feature\n"
+"  #2 ✓ def5678 fix: resolve bug\n"
+"  #3 ✗ bad7890 bad commit message\n"
+"  ✗ 1 issue found\n"
+"\n"
+"  # CI/CD automation with JSON output\n"
+"  $ gommitlint validate --format json | jq '.summary.allPassed'\n"
+"  true\n"
+"\n"
+"  # Validate feature branch commits\n"
+"  $ gommitlint validate --base-branch main\n"
+"  #1 ✓ abc1234 feat: new feature\n"
+"  ✓ All checks passed\n"
+"\n"
+"%s\n"
+"  validate    validate commit messages (primary command)\n"
+"  doctor      inspect configuration, hooks, and effective policy\n"
+"  config      configuration operations  \n"
+"  hook        manage Git hooks\n"
+"  --version   print version information\n"
+"\n"
+"Docs: https://docs.itiquette.org/gommitlint/\n"
+"Issues: https://codefloe.com/itiquette/gommitlint/issues\n"
+"Manual: man gommitlint\n"
+"\n"
+"Full options: gommitlint --help\n"
+
+#: cmd/gommitlint/main.go:283
+msgid "gommitlint [OPTION...] COMMAND [args...]"
+msgstr "gommitlint [OPTION...] COMMAND [args...]"
+
+#: internal/adapters/cli/commands/errors.go:206
+msgid "gommitlint global hook already exists at %s"
+msgstr "gommitlint global hook already exists at %s"
+
+#: internal/adapters/cli/commands/errors.go:170
+msgid "gommitlint hook already exists at %s"
+msgstr "gommitlint hook already exists at %s"
+
+#: cmd/gommitlint/main.go:245
+msgid "gommitlint validates Git commit messages against configurable rules to ensure consistency and quality. It supports conventional commit format validation, subject line checks, body requirements, JIRA reference validation, spell checking, and more. The tool can validate individual commits, ranges of commits, or files containing commit messages."
+msgstr "gommitlint validates Git commit messages against configurable rules to ensure consistency and quality. It supports conventional commit format validation, subject line checks, body requirements, JIRA reference validation, spell checking, and more. The tool can validate individual commits, ranges of commits, or files containing commit messages."
+
+#: cmd/gommitlint/main.go:521
+msgid "gommitlint: child process failed with exit status %d"
+msgstr "gommitlint: child process failed with exit status %d"
+
+#: cmd/gommitlint/main.go:510
+msgid "gommitlint: operation canceled"
+msgstr "gommitlint: operation canceled"
+
+#: cmd/gommitlint/main.go:504
+msgid "gommitlint: operation timed out"
+msgstr "gommitlint: operation timed out"
+
+#: cmd/gommitlint/main.go:526
+msgid "gommitlint: unexpected internal error; use --log-level=debug for diagnostic details"
+msgstr "gommitlint: unexpected internal error; use --log-level=debug for diagnostic details"
+
+#: internal/adapters/cli/commands/config_check.go:415
+msgid "hint: %s"
+msgstr "hint: %s"
+
+#: internal/adapters/cli/commands/validate.go:141
+msgid "increase output verbosity (-v or -vv)"
+msgstr "increase output verbosity (-v or -vv)"
+
+#: internal/adapters/cli/commands/doctor.go:31
+msgid "inspect configuration, hooks, and effective policy"
+msgstr "inspect configuration, hooks, and effective policy"
+
+#: internal/adapters/cli/commands/installhook.go:33
+msgid "install Gommitlint Git hooks"
+msgstr "install Gommitlint Git hooks"
+
+#: cmd/gommitlint/completion_command.go:121
+msgid "install completions for all supported shells"
+msgstr "install completions for all supported shells"
+
+#: internal/adapters/cli/commands/installhook.go:54
+msgid "install hooks globally to $XDG_CONFIG_HOME/git/git-hooks/ (default: ~/.config/git/git-hooks/) and configure git config core.hooksPath"
+msgstr "install hooks globally to $XDG_CONFIG_HOME/git/git-hooks/ (default: ~/.config/git/git-hooks/) and configure git config core.hooksPath"
+
+#: cmd/gommitlint/completion_command.go:115
+msgid "install shell completion script"
+msgstr "install shell completion script"
+
+#: internal/adapters/cli/commands/hookstatus.go:208
+msgid "installed (%s)"
+msgstr "installed (%s)"
+
+#: internal/adapters/cli/commands/config_sync.go:81
+msgid "integrity mismatch for managed source %s"
+msgstr "integrity mismatch for managed source %s"
+
+#: internal/adapters/cli/commands/config_init.go:146
+msgid "invalid --output path: %s"
+msgstr "invalid --output path: %s"
+
+#: internal/adapters/cli/commands/prepush.go:225
+msgid "invalid pre-push input"
+msgstr "invalid pre-push input"
+
+#: internal/adapters/cli/commands/errors.go:264
+msgid "invalid repository path: %s"
+msgstr "invalid repository path: %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:72
+msgid "invalid translation domain %q: expected one safe filename stem"
+msgstr "invalid translation domain %q: expected one safe filename stem"
+
+#: internal/adapters/cli/globalflags.go:25
+msgid "load built-in defaults plus `FILE` and its imports; bypass discovered user and project configs; does not affect global hook operations"
+msgstr "load built-in defaults plus `FILE` and its imports; bypass discovered user and project configs; does not affect global hook operations"
+
+#: internal/adapters/cli/commands/hookstatus.go:153
+#: internal/adapters/cli/commands/hookstatus.go:162
+#: internal/adapters/cli/commands/hookstatus.go:218
+msgid "local"
+msgstr "local"
+
+#: internal/adapters/cli/commands/translations_update.go:48
+msgid "locale source directory (default: ./locale)"
+msgstr "locale source directory (default: ./locale)"
+
+#: internal/adapters/cli/commands/hook.go:26
+msgid "manage Gommitlint Git hooks"
+msgstr "manage Gommitlint Git hooks"
+
+#: internal/adapters/cli/commands/translations.go:23
+msgid "manage translation catalogs (developer tool)"
+msgstr "manage translation catalogs (developer tool)"
+
+#: internal/adapters/cli/commands/config_check.go:175
+msgid "managed source %s has invalid vendored file %s"
+msgstr "managed source %s has invalid vendored file %s"
+
+#: internal/adapters/cli/commands/config_check.go:168
+msgid "managed source %s is missing vendored file %s"
+msgstr "managed source %s is missing vendored file %s"
+
+#: internal/adapters/cli/commands/config_check.go:184
+msgid "managed source %s vendored file does not match integrity.sha256"
+msgstr "managed source %s vendored file does not match integrity.sha256"
+
+#: internal/adapters/cli/commands/config_sync.go:131
+msgid "managed source URL is invalid"
+msgstr "managed source URL is invalid"
+
+#: internal/adapters/cli/commands/config_sync.go:101
+msgid "managed source URL is invalid for %s"
+msgstr "managed source URL is invalid for %s"
+
+#: internal/adapters/cli/commands/config_sync.go:133
+msgid "managed source destination is invalid"
+msgstr "managed source destination is invalid"
+
+#: internal/adapters/cli/commands/config_sync.go:130
+msgid "managed source environment variable is not set"
+msgstr "managed source environment variable is not set"
+
+#: internal/adapters/cli/commands/config_sync.go:88
+msgid "managed source environment variable is not set for %s (%s)"
+msgstr "managed source environment variable is not set for %s (%s)"
+
+#: internal/adapters/cli/commands/config_sync.go:129
+msgid "managed source integrity check failed"
+msgstr "managed source integrity check failed"
+
+#: internal/adapters/cli/commands/config_sync.go:132
+msgid "managed source is out of date"
+msgstr "managed source is out of date"
+
+#: internal/adapters/cli/commands/config_sync.go:128
+msgid "managed source not found"
+msgstr "managed source not found"
+
+#: internal/adapters/cli/commands/config_sync.go:134
+msgid "managed source redirect changed host"
+msgstr "managed source redirect changed host"
+
+#: cmd/gommitlint/completion_command.go:780
+msgid "missing shell for completion command"
+msgstr "missing shell for completion command"
+
+#: internal/adapters/cli/commands/config_check.go:344
+msgid "next step: %s"
+msgstr "next step: %s"
+
+#: internal/adapters/cli/commands/doctor.go:133
+msgid "no"
+msgstr "no"
+
+#: cmd/gommitlint/completion_command.go:782
+msgid "no extra arguments allowed with --all"
+msgstr "no extra arguments allowed with --all"
+
+#: internal/adapters/cli/commands/translations_errors.go:162
+msgid "no regular %s.po translation catalogs found under %s"
+msgstr "no regular %s.po translation catalogs found under %s"
+
+#: internal/adapters/cli/commands/config_sync.go:60
+msgid "no writable config file found for sync"
+msgstr "no writable config file found for sync"
+
+#: internal/adapters/cli/commands/config_check.go:400
+msgid "none"
+msgstr "none"
+
+#: internal/adapters/cli/commands/hookstatus.go:204
+msgid "not executable (%s)"
+msgstr "not executable (%s)"
+
+#: internal/adapters/cli/commands/doctor.go:113
+msgid "not installed"
+msgstr "not installed"
+
+#: internal/adapters/cli/commands/validate.go:88
+msgid "only run commit message rules, ignore all repository rules"
+msgstr "only run commit message rules, ignore all repository rules"
+
+#: internal/adapters/cli/globalflags.go:36
+msgid "operate on git repository at `PATH` (default: current directory); does not affect global hook operations"
+msgstr "operate on git repository at `PATH` (default: current directory); does not affect global hook operations"
+
+#: internal/adapters/cli/commands/config.go:249
+msgid "output `FORMAT`: %s"
+msgstr "output `FORMAT`: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:34
+msgid "output `FORMAT`: %s (table best for ≤30 commits)"
+msgstr "output `FORMAT`: %s (table best for ≤30 commits)"
+
+#: internal/adapters/cli/commands/translations_compile.go:50
+msgid "output directory for compiled .mo catalogs (default: ./generated/locale)"
+msgstr "output directory for compiled .mo catalogs (default: ./generated/locale)"
+
+#: internal/adapters/cli/commands/config.go:176
+msgid "overwrite the target file if it already exists"
+msgstr "overwrite the target file if it already exists"
+
+#: internal/adapters/cli/commands/config.go:227
+msgid "per-source download `TIMEOUT`"
+msgstr "per-source download `TIMEOUT`"
+
+#: internal/adapters/cli/globalflags.go:65
+msgid "permit kernel coredumps on crash (default: suppressed for residue minimization)"
+msgstr "permit kernel coredumps on crash (default: suppressed for residue minimization)"
+
+#: internal/adapters/cli/commands/prepush.go:240
+msgid "pre-push commit selection failed"
+msgstr "pre-push commit selection failed"
+
+#: internal/adapters/cli/commands/config_show_text.go:261
+#: internal/adapters/cli/commands/configdisplay.go:112
+msgid "preset"
+msgstr "preset"
+
+#: internal/adapters/cli/commands/removehook.go:52
+msgid "preview repository-local hook removal without changing files"
+msgstr "preview repository-local hook removal without changing files"
+
+#: internal/adapters/cli/commands/config.go:172
+msgid "print template to stdout instead of writing a file"
+msgstr "print template to stdout instead of writing a file"
+
+#: internal/adapters/cli/commands/config.go:183
+msgid "print the JSON Schema for the config file"
+msgstr "print the JSON Schema for the config file"
+
+#: internal/adapters/cli/commands/config_check.go:410
+msgid "problem: %s"
+msgstr "problem: %s"
+
+#: internal/adapters/cli/commands/config_show_text.go:265
+#: internal/adapters/cli/commands/configdisplay.go:116
+msgid "project"
+msgstr "project"
+
+#: internal/adapters/cli/commands/validate.go:83
+msgid "read commit message from `FILE` (use - for stdin)"
+msgstr "read commit message from `FILE` (use - for stdin)"
+
+#: internal/adapters/cli/commands/translations_update.go:32
+msgid "refresh .po catalogs from source"
+msgstr "refresh .po catalogs from source"
+
+#: internal/adapters/cli/commands/config_init.go:158
+msgid "refusing to write config file inside .git/: %s"
+msgstr "refusing to write config file inside .git/: %s"
+
+#: internal/adapters/cli/commands/removehook.go:35
+msgid "remove Gommitlint Git hooks"
+msgstr "remove Gommitlint Git hooks"
+
+#: internal/adapters/cli/commands/removehook.go:48
+msgid "remove global hooks from $XDG_CONFIG_HOME/git/git-hooks/ (default: ~/.config/git/git-hooks/) and restore, unset, or preserve git config core.hooksPath as appropriate"
+msgstr "remove global hooks from $XDG_CONFIG_HOME/git/git-hooks/ (default: ~/.config/git/git-hooks/) and restore, unset, or preserve git config core.hooksPath as appropriate"
+
+#: internal/adapters/cli/commands/installhook.go:50
+msgid "replace existing Gommitlint hooks or another global core.hooksPath"
+msgstr "replace existing Gommitlint hooks or another global core.hooksPath"
+
+#: internal/adapters/output/tableformatter.go:248
+msgid "repo"
+msgstr "repo"
+
+#: internal/adapters/output/tableformatter.go:253
+msgid "repository"
+msgstr "repository"
+
+#: internal/adapters/cli/commands/translations_errors.go:91
+msgid "required translation tool %q was not found"
+msgstr "required translation tool %q was not found"
+
+#: internal/adapters/cli/commands/rulehelp.go:243
+msgid "rulehelp.branchahead"
+msgstr "rulehelp.branchahead"
+
+#: internal/adapters/cli/commands/rulehelp.go:218
+msgid "rulehelp.commitbody"
+msgstr "rulehelp.commitbody"
+
+#: internal/adapters/cli/commands/rulehelp.go:41
+msgid "rulehelp.conventional"
+msgstr "rulehelp.conventional"
+
+#: internal/adapters/cli/commands/rulehelp.go:160
+msgid "rulehelp.cryptosignature"
+msgstr "rulehelp.cryptosignature"
+
+#: internal/adapters/cli/commands/rulehelp.go:201
+msgid "rulehelp.identity"
+msgstr "rulehelp.identity"
+
+#: internal/adapters/cli/commands/rulehelp.go:96
+msgid "rulehelp.jirareference"
+msgstr "rulehelp.jirareference"
+
+#: internal/adapters/cli/commands/rulehelp.go:264
+msgid "rulehelp.linearhistory"
+msgstr "rulehelp.linearhistory"
+
+#: internal/adapters/cli/commands/rulehelp.go:121
+msgid "rulehelp.signoff"
+msgstr "rulehelp.signoff"
+
+#: internal/adapters/cli/commands/rulehelp.go:142
+msgid "rulehelp.spell"
+msgstr "rulehelp.spell"
+
+#: internal/adapters/cli/commands/rulehelp.go:70
+msgid "rulehelp.subject"
+msgstr "rulehelp.subject"
+
+#: internal/adapters/output/warningformatting_messages.go:83
+msgid "rules listed in both enabled and disabled (disabled wins): %s — remove the conflict from your config"
+msgstr "rules listed in both enabled and disabled (disabled wins): %s — remove the conflict from your config"
+
+#: internal/adapters/output/warningformatting_messages.go:80
+msgid "rules.enabled and rules.disabled share entries; disabled takes precedence"
+msgstr "rules.enabled and rules.disabled share entries; disabled takes precedence"
+
+#: internal/adapters/cli/commands/hook_lifecycle.go:259
+#: internal/adapters/cli/commands/hook_lifecycle.go:303
+msgid "security check failed"
+msgstr "security check failed"
+
+#: internal/adapters/cli/globalflags.go:60
+msgid "set logging `LEVEL`: %s"
+msgstr "set logging `LEVEL`: %s"
+
+#: internal/adapters/cli/globalflags.go:48
+msgid "set output theme: %s"
+msgstr "set output theme: %s"
+
+#: cmd/gommitlint/completion_command.go:793
+msgid "shell completion failed: %s"
+msgstr "shell completion failed: %s"
+
+#: internal/adapters/cli/commands/hookstatus.go:24
+msgid "show current Gommitlint Git hook status"
+msgstr "show current Gommitlint Git hook status"
+
+#: internal/adapters/cli/commands/validate.go:146
+msgid "show detailed help for specific `RULE` and exit"
+msgstr "show detailed help for specific `RULE` and exit"
+
+#: internal/adapters/cli/commands/hookstatus.go:41
+msgid "show detailed information (timestamps and file size)"
+msgstr "show detailed information (timestamps and file size)"
+
+#: internal/adapters/cli/commands/config.go:117
+msgid "show effective configuration"
+msgstr "show effective configuration"
+
+#: cmd/gommitlint/help_printer.go:472
+msgid "show help"
+msgstr "show help"
+
+#: internal/adapters/cli/commands/man.go:43
+msgid "show the terminal manual"
+msgstr "show the terminal manual"
+
+#: internal/adapters/cli/commands/translations_compile.go:46
+msgid "source directory holding locale/<lang>/<domain>.po (default: ./locale)"
+msgstr "source directory holding locale/<lang>/<domain>.po (default: ./locale)"
+
+#: internal/adapters/cli/commands/config_check.go:336
+#: internal/adapters/cli/commands/config_sync.go:171
+msgid "status: %s"
+msgstr "status: %s"
+
+#: internal/adapters/output/tableformatter.go:145
+msgid "stdin"
+msgstr "stdin"
+
+#: internal/adapters/cli/globalflags.go:54
+msgid "suppress all output except errors"
+msgstr "suppress all output except errors"
+
+#: internal/adapters/cli/commands/config.go:204
+msgid "sync managed configuration sources"
+msgstr "sync managed configuration sources"
+
+#: internal/adapters/cli/commands/config.go:215
+msgid "sync only managed source with `ID`"
+msgstr "sync only managed source with `ID`"
+
+#: internal/adapters/cli/commands/config.go:254
+msgid "text output `VIEW`: compact, verbose"
+msgstr "text output `VIEW`: compact, verbose"
+
+#: internal/adapters/cli/commands/doctor.go:92
+#: internal/adapters/cli/commands/errors.go:244
+msgid "this repository's hooks run from %s (core.hooksPath), so a hook in .git/hooks would never run"
+msgstr "this repository's hooks run from %s (core.hooksPath), so a hook in .git/hooks would never run"
+
+#: internal/adapters/cli/commands/errors.go:236
+msgid "this repository's hooks run from gommitlint's global hooks directory %s"
+msgstr "this repository's hooks run from gommitlint's global hooks directory %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:113
+msgid "translation locale directory is unavailable: %s"
+msgstr "translation locale directory is unavailable: %s"
+
+#: internal/adapters/cli/commands/translations_errors.go:102
+msgid "translation source directory is unavailable: %s"
+msgstr "translation source directory is unavailable: %s"
+
+#: internal/adapters/cli/commands/command_helpers.go:27
+msgid "unexpected argument: %s"
+msgstr "unexpected argument: %s"
+
+#: internal/adapters/cli/commands/config_init.go:95
+msgid "unknown preset: %s"
+msgstr "unknown preset: %s"
+
+#: internal/adapters/cli/outputoptions.go:70
+msgid "unknown rule %q. Valid rules: %s"
+msgstr "unknown rule %q. Valid rules: %s"
+
+#: cmd/gommitlint/completion_command.go:789
+msgid "unknown shell %s"
+msgstr "unknown shell %s"
+
+#: internal/adapters/cli/commands/hookstatus.go:206
+msgid "unknown source (%s)"
+msgstr "unknown source (%s)"
+
+#: internal/adapters/cli/commands/config.go:296
+msgid "unsupported format '%s'"
+msgstr "unsupported format '%s'"
+
+#: internal/adapters/cli/commands/config_show.go:223
+msgid "unsupported view '%s'"
+msgstr "unsupported view '%s'"
+
+#: internal/adapters/cli/globalflags.go:30
+msgid "use built-in defaults and ignore all configuration files; does not affect global hook operations"
+msgstr "use built-in defaults and ignore all configuration files; does not affect global hook operations"
+
+#: internal/adapters/cli/commands/validate.go:94
+msgid "validate all commits from `BRANCH` to HEAD (comma-separated list for fallback, e.g., main,master,develop)"
+msgstr "validate all commits from `BRANCH` to HEAD (comma-separated list for fallback, e.g., main,master,develop)"
+
+#: internal/adapters/cli/commands/validate.go:41
+msgid "validate commit messages against configured rules"
+msgstr "validate commit messages against configured rules"
+
+#: internal/adapters/cli/commands/validate.go:99
+msgid "validate commits in git `RANGE` (e.g., main..feature)"
+msgstr "validate commits in git `RANGE` (e.g., main..feature)"
+
+#: internal/adapters/cli/commands/validate.go:112
+msgid "validate last N commits from HEAD"
+msgstr "validate last N commits from HEAD"
+
+#: internal/adapters/cli/commands/validate.go:117
+msgid "validate only specific `RULES` (comma-separated, e.g., conventional,signoff). Default: enabled-by-config set"
+msgstr "validate only specific `RULES` (comma-separated, e.g., conventional,signoff). Default: enabled-by-config set"
+
+#: internal/adapters/cli/commands/validate.go:42
+msgid ""
+"validate searches for commit messages that match or violate the configured\n"
+"rule and prints each violation found. By default, validate examines the HEAD\n"
+"commit in the current repository.\n"
+"\n"
+"A FILE of \"-\" stands for standard input. If no validation target is specified,\n"
+"validate examines the HEAD commit. If --base-branch is given, validate examines\n"
+"all commits from the base branch to HEAD.\n"
+"\n"
+"The exit status is 0 if no violations are found, 1 if violations are found,\n"
+"and 2 for fatal errors.\n"
+"\n"
+"Examples:\n"
+"  # Validate the HEAD commit\n"
+"  gommitlint validate\n"
+"\n"
+"  # Validate the last 3 commits\n"
+"  gommitlint validate --count 3\n"
+"\n"
+"  # Validate every commit between main and HEAD\n"
+"  gommitlint validate --base-branch main\n"
+"\n"
+"  # Validate a range (git range syntax)\n"
+"  gommitlint validate --range main..feature\n"
+"\n"
+"  # Validate a message from a file (commit-msg hook)\n"
+"  gommitlint validate --message-file .git/COMMIT_EDITMSG\n"
+"\n"
+"  # Validate a message from stdin\n"
+"  echo \"feat: add feature\" | gommitlint validate --message-file -\n"
+"\n"
+"  # Only run a subset of rules\n"
+"  gommitlint validate --rule conventional,signoff\n"
+"\n"
+"  # Emit machine-readable JSON for a CI pipeline\n"
+"  gommitlint validate --format json"
+msgstr ""
+"validate searches for commit messages that match or violate the configured\n"
+"rule and prints each violation found. By default, validate examines the HEAD\n"
+"commit in the current repository.\n"
+"\n"
+"A FILE of \"-\" stands for standard input. If no validation target is specified,\n"
+"validate examines the HEAD commit. If --base-branch is given, validate examines\n"
+"all commits from the base branch to HEAD.\n"
+"\n"
+"The exit status is 0 if no violations are found, 1 if violations are found,\n"
+"and 2 for fatal errors.\n"
+"\n"
+"Examples:\n"
+"  # Validate the HEAD commit\n"
+"  gommitlint validate\n"
+"\n"
+"  # Validate the last 3 commits\n"
+"  gommitlint validate --count 3\n"
+"\n"
+"  # Validate every commit between main and HEAD\n"
+"  gommitlint validate --base-branch main\n"
+"\n"
+"  # Validate a range (git range syntax)\n"
+"  gommitlint validate --range main..feature\n"
+"\n"
+"  # Validate a message from a file (commit-msg hook)\n"
+"  gommitlint validate --message-file .git/COMMIT_EDITMSG\n"
+"\n"
+"  # Validate a message from stdin\n"
+"  echo \"feat: add feature\" | gommitlint validate --message-file -\n"
+"\n"
+"  # Only run a subset of rules\n"
+"  gommitlint validate --rule conventional,signoff\n"
+"\n"
+"  # Emit machine-readable JSON for a CI pipeline\n"
+"  gommitlint validate --format json"
+
+#: internal/adapters/cli/commands/validate.go:105
+msgid "validate specific git `REF` (default: HEAD)"
+msgstr "validate specific git `REF` (default: HEAD)"
+
+#: internal/adapters/cli/commands/validate_execute.go:140
+msgid "validation cancelled: %s"
+msgstr "validation cancelled: %s"
+
+#: cmd/gommitlint/main.go:570 internal/adapters/cli/commands/validate.go:174
+msgid "validation failed"
+msgstr "validation failed"
+
+#: internal/adapters/cli/commands/validate_execute.go:193
+#: internal/adapters/cli/commands/validate_execute.go:202
+msgid "validation failed: %s"
+msgstr "validation failed: %s"
+
+#: internal/adapters/cli/commands/validate.go:168
+msgid "validation failed: commit and repository violations found"
+msgstr "validation failed: commit and repository violations found"
+
+#: internal/adapters/cli/commands/validate.go:170
+msgid "validation failed: one or more commits have violations"
+msgstr "validation failed: one or more commits have violations"
+
+#: internal/adapters/cli/commands/validate.go:172
+msgid "validation failed: repository violations found"
+msgstr "validation failed: repository violations found"
+
+#: internal/adapters/cli/commands/errors.go:388
+msgid "validation target %q requires a git repository"
+msgstr "validation target %q requires a git repository"
+
+#: internal/adapters/cli/commands/validate_execute.go:148
+msgid "validation timed out: %s"
+msgstr "validation timed out: %s"
+
+#: internal/adapters/cli/commands/validate_output.go:108
+msgid "verbose flag may be specified at most twice"
+msgstr "verbose flag may be specified at most twice"
+
+#: internal/adapters/cli/commands/config.go:168
+msgid "write a small config extending built-in `PRESET`"
+msgstr "write a small config extending built-in `PRESET`"
+
+#: internal/adapters/cli/commands/config.go:164
+msgid "write template to `PATH` (use - for stdout)"
+msgstr "write template to `PATH` (use - for stdout)"
+
+#: cmd/gommitlint/completion_command.go:125
+msgid "write the completion script to stdout instead of installing it"
+msgstr "write the completion script to stdout instead of installing it"
+
+#: internal/adapters/cli/commands/validate.go:151
+msgid "write validation results to `FILE` (use - for stdout)"
+msgstr "write validation results to `FILE` (use - for stdout)"
+
+#: internal/adapters/cli/commands/doctor.go:130
+msgid "yes"
+msgstr "yes"
+
+#: internal/adapters/output/summaryformatter.go:129
+msgid "| Commit | Subject | Status |"
+msgstr "| Commit | Subject | Status |"
+
+#: internal/adapters/output/summaryformatter.go:130
+msgid "|--------|---------|--------|"
+msgstr "|--------|---------|--------|"
+
+#: internal/adapters/output/textformatter.go:713
+msgid "… and %d more"
+msgid_plural "… and %d more"
+msgstr[0] "… and %d more"
+msgstr[1] "… and %d more"
+
+#: internal/adapters/cli/commands/removehook.go:454
+msgid "ℹ Custom dispatcher kept"
+msgstr "ℹ Custom dispatcher kept"
+
+#: internal/adapters/cli/commands/removehook.go:446
+msgid "ℹ Dispatcher kept: other tools still plug into it"
+msgstr "ℹ Dispatcher kept: other tools still plug into it"
+
+#: internal/adapters/cli/commands/removehook.go:440
+msgid "ℹ Not a gommitlint hook"
+msgstr "ℹ Not a gommitlint hook"
+
+#: internal/adapters/cli/commands/config_show_text.go:175
+msgid "← active"
+msgstr "← active"
+
+#: internal/adapters/cli/commands/removehook.go:442
+#: internal/adapters/cli/commands/removehook.go:520
+#: internal/adapters/cli/commands/removehook.go:524
+msgid "⚠ Hook not found"
+msgstr "⚠ Hook not found"
+
+#: internal/adapters/cli/commands/installhook.go:233
+msgid "⚠ Replaced previous value %s (restored by 'hook remove --global')"
+msgstr "⚠ Replaced previous value %s (restored by 'hook remove --global')"
+
+#: internal/adapters/output/summaryformatter.go:137
+msgid "✅ Passed"
+msgstr "✅ Passed"
+
+#: internal/adapters/output/githubformatter.go:111
+msgid "✓ %s\n"
+msgstr "✓ %s\n"
+
+#: internal/adapters/output/tableformatter.go:193
+msgid "✓ ALL CHECKS PASSED SUCCESSFULLY"
+msgstr "✓ ALL CHECKS PASSED SUCCESSFULLY"
+
+#: internal/adapters/cli/commands/prepush.go:190
+#: internal/adapters/output/textformatter.go:184
+msgid "✓ All checks passed"
+msgstr "✓ All checks passed"
+
+#: internal/adapters/output/textformatter.go:197
+msgid "✓ All checks passed — %s, %s, %s"
+msgstr "✓ All checks passed — %s, %s, %s"
+
+#: internal/adapters/output/gitlabformatter.go:146
+msgid "✓ All commit validation rules passed"
+msgstr "✓ All commit validation rules passed"
+
+#: internal/adapters/output/githubformatter.go:142
+msgid "✓ All rules passed\n"
+msgstr "✓ All rules passed\n"
+
+#: internal/adapters/cli/commands/installhook.go:278
+msgid "✓ Git hooks installed successfully!"
+msgstr "✓ Git hooks installed successfully!"
+
+#: internal/adapters/cli/commands/removehook.go:544
+msgid "✓ Git hooks removed successfully!"
+msgstr "✓ Git hooks removed successfully!"
+
+#: internal/adapters/cli/commands/installhook.go:225
+msgid "✓ Global git hooks installed successfully!"
+msgstr "✓ Global git hooks installed successfully!"
+
+#: internal/adapters/cli/commands/removehook.go:418
+msgid "✓ Global git hooks removed successfully!"
+msgstr "✓ Global git hooks removed successfully!"
+
+#: internal/adapters/cli/commands/removehook.go:438
+msgid "✓ Removed"
+msgstr "✓ Removed"
+
+#: internal/adapters/cli/commands/removehook.go:522
+msgid "✓ Removed: %s"
+msgstr "✓ Removed: %s"
+
+#: internal/adapters/output/tableformatter.go:101
+msgid "✓ VALIDATION PASSED"
+msgstr "✓ VALIDATION PASSED"
+
+#: internal/adapters/output/githubformatter.go:144
+msgid "✗ %d rule failed\n"
+msgid_plural "✗ %d rules failed\n"
+msgstr[0] "✗ %d rule failed\n"
+msgstr[1] "✗ %d rules failed\n"
+
+#: internal/adapters/output/textformatter.go:224
+msgid "✗ %s found"
+msgstr "✗ %s found"
+
+#: internal/adapters/output/textformatter.go:69
+msgid "✗ %s found (checked %s"
+msgstr "✗ %s found (checked %s"
+
+#: internal/adapters/cli/commands/removehook.go:402
+msgid "✗ Global hook removal stopped before all operations completed"
+msgstr "✗ Global hook removal stopped before all operations completed"
+
+#: internal/adapters/cli/commands/removehook.go:245
+msgid "✗ No %s hook found at %s"
+msgstr "✗ No %s hook found at %s"
+
+#: internal/adapters/cli/commands/removehook.go:532
+msgid "✗ Not removed: %s"
+msgstr "✗ Not removed: %s"
+
+#: internal/adapters/output/tableformatter.go:103
+msgid "✗ VALIDATION FAILED"
+msgstr "✗ VALIDATION FAILED"
+
+#: internal/adapters/output/tableformatter.go:196
+msgid "✗ VALIDATION FAILED: %d ISSUES"
+msgstr "✗ VALIDATION FAILED: %d ISSUES"
+
+#: internal/adapters/output/summaryformatter.go:139
+msgid "❌ Failed"
+msgstr "❌ Failed"

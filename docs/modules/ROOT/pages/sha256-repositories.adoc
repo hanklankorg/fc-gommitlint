@@ -1,0 +1,110 @@
+= SHA-256 Repositories
+:relfilesuffix: .adoc
+
+The unreleased 0.10.0 line supports both SHA-1 and SHA-256 Git repositories with
+one `gommitlint` binary.
+Use documentation for the installed release, not merely for the executable's filename.
+Authenticate the selected binary using xref:verify.adoc[Verify Releases] before running it.
+
+Git object format and release-file checksums are different concepts.
+A SHA-256 checksum of a downloaded binary does not mean that the repository uses SHA-256 objects.
+
+== Backend Selection
+
+For a filesystem repository, Gommitlint attempts `git -C PATH rev-parse --show-object-format` before choosing an adapter:
+
+* A detected `sha256` format selects the Git CLI-backed adapter and requires system Git on `PATH`.
+* Other detection results select the embedded `go-git` adapter; ordinary SHA-1 validation can use that adapter without system Git.
+
+`go-git` still does not provide the SHA-256 support `gommitlint` needs for full
+validation flows (see https://github.com/go-git/go-git/issues/706[go-git#706]),
+which is why SHA-256 repositories go through system Git.
+This is an interim arrangement: the next major `go-git` release (v6, still in alpha) reads SHA-256 repositories natively, and Gommitlint will drop the system Git requirement when that release is stable.
+
+Missing Git is only one cause of detection failure.
+The current opener falls back to `go-git` on any detection error, and also on empty or unrecognized output.
+That fallback is not proof that the repository is SHA-1 or that it can be opened successfully.
+It does not provide SHA-256 support when the required Git executable is unavailable or incompatible.
+When the repository uses SHA-256 objects and Git cannot be used, Gommitlint stops and reports why Git failed: it is not on `PATH`, or it refused the repository, for example because another user owns it (`safe.directory`).
+
+The default container image, tagged `<version>`, includes Git; mount the repository at `/repo`.
+The image tagged `<version>-distroless` contains no Git and cannot validate SHA-256 repositories.
+The `/repo` path is the image's working directory and the only one its Git trusts; a repository mounted elsewhere needs the container to run as the repository's owner.
+
+For SHA-256 repositories, provision a trusted Git version that supports the repository and the required revision commands.
+Use the same `PATH`, repository path, and user context when diagnosing detection failures.
+Inspect Git environment overrides such as `GIT_DIR` and `GIT_WORK_TREE`; CLI-backed calls inherit the process environment.
+Permission errors, unsupported Git options, or selecting the wrong directory are not reasons to change the repository's object format.
+
+The backend requirements above concern validation, not every installation or hook-management workflow.
+
+== What Uses The CLI Backend
+
+For SHA-256 repositories, validation uses the Git CLI-backed repository adapter for:
+
+* reading commits
+* reading commit ranges
+* base-branch validation
+* ahead-count checks
+* branch existence and current branch detection
+
+Backend selection does not fetch missing refs, repair history, or verify a commit signature cryptographically.
+Use xref:usecases/crypto-verification.adoc[Signature Policy] for the separate signature and key-inventory limitations.
+SHA-256 object IDs do not establish commit authorship or replace an authenticated release artifact.
+
+== Unreleased 0.10.0 Usage
+
+Start in the intended checkout and inspect its format and current commit with read-only Git commands:
+
+[,bash]
+----
+(
+  set -eu
+  git --version
+  object_format=$(git rev-parse --show-object-format)
+  case "$object_format" in
+    sha1|sha256) printf 'Repository object format: %s\n' "$object_format" ;;
+    *) printf 'Unrecognized object format: %s\n' "$object_format" >&2; exit 2 ;;
+  esac
+  git rev-parse --verify 'HEAD^{commit}'
+)
+----
+
+This procedure deliberately stops on Git errors or an unrecognized format instead of relying on the opener's fallback.
+An unborn repository can have an object format without a valid `HEAD` commit.
+Do not infer complete history or available range endpoints from a successful format check.
+
+The same current binary serves both formats. Choose one validation target below:
+
+[,bash]
+----
+gommitlint validate --no-ci-detect --ref HEAD --format=text
+gommitlint validate --no-ci-detect --count 5 --format=text
+gommitlint validate --no-ci-detect --range main..HEAD --format=text
+gommitlint validate --no-ci-detect --base-branch main --format=text
+----
+
+The examples disable CI detection so that a detected PR base cannot replace the intended target.
+Replace `main` with an available, approved base; do not silently narrow a failed range to an unrelated commit.
+The count example covers up to five commits, not the entire repository.
+See xref:usecases/commit-range-validation.adoc[Commit Range Validation] for selection and coverage rules.
+
+== Published 0.9.x Guidance
+
+The `v0.9.12` release configuration defines separate `gommitlint` and `gommitlint-sha256` binaries and archives.
+Use `gommitlint` for SHA-1 and the corresponding `gommitlint-sha256` artifact for SHA-256 when using that release layout.
+Inspect the exact release's inventory; do not assume identical format and platform coverage across all 0.9.x assets.
+
+[,bash]
+----
+# v0.9.12's SHA-256 binary, after artifact authentication and repository inspection
+gommitlint-sha256 validate --no-ci-detect --ref HEAD --format=text
+gommitlint-sha256 validate --no-ci-detect --range main..HEAD --format=text
+----
+
+The `v0.9.12` opener contains both adapters but checks the build format against a successfully detected repository format.
+Renaming its executable does not change that compiled format restriction.
+Detection failure still has a fallback path, so a missing mismatch diagnostic is not proof of compatibility.
+
+The one-binary behavior and removal of `gommitlint-sha256` described here apply to the unreleased 0.10.0 line.
+A supported repository format does not prove that an old release satisfies the current signing-key or release-verification contract.

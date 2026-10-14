@@ -1,0 +1,191 @@
+= Commit Range Validation Use Cases
+:relfilesuffix: .adoc
+:up: ../
+
+Validate commits selected by an explicit two-dot Git range, a base branch, or a
+count from `HEAD`.
+Use a trusted checkout with the intended configuration and enough history for
+the selection. These are selection examples, not complete CI workflows.
+Review configuration health as described in
+xref:./config-resolution.adoc[Config Discovery and Precedence].
+
+For explicit ranges or counts, use `--no-ci-detect` and choose the output format
+explicitly. In the current implementation, a detected PR base can otherwise
+replace that selection. Choose one selection strategy per command, not a union
+of `--range`, `--base-branch`, and `--count`.
+
+== Architecture Context
+
+The CLI creates a validation target, the application service asks the selected
+repository adapter for commits, and domain validation preserves repository
+order in the report. See xref:{up}architecture.adoc[Architecture] for ports,
+adapters, and package boundaries.
+
+== Use Case Scenarios
+
+=== 1. Pull Request Validation
+
+First make the intended base and head commits available through your approved
+checkout procedure. `origin/main` means the local remote-tracking ref, not a live
+query of the forge. The following example validates against its current value:
+
+[,bash]
+----
+git rev-parse --verify 'origin/main^{commit}' >/dev/null &&
+  gommitlint validate --no-ci-detect --range=origin/main..HEAD --format=text
+----
+
+Make sure that `HEAD` is the intended PR head rather than a synthetic merge
+commit. For an exact event snapshot, use the event's full base/head commit IDs
+as in xref:./ci-pipeline.adoc[CI/CD Pipeline].
+
+=== 2. CI Pipeline Push Validation
+
+Supply `BEFORE_SHA` and `AFTER_SHA` from the intended single-ref push event.
+Do not default either missing value to `HEAD`.
+This Bash example rejects absent, malformed, and all-zero IDs before validation.
+Its Git preflight requires a version that supports the repository's object format:
+
+[,bash]
+----
+(
+  set -euo pipefail
+  : "${BEFORE_SHA:?set the push event's before commit ID}"
+  : "${AFTER_SHA:?set the push event's after commit ID}"
+  [[ "$BEFORE_SHA" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+  [[ "$AFTER_SHA" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]]
+  [[ "$BEFORE_SHA" =~ [1-9a-f] ]]
+  [[ "$AFTER_SHA" =~ [1-9a-f] ]]
+  git rev-parse --verify --end-of-options "${BEFORE_SHA}^{commit}" >/dev/null
+  git rev-parse --verify --end-of-options "${AFTER_SHA}^{commit}" >/dev/null
+  gommitlint validate --no-ci-detect --range="${BEFORE_SHA}..${AFTER_SHA}" --format=json
+)
+----
+
+Branch creation and ref deletion can contain zero-valued event IDs.
+They need separate policies, not an ordinary two-dot range with a zero endpoint.
+A force-push range selects newly reachable commits but does not describe commits
+removed by the rewrite. One ref's range does not cover every ref in a multi-ref
+push.
+
+=== 3. Branch Ahead Analysis
+
+[,bash]
+----
+gommitlint validate --base-branch=origin/main --format=text
+----
+
+`--base-branch` resolves the first existing candidate and selects
+`<resolved-base>..HEAD`. The `branchahead` repository rule also uses that
+resolved branch when active.
+Comma-separated candidates are fallbacks, not multiple comparison branches.
+Existence does not prove that the selected base is current or appropriate.
+Examine the reported base before changing history to satisfy `branchahead`.
+
+== Range Resolution Strategies
+
+=== 1. Explicit Two-Dot Range
+
+[,text]
+----
+Input: "abc123..def456"
+Output: Commits reachable from `def456` but not from `abc123`, oldest first
+----
+
+Only two-dot syntax is supported. Triple-dot ranges and malformed or unsafe
+references fail as input errors before traversal.
+The left endpoint and all its ancestors are excluded, not just that one commit.
+The right endpoint is included only if it is not reachable from the left.
+Equal endpoints therefore select no commits. An empty range is not evidence
+that a required non-empty review occurred.
+
+The Go-Git adapter sorts selected commits by committer time, oldest first.
+That is not necessarily ancestry order when timestamps are unusual.
+Identify commits by SHA rather than relying on a row's position.
+
+=== 2. Branch Comparison
+
+[,text]
+----
+Input: "main..feature"
+Process: Find commits in 'feature' not in 'main'
+Output: New commits on feature branch
+----
+
+=== 3. Push Event Range
+
+[,text]
+----
+Input: `<before-sha>..<after-sha>` assembled by the workflow
+Output: Commits reachable from after-sha but not from before-sha
+----
+
+The workflow must supply and retain both event identities. Auto-detection does
+not assemble push-event ranges, fetch objects, or define a first-branch policy.
+
+=== 4. Recent Commits
+
+[,text]
+----
+Input: `--count=5`
+Output: Up to five commits from `HEAD`, newest first
+----
+
+`--count` is bounded by `limits.max_commit_count` (default 2000). An explicit
+range instead uses the repository adapter's traversal safety limits.
+
+For a recent-history sample, use a count instead of range or base-branch flags:
+
+[,bash]
+----
+gommitlint validate --no-ci-detect --count=5 --format=text
+----
+
+A count is not a PR or push boundary. It can select fewer commits when less
+history is available, and it can include commits unrelated to the event you
+intend to review. Increasing `limits.max_commit_count` does not raise the
+adapter's hard traversal limits for explicit ranges.
+
+== Selection and validation coverage
+
+Range membership and rule coverage are separate decisions.
+Configured `ignore_commits` entries are removed before validation.
+Merge-message validation can also be skipped when no applicable merge rule is
+active. Review selected, ignored, and validated counts together with the active
+rules before accepting the result.
+
+Repository-level rules can fail even when every selected commit message passes.
+Keep the process exit status as the gate. A JSON report, annotation, or empty
+findings list alone is not proof that the intended validation completed.
+
+== Error Handling Patterns
+
+=== Git Adapter Errors
+
+* *Invalid references*: Non-existent commits or branches
+* *Repository access*: Permission or Git-operation failures
+* *Range calculation*: Invalid syntax, missing references, or traversal limits
+
+Syntactically invalid ranges exit as malformed input. Well-formed ranges with a
+missing named reference exit as missing input. See
+xref:{up}reference/commands.adoc#_exit_codes[Exit Codes].
+
+Stop for missing refs, incomplete history, or traversal failure.
+Use an approved fetch/deepen or repository-recovery procedure before retrying.
+Do not silently replace a failed range with `HEAD`, a small count, or a different
+base merely to obtain a successful run.
+
+== Performance Considerations
+
+=== Current Implementation
+
+* After ignored-commit filtering, batches below 50 commits run sequentially.
+* Batches of 50 or more use a worker pool capped at eight workers, with the
+  actual count bounded by `GOMAXPROCS`. Results retain their original indices.
+* Context cancellation stops dispatch and returns an error rather than
+  rendering unvalidated zero-value entries as passes.
+
+The adapters currently materialize a selected range before validation.
+Results are not streamed. Even a small range difference can require traversal
+of substantial ancestry from both endpoints. Review resource limits rather than
+assuming that a small reported commit count makes traversal cheap.

@@ -1,0 +1,622 @@
+= Validation Rules
+:relfilesuffix: .adoc
+:up: ../
+
+The full rule catalog and per-rule configuration. For schema syntax, see xref:./configuration.adoc[Configuration].
+Use the catalog for the selected release and inspect the effective configuration before treating a rule as an enforced policy.
+Enabling a rule does not necessarily enable every optional behavior within it.
+
+== Validation Rules
+
+=== Rule Summary
+
+[cols="2,2,1,3"]
+|===
+|Rule ID |Display Name |Default |Description
+
+|`branchahead`
+|Branch Ahead
+|Enabled
+|Limits commits ahead of reference branch
+
+|`commitbody`
+|Commit body
+|Enabled
+|Validates commit body requirements
+
+|`conventional`
+|Commit type
+|Enabled
+|Validates conventional commit format
+
+|`cryptosignature`
+|Signature
+|Enabled
+|Checks signature presence, armor, type, and optional key inventory
+
+|`identity`
+|Identity
+|Disabled
+|Checks the commit author email against an allow-list
+
+|`jirareference`
+|JIRA reference
+|Disabled
+|Requires JIRA ticket references
+
+|`linearhistory`
+|Linear History
+|Disabled
+|Rejects merge commits
+
+|`signoff`
+|Sign-off
+|Enabled
+|Requires Signed-off-by trailer
+
+|`spell`
+|Spelling
+|Enabled
+|Spell checking
+
+|`subject`
+|Subject
+|Enabled
+|Subject line length and format
+|===
+
+`rules.enabled` adds rules to catalog defaults; it is not an exclusive allow-list.
+`rules.disabled` takes precedence, and runtime rule filters can narrow the resulting selection.
+The signature rule is enabled by default, but `crypto_signature.required` defaults to `false`, so unsigned commits are not rejected by default.
+Commit selection and ignore policies determine coverage; default-enabled rules do not imply that every commit was checked.
+
+=== Check IDs
+
+Rules are execution/configuration groups.
+Checks are public diagnostic IDs attached by a rule, dispatcher, or CLI error-adaptation path.
+JSON exposes the more specific internal reason as `diagnostic.reason`.
+Report formatters expose `GLxxx` for report entries.
+Recovery/setup errors use the same metadata internally for classification, but render actionable recovery messages.
+
+==== Category Ranges
+
+[cols="1,2"]
+|===
+|Range |Category
+
+|`GL100`-`GL199`
+|Subject
+
+|`GL200`-`GL299`
+|Conventional commits
+
+|`GL300`-`GL399`
+|Commit body
+
+|`GL400`-`GL499`
+|Trailers and references
+
+|`GL500`-`GL599`
+|Signatures and identity
+
+|`GL600`-`GL699`
+|Spelling and content
+
+|`GL700`-`GL799`
+|Repository and history
+
+|`GL900`-`GL999`
+|Dispatcher and pseudo checks
+|===
+
+==== Check Catalog
+
+Use `checks.enabled` / `checks.disabled` to select individual rule-backed `GLxxx` checks.
+For rule-backed rows, use `rules.enabled` / `rules.disabled` to select whole rules by the rule ID shown in *Source*. Dispatcher sources such as `fixup` and `validation` are not rules.
+
+The *Specific Controls / Inputs* column lists settings, CLI inputs, or external prerequisites that can change that specific check's behavior.
+`checks.enabled` selects a check and its parent rule. It does not change the behavior settings listed in *Specific Controls / Inputs*.
+`GL901` is the only dispatcher check controlled by `checks.disabled`.
+Other `GL900`-range diagnostics identify required runtime/input failures and cannot be enabled or disabled through `checks.*`.
+
+`No per-check tuning` means fixed behavior inside the source rule.
+If you do not want it enforced, disable the rule-backed `GLxxx` check or its parent rule.
+Rows marked as reserved or adapter-facing are registered public IDs, but the current normal rule path does not produce them directly.
+
+Parent-rule disabling still takes precedence over `checks.enabled`, and `checks.disabled` removes a check even when it is also enabled.
+Enabling one check does not restrict other default-enabled rules or checks.
+When a parent is activated only through `checks.enabled`, only the selected checks from that parent are retained.
+Use the resolved rule/check set rather than treating either enabled list as the complete policy.
+
+Check filtering applies to diagnostics returned by the parent rule, not to independent per-check execution.
+The rule can perform prerequisite work or return early before later checks are reached.
+Selecting a diagnostic ID is not a sandbox or proof that every named condition was evaluated.
+
+[cols="1,2,5,4",options="header"]
+|===
+|ID |Source |When It Fires |Specific Controls / Inputs
+
+|`GL101`
+|`subject`
+|The commit message has no subject line, or the subject is empty after parsing.
+|No per-check tuning
+
+|`GL102`
+|`subject`
+|The subject exceeds the configured character limit.
+|`message.subject.max_length`
+
+|`GL103`
+|`subject`
+|The subject cannot be parsed as a normal commit subject, including malformed conventional syntax when conventional parsing is expected.
+|`conventional.types`; conventional-aware parsing when `conventional` is active
+
+|`GL104`
+|`subject`
+|The first subject character does not match the configured case policy.
+|`message.subject.case`
+
+|`GL105`
+|`subject`
+|The subject contains invalid UTF-8 text; commit messages must be valid UTF-8.
+|No per-check tuning
+
+|`GL106`
+|`subject`
+|The subject ends with a forbidden punctuation/suffix character.
+|`message.subject.forbid_endings`
+
+|`GL107`
+|`subject`
+|Imperative mood is required and the subject appears to start with a non-imperative form.
+|`message.subject.require_imperative`; `conventional.types` affects conventional-subject extraction
+
+|`GL201`
+|`conventional`
+|The subject does not match `type(scope): description` style conventional commit syntax.
+|No per-check tuning
+
+|`GL202`
+|`conventional`
+|The conventional commit type is not in the allowed type list.
+|`conventional.types`
+
+|`GL203`
+|`conventional`
+|The conventional commit description is longer than allowed.
+|`conventional.max_description_length`
+
+|`GL204`
+|`conventional`
+|The separator after `type`/`scope` is malformed, e.g. missing colon or missing single space after the colon.
+|No per-check tuning
+
+|`GL205`
+|`conventional`
+|The conventional commit has no description after the type/scope prefix.
+|No per-check tuning
+
+|`GL206`
+|`conventional`
+|A scope is required but the subject has no scope.
+|`conventional.require_scope`
+
+|`GL207`
+|`conventional`
+|The subject scope is not in the allowed scope list.
+|`conventional.scopes`
+
+|`GL208`
+|`conventional`
+|The subject uses multi-scope syntax when disabled, or uses malformed multi-scope syntax. An empty scope segment (`feat(api,): ...`, `feat(,api): ...`, `feat(,): ...`) is malformed whether or not multiple scopes are allowed.
+|`conventional.allow_multi_scope`, `conventional.scopes`
+
+|`GL209`
+|`conventional`
+|The subject uses a breaking-change marker (`!`) while breaking markers are disallowed.
+|`conventional.disallow_breaking`
+
+|`GL301`
+|`commitbody`
+|The message structure is malformed for body validation, commonly because subject/body separation is invalid.
+|`message.body.required`
+
+|`GL302`
+|`commitbody`
+|The message has body text but no blank line between subject and body.
+|No per-check tuning
+
+|`GL303`
+|`commitbody`
+|A commit body is required but missing.
+|`message.body.required`
+
+|`GL304`
+|`commitbody`
+|The body is shorter than the configured minimum length. Any non-empty body is measured, whether or not a body is required; a missing body is `GL303`'s concern alone.
+|`message.body.min_length`
+
+|`GL305`
+|`commitbody`
+|At least one body line exceeds the configured line length. Lines holding a single unbreakable token, such as a URL, are exempt, and so is an identity trailer (`Signed-off-by`, `Co-authored-by`, `Reviewed-by`, `Acked-by`, `Tested-by` or `Reported-by`, followed by a name and one address in angle brackets and nothing else). The reported line number counts from the first body line, not from the subject.
+|`message.body.max_line_length`
+
+|`GL306`
+|`commitbody`
+|The body has no descriptive content, for example it only contains sign-off trailers when that is not allowed.
+|`message.body.required`, `message.body.allow_signoff_only`
+
+|`GL307`
+|`commitbody`
+|Sign-off/trailer lines appear before normal body content instead of at the end.
+|No per-check tuning
+
+|`GL401`
+|`jirareference`
+|The `jirareference` rule is enabled without a subject/body-specific requirement, and no non-ignored JIRA reference appears anywhere in the message. A reference is a key standing on its own (`PROJ-123`, `[PROJ-123]`, `(PROJ-123)`; not `xPROJ-123`), and once `jira.project_prefixes` is set only a key with a listed prefix counts, so `SHA-256` is not one.
+|`jira.ignore_ticket_patterns`, `jira.project_prefixes`; mode changes to `GL402`/`GL403` when `jira.require_in_subject` or `jira.require_in_body` is set
+
+|`GL402`
+|`jirareference`
+|A JIRA reference is required in the subject but missing.
+|`jira.require_in_subject`
+
+|`GL403`
+|`jirareference`
+|A JIRA reference is required in the body but missing.
+|`jira.require_in_body`
+
+|`GL404`
+|`jirareference`
+|A reference-like token does not match valid JIRA key syntax.
+|`jira.require_in_subject`; conventional-style scope syntax
+
+|`GL405`
+|`jirareference`
+|The JIRA key is in a subject position the rule does not accept.
+|`jira.require_in_subject`; conventional-style subject syntax
+
+|`GL406`
+|`jirareference`
+|The JIRA project prefix is not in the allowed prefix list.
+|`jira.project_prefixes`
+
+|`GL407`
+|`jirareference`
+|A `Refs:` trailer exists but does not use a valid ticket reference format.
+|`jira.require_in_body`
+
+|`GL408`
+|`jirareference`
+|A `Refs:` trailer key uses non-canonical casing.
+|`jira.require_in_body`
+
+|`GL409`
+|`jirareference`
+|A `Refs:` trailer appears after a `Signed-off-by:` trailer.
+|`jira.require_in_body`
+
+|`GL410`
+|`jirareference`
+|The JIRA rule configuration is invalid, for example an invalid ignore regex.
+|`jira.ignore_ticket_patterns`
+
+|`GL421`
+|`signoff`
+|The required `Signed-off-by:` trailer is missing.
+|`message.body.min_signoff_count`
+
+|`GL422`
+|`signoff`
+|A sign-off trailer exists but does not match `Signed-off-by: Name <email>`.
+|`message.body.min_signoff_count`
+
+|`GL423`
+|`signoff`
+|A sign-off trailer appears before non-trailer body content.
+|`message.body.min_signoff_count`
+
+|`GL424`
+|`signoff`
+|Duplicate sign-off emails (compared case-insensitively) are present when more than one sign-off is required. This does not count independently authenticated people.
+|`message.body.min_signoff_count`
+
+|`GL501`
+|`cryptosignature`
+|A cryptographic commit signature is required but missing.
+|`crypto_signature.required`
+
+|`GL502`
+|`cryptosignature`
+|A signature is present but its type is not recognized as supported GPG/SSH signature data.
+|No per-check tuning
+
+|`GL503`
+|`cryptosignature`
+|Signature format validation is enabled and the signature armor/content is incomplete or malformed.
+|`crypto_signature.verify_format`
+
+|`GL504`
+|`cryptosignature`
+|The signature type violates policy, e.g. SSH used when GPG is required, or GPG used when SSH is required.
+|`crypto_signature.require_gpg`, `crypto_signature.require_ssh`
+
+|`GL505`
+|`cryptosignature`
+|Key-inventory policy needs a key directory, but the configured directory is missing or unusable.
+|`crypto_signature.key_directory`
+
+|`GL506`
+|`cryptosignature`
+|One or more configured signing keys could not be loaded.
+|`crypto_signature.key_directory`, `limits.max_key_files`
+
+|`GL507`
+|`cryptosignature`
+|The configured directory contains no eligible key of the signature's declared type, or every parsed key is rejected by key policy.
+|`crypto_signature.key_directory`, `crypto_signature.allowed_signers`, `crypto_signature.min_rsa_bits`, `crypto_signature.min_ec_bits`
+
+|`GL508`
+|`cryptosignature`
+|Reserved for adapter-facing cryptographic verification failures.
+|No production rule-path emission; the current rule does not invoke the verifier adapter
+
+|`GL520`
+|`identity`
+|The commit author email does not match the allowed author list.
+|`identity.allowed_authors`
+
+|`GL521`
+|`identity`
+|The identity rule configuration is invalid, for example a malformed author allow-list entry.
+|`identity.allowed_authors`
+
+|`GL601`
+|`spell`
+|The spell checker reports one or more misspelled words.
+|`spell.locale`, `spell.ignore_words`
+
+|`GL602`
+|`spell`
+|Reserved for spell-checker infrastructure failures.
+|No normal rule-path emission today; current spelling validation reports misspellings as `GL601`
+
+|`GL701`
+|`branchahead`
+|The current branch is more commits ahead of the reference branch than allowed.
+|`repo.max_commits_ahead`, `--base-branch`
+
+|`GL702`
+|`branchahead`
+|The configured or requested reference branch cannot be found.
+|`--base-branch`; CI-detected base branch
+
+|`GL703`
+|`branchahead`
+|Repository state cannot be read for branch-ahead validation.
+|Repository context from `--repo-path`; repository accessibility
+
+|`GL704`
+|`branchahead`
+|The underlying Git comparison operation fails.
+|`--base-branch`; repository state
+
+|`GL705`
+|`branchahead`
+|The branch-ahead configuration is invalid.
+|`repo.max_commits_ahead`
+
+|`GL710`
+|`linearhistory`
+|A merge commit is present while linear history is required.
+|No per-check tuning
+
+|`GL901`
+|`fixup`
+|A `fixup!`, `squash!`, or similar autosquash commit is being validated and must be squashed first.
+|`allow_fixup_commits`; fixed prefix set
+
+|`GL902`
+|`validation`
+|Validation panics or returns an internal failure that is not attributable to one rule.
+|No per-check tuning
+
+|`GL903`
+|`validation`
+|The supplied validation input is invalid, such as an empty `--message-file`, empty stdin message, or syntactically invalid Git reference.
+|`--message-file`, `--ref`, `--base-branch`
+
+|`GL904`
+|`validation`
+|A requested configuration file does not exist or cannot be read.
+|`--config`
+
+|`GL905`
+|`validation`
+|A repository-scoped rule is requested without repository context.
+|Repository context from `--repo-path`; bypass with `--ignore-repo-rules`
+
+|`GL906`
+|`validation`
+|Validation was cancelled by context cancellation.
+|Context cancellation or signal handling
+
+|`GL907`
+|`validation`
+|A requested single-commit reference cannot be resolved.
+|`--ref`
+
+|`GL908`
+|`validation`
+|A requested commit range or base-branch range cannot be resolved.
+|`--range`, `--base-branch`
+
+|`GL909`
+|`validation`
+|The requested commit range is syntactically or semantically invalid.
+|`--range`, `--base-branch`, `--count`
+
+|`GL999`
+|`validation`
+|Fallback for a validation failure created with no more specific diagnostic.
+|Reserved fallback; normal validation paths should use a more specific `GLxxx` ID
+|===
+
+=== Commit type (`conventional`)
+
+Validates commit messages follow conventional commit format: `type(scope): description`
+
+**Default types:** `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, `test`
+
+`conventional.types` and the other conventional settings can change the accepted forms.
+The examples below describe conventional syntax, not complete validation results for every enabled rule.
+
+**Examples:**
+----
+✓ feat: add user authentication
+✓ fix(api): resolve login timeout issue
+✓ docs: update README installation steps
+✗ Add user auth (missing type prefix)
+✗ feat add auth (missing colon)
+----
+
+=== Subject
+
+Validates commit subject line format, length, and content requirements.
+
+**Requirements:**
+
+* A nonempty subject within `message.subject.max_length` (default: 100 characters).
+* No suffix from `message.subject.forbid_endings`.
+* Imperative mood when `message.subject.require_imperative` is enabled; product defaults enable it.
+* The configured `message.subject.case`; `auto` chooses lowercase for conventional mode and sentence case otherwise.
+
+The following examples assume non-conventional subject handling with imperative mood required.
+Selecting only `--rule subject` does not disable conventional awareness when the effective configuration still enables `conventional`.
+
+**Examples:**
+----
+✓ Add user authentication system
+✓ Fix memory leak in parser
+✗ Added user authentication (past tense)
+✗ Fix memory leak. (trailing punctuation)
+----
+
+=== Sign-off (`signoff`)
+
+Checks the configured count, format, placement, and duplicate-email conditions for sign-off trailers.
+It does not authenticate the signer, establish email ownership, or determine whether a contributor has the legal rights stated by the DCO.
+`message.body.min_signoff_count = 0` disables these sign-off checks.
+
+**Required format:** `Signed-off-by: Your Real Name <your.email@domain.com>`
+
+**Examples:**
+----
+✓ Signed-off-by: John Doe <john@example.com>
+✓ Signed-off-by: John <john@example.com>
+✗ Signed-off-by:John Doe<john@example.com> (missing spaces)
+----
+
+These are trailer-format examples only.
+The current pattern accepts a one-word name and does not enforce a given-name/family-name convention.
+Duplicate detection compares extracted emails case-insensitively, as the identity rule does, and never compares names; it does not authenticate identities.
+
+=== Signature (`cryptosignature`)
+
+Checks commit signature metadata. This rule does not cryptographically verify
+the commit payload against a key, determine who signed it, authorize a signer,
+or detect replay.
+
+The rule ID is `cryptosignature`; its configuration section is `gommitlint.crypto_signature`.
+Do not use `cryptosignature.*` as configuration paths.
+
+**Validation modes:**
+
+* `required: true` - Signature must be present
+* `verify_format: true` - Validate signature structure
+* `require_gpg: true` - Only GPG signatures allowed
+* `require_ssh: true` - Only SSH signatures allowed
+* `key_directory` - Require an eligible public key of the declared signature type
+
+Unsigned commits skip later type, format, and key-inventory checks unless `required: true` rejects their missing signature.
+Enabling `GL501` alone does not change `required` to true.
+One eligible inventory key must satisfy the applicable constraints; this is not a requirement that every key passes them.
+
+Key-directory policy is independent of the signature block.
+`allowed_signers` compares fingerprints and emails case-insensitively, but full user IDs case-sensitively.
+It does not bind a matching key to the commit signature.
+For cryptographic verification, use an independently trusted Git verification setup or forge signature policy.
+See xref:{up}usecases/crypto-verification.adoc[Signature Policy] for the exact boundary.
+
+=== Commit body (`commitbody`)
+
+Validates commit message body format and content.
+
+**Configuration:**
+
+* `required: true` - Body must be present
+* `min_length: N` - Minimum character count of a body that is present (0=disabled); it does not by itself require a body
+* `max_line_length: N` - Maximum characters per line (default: 72, 0=disabled); lines holding a single unbreakable token such as a URL, and identity trailers such as `Signed-off-by: Name <address>`, are exempt
+* `allow_signoff_only: true` - Allow body with only sign-off trailers
+
+These fields belong under `gommitlint.message.body`.
+
+=== JIRA reference (`jirareference`)
+
+Validates JIRA issue references in commits.
+
+**Valid positions:**
+
+* Subject scope: `feat(PROJ-123): description`
+* Subject end: `feat: description PROJ-123`
+* Body: `Refs: PROJ-123`
+
+Accepted positions depend on `jira.require_in_subject`, `jira.require_in_body`, and the other JIRA settings.
+Do not assume every listed form satisfies every configured mode.
+A key must stand on its own: `[PROJ-123]` and `(PROJ-123)` are keys, `xPROJ-123` and `PROJ-123abc` are not.
+With `jira.project_prefixes` set, only a key with a listed prefix is a reference, so `SHA-256` in a subject no longer satisfies the rule.
+
+=== Branch Ahead (`branchahead`)
+
+Validates current branch is not too far ahead of reference branch.
+
+**Configuration:**
+
+* `max_commits_ahead: N` - Maximum allowed commits ahead (default: 10)
+
+Use `--base-branch` to choose the base branch at runtime.
+
+=== Linear History (`linearhistory`)
+
+Rejects commits whose parsed metadata marks them as merges, normally because they have more than one parent.
+It does not infer merge status from the subject or enforce one particular history-editing workflow.
+
+**Common merge subjects, not matching patterns:**
+
+* `Merge branch 'main' into feature`
+* `Merge pull request #123 from user/branch`
+
+A non-merge commit with one of these subjects is not rejected by this rule merely for its text.
+Follow the repository's approved history policy when resolving a failure.
+Do not rewrite or force-push shared history without explicit authorization.
+
+=== Identity
+
+Checks the commit author email. It does not inspect the committer email or a
+signature identity. Matching is case-insensitive. An empty allow-list permits
+all author emails.
+The author field is commit metadata, not authenticated proof of authorship.
+
+**Configuration:**
+
+* `allowed_authors: ["developer@example.com"]` - Allow an exact author email
+* `allowed_authors: ["*@company.com"]` - Allow any author email in a domain
+
+=== Spelling (`spell`)
+
+Spell checking for commit message text.
+
+**Configuration:**
+
+* `locale: both` - Dictionary locale (`both`, US, UK, GB; default: `both`)
+* `ignore_words: [api, json]` - Custom words to skip

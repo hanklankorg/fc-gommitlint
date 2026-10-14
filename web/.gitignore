@@ -1,0 +1,11 @@
+# Hugo build output and caches.
+/public/
+/resources/
+/.hugo_build.lock
+
+# Brand assets are mirrored from ../assets/ at build time (CI), so the local
+# copies should not be committed.
+/static/logo.png
+/static/logo-animated.svg
+/static/apple-touch-icon.png
+/static/favicon-32.png

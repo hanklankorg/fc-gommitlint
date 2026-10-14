@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+# SPDX-FileCopyrightText: The Gommitlint Authors
+# SPDX-License-Identifier: CC0-1.0
+#
+# Debian build rules for gommitlint
+
+export DH_VERBOSE = 1
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+# Go build settings
+export GOFLAGS = -trimpath -buildvcs=false
+export CGO_ENABLED = 0
+
+# Version info from changelog
+VERSION := $(shell dpkg-parsechangelog -S Version | sed 's/-[^-]*$$//')
+COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+# Unix epoch like the release builds; dpkg-buildpackage sets SOURCE_DATE_EPOCH
+# from the changelog, so rebuilds stamp the same value.
+DATE := $(shell echo "$${SOURCE_DATE_EPOCH:-$$(date -u +%s)}")
+LDFLAGS := -w -X 'main.version=$(VERSION)' -X 'main.commit=$(COMMIT)' -X 'main.date=$(DATE)'
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	# Build main binary (PIE for security hardening, matches goreleaser build)
+	go build -buildmode=pie -tags "netgo osusergo" -ldflags "$(LDFLAGS)" -o gommitlint ./cmd/gommitlint
+	# Generate man pages
+	./scripts/docs/manpage.sh
+	# Generate shell completions (BINARY_PATH points to the just-built binary)
+	BINARY_PATH=./gommitlint ./scripts/docs/completions.sh
+	# Generate translations
+	./gommitlint translations compile
+
+override_dh_auto_test:
+	go test -v ./...
+
+override_dh_auto_install:
+	# Binaries
+	install -D -m 0755 gommitlint $(CURDIR)/debian/gommitlint/usr/bin/gommitlint
+	# Man pages
+	install -D -m 0644 generated/manpages/gommitlint.1.gz $(CURDIR)/debian/gommitlint/usr/share/man/man1/gommitlint.1.gz
+	install -D -m 0644 generated/manpages/sv/man1/gommitlint.1.gz $(CURDIR)/debian/gommitlint/usr/share/man/sv/man1/gommitlint.1.gz
+	# Shell completions
+	install -D -m 0644 generated/completions/gommitlint.bash $(CURDIR)/debian/gommitlint/usr/share/bash-completion/completions/gommitlint
+	install -D -m 0644 generated/completions/gommitlint.zsh $(CURDIR)/debian/gommitlint/usr/share/zsh/vendor-completions/_gommitlint
+	install -D -m 0644 generated/completions/gommitlint.fish $(CURDIR)/debian/gommitlint/usr/share/fish/vendor_completions.d/gommitlint.fish
+	# Translations
+	install -D -m 0644 generated/locale/en/LC_MESSAGES/gommitlint.mo $(CURDIR)/debian/gommitlint/usr/share/locale/en/LC_MESSAGES/gommitlint.mo
+	install -D -m 0644 generated/locale/sv/LC_MESSAGES/gommitlint.mo $(CURDIR)/debian/gommitlint/usr/share/locale/sv/LC_MESSAGES/gommitlint.mo
+	# Documentation
+	install -D -m 0644 CHANGELOG.md $(CURDIR)/debian/gommitlint/usr/share/doc/gommitlint/changelog
+	install -D -m 0644 README.adoc $(CURDIR)/debian/gommitlint/usr/share/doc/gommitlint/README.adoc
+	install -D -m 0644 SECURITY.md $(CURDIR)/debian/gommitlint/usr/share/doc/gommitlint/SECURITY.md
+
+override_dh_dwz:
+	# Skip dwz for Go binaries (not compatible)
+
+override_dh_strip:
+	# Skip stripping Go binaries (breaks stack traces)

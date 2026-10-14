@@ -1,0 +1,206 @@
+= Config Troubleshooting
+:relfilesuffix: .adoc
+
+Use this guide when shared config or merged settings do not behave as expected.
+Use an authenticated, pinned binary and start in the intended repository root.
+Keep the repository, configuration selection, and environment unchanged while comparing diagnostic output.
+Reports can contain local paths and organization metadata; inspect them before sharing.
+
+== Recommended Flow
+
+Run these diagnostic commands separately and inspect each report and exit status:
+
+[,bash]
+----
+gommitlint config show --format=json
+gommitlint config check --format=json
+----
+
+`config show` can succeed while reporting warnings or fallback values.
+`config check` makes reported health issues fail, but healthy defaults can still be the wrong configuration for your task.
+Inspect `config_source` and `warnings` before treating success as evidence that the intended policy was loaded.
+
+For a specific file, add the same `--config PATH` to both commands.
+That selects defaults plus the named file and its imports; it does not reproduce discovery's XDG/project merge.
+See xref:usecases/config-resolution.adoc[Configuration Resolution] before changing load mode during diagnosis.
+
+Local inspection does not refresh upstream policy.
+After approving the source URL and any required credentials, check one source for drift without writing files:
+
+[,bash]
+----
+gommitlint --config .gommitlint.yaml config sync --check --source team-policy
+----
+
+Replace `.gommitlint.yaml` and `team-policy` with the reviewed file and source ID.
+`config sync` reads managed-source definitions from that root file, not from every file shown in the merged source graph.
+If a definition belongs to another file, select that owning file deliberately before refreshing it.
+`config sync --check` and `--dry-run` both fetch upstream content and validate it.
+`--check` fails when local content is missing or differs; `--dry-run` does not require the local copy to match.
+A successful preview is not proof that vendored policy is current.
+
+If refresh is approved, preserve the current configuration and vendored files before the separate write operation:
+
+[,bash]
+----
+gommitlint --config .gommitlint.yaml config sync --source team-policy
+----
+
+Refresh can replace vendored files and rewrite inline `resolved` metadata in the root configuration.
+The files are written individually, not as one transaction; later failure can leave partial updates.
+Run local inspection again after the operation and retain any failure diagnostics.
+
+== When The Wrong Value Wins
+
+Inspect these fields in `gommitlint config show --format=json`:
+
+* `source_graph`
+* `provenance`
+* `provenance[].overrides`
+* `provenance[].reason`
+
+The example below is one provenance entry, not a complete `config show` report.
+Values in provenance are display strings; read `config` for typed effective settings.
+Provenance covers selected fields and can omit `reason` or `overrides` when they do not apply.
+It is diagnostic history, not signed source authentication or proof that every runtime decision is represented.
+
+[,json]
+----
+{
+  "path": "message.subject.max_length",
+  "value": "50",
+  "source": "/repo/.gommitlint.yaml",
+  "reason": "explicitly set in config",
+  "overrides": [
+    {
+      "source": "/repo/.gommitlint.team.yaml",
+      "value": "72"
+    }
+  ]
+}
+----
+
+== When A Managed Source Fails
+
+Inspect these fields in `gommitlint config check --format=json`:
+
+* `summary.counts`
+* `summary.items`
+* `managed_sources[].status`
+* `managed_sources[].integrity_status`
+* `issues`
+* `recommended_next_command`
+
+The status and integrity fields answer different questions.
+`vendored` means the local file exists and parses; it does not mean its publisher is authenticated.
+`integrity_status: "verified"` means its content matches the configured digest.
+An `unknown` integrity status is not proof of a digest check.
+Summary counts use source status, with `mismatch` taking precedence; there is no summary count named `verified`.
+
+Example excerpt with one missing source and one vendored source:
+
+[,json]
+----
+{
+  "ok": false,
+  "summary": {
+    "counts": {
+      "missing": 1,
+      "vendored": 1
+    },
+    "items": [
+      {
+        "id": "team-policy",
+        "status": "missing",
+        "destination": "/repo/.gommitlint.team.yaml",
+        "next_step": "gommitlint config sync --source team-policy"
+      },
+      {
+        "id": "base-policy",
+        "status": "vendored",
+        "destination": "/repo/.gommitlint.base.yaml",
+        "next_step": "gommitlint config sync --source base-policy"
+      }
+    ]
+  },
+  "recommended_next_command": "gommitlint config sync --source team-policy"
+}
+----
+
+Treat `next_step` and `recommended_next_command` as suggestions, not executable authorization.
+Do not pass them to `eval` or an automatic repair runner.
+Reapply the intended configuration path and inspect the cause before choosing a command.
+
+On unexpected digest mismatch, preserve both the configured digest and local content for investigation.
+Do not replace `integrity.sha256` with the newly fetched digest merely to silence the error.
+An approved digest authenticates bytes only to the extent that its source is independently trusted.
+
+== When An Env-Based Source Fails
+
+Inspect these fields in `gommitlint config show --format=json`:
+
+* `managed_sources[].source_mode`
+* `managed_sources[].configured_source`
+* `managed_sources[].env_var`
+* `managed_sources[].resolved_from_env`
+* `managed_sources[].final_url`
+* `managed_sources[].fetched_at`
+
+These fields describe configured input and stored resolution metadata.
+`resolved_from_env: true` means an environment-based source has a recorded final URL, not that its variable is currently set.
+`final_url` and `fetched_at` are not a fresh lookup of today's environment or upstream content.
+URLs are sanitized for display and can omit credential-bearing components.
+
+For a real refresh, inject the approved current URL and header variables into that process.
+Do not print the full environment or secret header values to troubleshoot authentication.
+
+Example of recorded metadata from an earlier sync:
+
+[,json]
+----
+{
+  "id": "team-policy",
+  "source": "${GOMMITLINT_POLICY_URL}",
+  "configured_source": "${GOMMITLINT_POLICY_URL}",
+  "source_mode": "environment",
+  "env_var": "GOMMITLINT_POLICY_URL",
+  "resolved_from_env": true,
+  "final_url": "https://forge.example/team/policies/raw/tag/v1.2.3/gommitlint.yaml",
+  "fetched_at": "2026-03-10T10:22:00Z"
+}
+----
+
+== Stable JSON Fields For Automation
+
+Pin the producer release and validate the command-specific report shape before consuming these fields.
+`config show` currently emits `schema_version: 1`; `config check` does not emit that version field.
+
+* `config show --format=json`
+ ** `config_source`
+ ** `source_graph`
+ ** `provenance`
+ ** `managed_sources`
+ ** `warnings`
+* `config check --format=json`
+ ** `ok`
+ ** `summary`
+ ** `issues`
+ ** `recommended_next_command`
+
+`config show` and `config check` do not use the `validate --format=json` report schema.
+Optional fields can be absent, and some empty collection fields can be `null`.
+Keep each command's stdout separate; concatenating both reports does not produce one report document.
+Preserve nonzero process status even when the JSON parses successfully.
+Setup failures can leave no JSON document, and empty issue lists do not establish that the expected configuration was selected.
+
+== Compact Text Mode
+
+Use compact text mode when you want a short operator-focused summary:
+
+[,bash]
+----
+gommitlint config show --format=text --view=compact
+gommitlint config check --format=text --view=compact
+----
+
+Compact text can include a suggested next command. It is a human-readable view, not a parsing contract or approval to repair.

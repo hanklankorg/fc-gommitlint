@@ -1,0 +1,284 @@
+= Hook Integration Use Cases
+:relfilesuffix: .adoc
+:up: ../
+
+Git hooks automatically validate commits at two phases:
+
+* *commit-msg*: Validates message format before commit is created
+* *pre-push*: Applies the configured signature metadata and key-inventory policy before push
+
+Hooks are local checks, not a server-side enforcement boundary. Users can
+bypass them or change their local configuration. Keep required CI and server
+policies independent of hook installation.
+
+== Architecture Context
+
+The hook adapter resolves where Git runs hooks and delegates installation and
+removal policy to `app/hooks`. See xref:{up}architecture.adoc[Architecture] for
+the package and runtime view.
+
+== Installation Modes
+
+Before installation, use a trusted Gommitlint binary and a trusted repository.
+Make sure that Git and Gommitlint are available in the environment that creates
+commits or pushes them. This includes any GUI client's environment.
+From the intended repository, examine the current hook state:
+
+[,bash]
+----
+gommitlint --version
+gommitlint hook status -v
+git config --show-origin --show-scope --get-all core.hooksPath
+----
+
+The Git query exits with code 1 when no `core.hooksPath` value exists.
+Do not treat that result as an installation failure.
+Read any redirection warning from `hook status` before you choose an installation
+mode. A listed local file can be inactive when Git uses another directory.
+
+=== Local (per-repository)
+
+For a new installation, run:
+
+[,bash]
+----
+gommitlint hook install
+----
+
+If Gommitlint hooks already exist, retain any edits you need before replacement.
+Then use this command instead:
+
+[,bash]
+----
+gommitlint hook install --force
+----
+
+`--force` permits replacement of Gommitlint-managed hooks. It does not replace
+custom hooks or bypass a redirected local `core.hooksPath`.
+
+In a normal repository, this installs under `.git/hooks`.
+Linked worktrees share hooks through the main repository's common Git directory.
+Installing from any linked worktree updates that shared directory.
+
+If the repository's effective `core.hooksPath` redirects hooks, local install
+refuses and reports the directory Git uses. It does not write an inert file
+under `.git/hooks` and does not take ownership of the redirected directory.
+
+=== Global (user-wide)
+
+Before you use `--global`, review existing hook policy for the affected
+repositories. An effective `core.hooksPath` replaces Git's default hook location.
+This can bypass husky, lefthook, or hand-written hooks under `.git/hooks`.
+Where an exception is required, use repository-level Git configuration deliberately.
+
+[,bash]
+----
+gommitlint hook install --global     # Install under the XDG config directory
+----
+
+The directory is `$XDG_CONFIG_HOME/git/git-hooks/`, defaulting to
+`~/.config/git/git-hooks/` when `XDG_CONFIG_HOME` is unset.
+
+Global hooks use dispatcher scripts that call plugins in the matching `*.d/`
+directories:
+
+[,text]
+----
+$XDG_CONFIG_HOME/git/git-hooks/
+├── commit-msg              # Dispatcher script
+├── commit-msg.d/
+│   └── 50-gommitlint.sh   # Gommitlint plugin
+├── pre-push               # Dispatcher script
+└── pre-push.d/
+    └── 50-gommitlint.sh   # Gommitlint plugin
+----
+
+Global installation sets the global `core.hooksPath` only when it is unset or
+already names the Gommitlint directory. If it names another directory, installation
+refuses unless you use `--global --force`.
+That combination records the previous value for later removal. It does not
+migrate scripts from the previous directory or permit replacement of custom
+dispatcher files.
+
+Repository-level overrides can still select another hook directory after a
+global installation. Examine `hook status` from each repository whose policy
+you need to establish.
+
+=== After installation
+
+Run `gommitlint hook status -v` again from the intended repository.
+Make sure that both hook types are executable and that Git uses their directory.
+The status command inspects files and paths. Its successful exit does not prove
+that either hook executed or that the active rules meet your policy.
+
+If installation fails, examine both hook types before you retry. Do not assume
+that a failure left every file unchanged.
+
+=== Removal
+
+For local hooks, preview removal before you approve it:
+
+[,bash]
+----
+gommitlint hook remove --dry-run
+----
+
+After you examine the preview, use `gommitlint hook remove` to remove the managed
+local hooks. This also affects linked worktrees that share those hooks.
+
+For a global installation, use `gommitlint hook remove --global` instead.
+Global removal has no dry-run mode. Read its result before you assume that
+the previous hook path was restored.
+If other tools still need the dispatcher, removal keeps it and leaves
+`core.hooksPath` unchanged.
+Then examine `hook status` from the affected repositories.
+
+== Hook Commands
+
+|===
+| Command | Description
+
+| `hook install`
+| Install commit-msg and pre-push hooks where git runs this repository's hooks
+  (the common hooks directory, also from a linked worktree). If
+  `core.hooksPath` redirects hooks elsewhere, install refuses and says where
+  they run instead of writing a file git would never execute.
+
+| `hook install --global`
+| Install globally with dispatcher pattern
+
+| `hook status`
+| Show hook installation status
+
+| `hook remove`
+| Remove gommitlint hooks
+
+| `hook remove --global`
+| Remove gommitlint's global files; restore or unset core.hooksPath when it
+  names the gommitlint directory. A dispatcher whose `*.d/` still holds other
+  tools' scripts is kept, and core.hooksPath is then left unchanged.
+|===
+
+== What Each Hook Validates
+
+=== commit-msg (blocks commit)
+
+Runs all enabled rules *except* cryptosignature:
+
+* Subject line format and length
+* Conventional commit structure
+* Spelling check
+* Sign-off requirement
+* Body requirements
+
+The hook passes Git's message file to `validate --message-file` and explicitly
+excludes `cryptosignature`. The listed checks depend on the active configuration,
+not merely on the hook being installed.
+
+=== pre-push (blocks push)
+
+Runs *only* cryptosignature rule when it is enabled:
+
+* Rejects unsigned commits only when `crypto_signature.required` is true
+* Checks configured GPG/SSH armor, type, and independent key-inventory constraints when a signature is present
+* Checks every commit reachable from the pushed tips that is not reachable from
+  the destination refs' current tips
+* Includes root commits when creating refs on an empty remote, and handles
+  force-pushes and tags without guessing a default branch
+* Peels annotated and lightweight tags to commits; tag or custom refs that
+  point only to blobs or trees introduce no commits and are skipped
+* Refuses the push if Git cannot resolve the introduced commit set; it never
+  degrades an all-commits policy to validating only a branch tip
+
+The signature rule does not cryptographically verify the commit payload,
+identify or authorize the signer, or detect replay. See
+xref:./crypto-verification.adoc[Signature Policy].
+
+== Bypassing Hooks
+
+Use a bypass only when the repository's policy permits an explicit exception.
+These commands skip Git hooks, not just Gommitlint's rules:
+
+[,bash]
+----
+git commit --no-verify    # Skip commit-msg hook
+git push --no-verify      # Skip pre-push hook
+----
+
+A bypass does not repair a failed check or provide evidence that validation
+passed. It also does not bypass independent CI or server-side checks.
+
+== Environment Variables
+
+|===
+| Variable | Effect
+
+| `GOMMITLINT_DEBUG=1`
+| Enable debug logging in hooks
+
+| `NO_COLOR=1`
+| Disable colored output
+
+| `GOMMITLINT_HOOK_MISSING=skip`
+| Permit the operation without Gommitlint validation when the hook cannot find
+  the tool. This does not suppress failures from an available Gommitlint binary.
+|===
+
+The hook looks for `gommitlint` on `PATH`, then for an executable at the absolute
+path recorded during installation. If neither is available, it refuses the
+operation unless `GOMMITLINT_HOOK_MISSING=skip` is set.
+Use that setting only for an approved exception, not as persistent normal
+configuration. A different binary earlier on `PATH` takes precedence over the
+recorded path.
+
+== Error Handling
+
+* *Policy failures*: An enabled rule blocked the commit or push. Read the failed
+  rule and active configuration before you change commits or policy.
+  Signing can address missing signatures, but not every type or key-inventory
+  failure.
+* *Protocol failures*: Malformed pre-push input indicates a broken or replaced
+  hook integration. Examine the dispatcher and plugin arguments first.
+  Replace a damaged Gommitlint hook only after you retain any required local edits.
+* *Tooling failures*: Missing `gommitlint`, an unavailable Git executable, or an
+  unreadable repository blocks the operation because validation could not run.
+* *Git-object failures*: Missing or corrupt pushed objects, or a branch ref that
+  does not resolve to a commit, block selection. Use the repository's approved
+  fetch or recovery procedure. Do not rewrite history merely to hide object
+  corruption or an unresolved commit range.
+* *Missing gommitlint*: Hooks fail closed after checking `PATH` and the binary
+  recorded at installation time. Restore the intended executable in the caller's
+  environment before retrying. The skip setting is a policy exception, not a
+  tooling repair.
+
+=== Fixing Pre-push Failures
+
+First distinguish missing signatures from type or key-inventory failures.
+See xref:./crypto-verification.adoc[Signature Policy] for the required configuration
+and its limits.
+
+If signatures are missing, use only a history-rewrite procedure approved for
+the repository. Rewriting changes commit IDs and can affect collaborators.
+Do not re-sign other authors' work without the required authorization.
+
+For a linear, unpublished range, the following example starts after `<sha>`.
+Replace `<sha>` with the last commit before the range you intend to rewrite.
+Use an approved signing key that meets the configured policy:
+
+[,bash]
+----
+git rebase -i --gpg-sign <sha>
+----
+
+This example does not include the root commit or preserve merge topology.
+Use a separate approved procedure if either is required.
+After rewriting, review the changed range before another push attempt.
+Signing alone does not establish an independent key inventory or authorize the
+signer.
+
+Disabling `cryptosignature` changes policy instead of repairing a failed check.
+Do so only with repository approval:
+
+* Configuration: add `cryptosignature` to the active `rules.disabled` list.
+* Standalone validation: `--exclude-rule cryptosignature` affects that invocation,
+  not the installed pre-push hook's future policy.

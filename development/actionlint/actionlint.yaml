@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+# Actionlint configuration for Forgejo Actions
+# Path-specific configurations for Forgejo workflows
+# Ignore actionlint errors for Forgejo-specific syntax:
+# - expression: actionlint doesn't recognize forgejo.* context
+# - action: actionlint doesn't recognize full URL action references
+paths:
+  .forgejo/workflows/*.yml:
+    ignore:
+      - 'undefined variable "forgejo"'
+      - 'specifying action .+ in invalid format'

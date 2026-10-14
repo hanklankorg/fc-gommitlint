@@ -1,0 +1,83 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Mise configuration for gommitlint development tools
+# Ensures reproducible development environment across all contributors
+# See: https://mise.jdx.dev/
+
+[settings]
+# Supply-chain quarantine: refuse tool releases younger than 7 days.
+minimum_release_age = "7d"
+# Own releases are exempt.
+minimum_release_age_excludes = [
+  "forgejo:itiquette/gommitlint",
+  "forgejo:itiquette/nanolinter",
+]
+# Keep mise.lock complete and refuse installs it does not cover.
+lockfile = true
+locked = true
+
+[tools]
+go = "1.27.2"
+
+# Release and signing tools
+"aqua:goreleaser/goreleaser" = "2.18.2"
+"aqua:sigstore/cosign" = "3.1.3"
+"aqua:git-chglog/git-chglog" = "0.15.4"
+# TODO: Switch to git-cliff when libgit2 supports SHA-256 repos
+# See: https://github.com/libgit2/libgit2/issues/5923
+# "aqua:orhun/git-cliff" = "2.8.0"
+
+# Security scanning and SBOM
+"aqua:anchore/syft" = "1.52.0"
+"aqua:aquasecurity/trivy" = "0.74.0"
+"aqua:google/osv-scanner" = "2.6.0"
+# nanolinter takes govulncheck from PATH; keep in step with golang.org/x/vuln
+# in tools/go.mod.
+"go:golang.org/x/vuln/cmd/govulncheck" = "1.8.0"
+"aqua:ossf/scorecard" = "5.5.0"
+"aqua:zricethezav/gitleaks" = "8.30.1"
+# SAST scanner (Semgrep-compatible fork) used by the lint SAST step.
+"aqua:opengrep/opengrep" = "1.30.1"
+# IaC misconfiguration scanner. aqua's registry entry uses `go_build` which
+# the aqua backend rejects; github backend pulls the prebuilt release archive.
+"github:Checkmarx/kics" = "2.1.20"
+
+# Linters and formatters
+"aqua:golangci/golangci-lint" = "2.14.0"
+"aqua:rhysd/actionlint" = "1.7.12"
+"aqua:koalaman/shellcheck" = "0.11.0"
+"aqua:mvdan/sh" = "3.14.1"
+"aqua:google/yamlfmt" = "0.21.0"
+"aqua:hadolint/hadolint" = "2.15.1"
+"aqua:rvben/rumdl" = "0.2.77"
+"aqua:crate-ci/typos" = "1.50.3"
+"aqua:tamasfe/taplo" = "0.10.0"
+"aqua:lycheeverse/lychee" = "0.24.2"
+"forgejo:itiquette/gommitlint" = "0.9.12"
+# Replaces just-check; provides verify/lint/fix/security orchestration.
+# Published archives are Linux-only. On macOS, use Nanolinter's documented native source build.
+"forgejo:itiquette/nanolinter" = { version = "0.8.6", os = ["linux"] }
+
+# Python interpreter for the uv-backed tool below (reuse). Pinned so uv reuses it
+# rather than fetching its own managed runtime.
+python = "3.14.7"
+
+# uv backs the Python CLI tools below (uvx = true) and is the installer
+# locked mode (mise-locked PR jobs) requires instead of pipx. Declared by its
+# bare registry name (resolves to aqua:astral-sh/uv) so forge-ci's locked-mode
+# runtime check recognises it.
+uv = "0.12.19"
+
+# License compliance — installed via uv, not pipx.
+"pipx:reuse" = { version = "6.2.0", uvx = "true" }
+
+# Package linting (rpmlint, lintian) is intentionally NOT mise-managed. Both need
+# distro rpm/dpkg bindings that aren't on PyPI — rpmlint requires the system
+# python3-rpm C extension, reachable only via pipx's --system-site-packages (uv's
+# tool venvs are isolated), so it can't live in a uv venv. Keeping them out of
+# mise leaves the toolchain uv-only (no pipx) so `mise install` works on every
+# runner. The package-lint recipes call them only when present; maintainers
+# install from their distro (apt install lintian rpmlint / dnf install rpmlint).
+just = "1.58.0"

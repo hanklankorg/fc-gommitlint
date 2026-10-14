@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Live-trial fixture: the image of the hosted GitHub release trial. Forge CI
+# stages the binary it built under dist/<os>-<arch>/ of this directory, which
+# is the build context, so the root .containerignore does not apply.
+FROM docker.io/library/alpine:3.24
+
+ARG TARGETOS=linux
+ARG TARGETARCH=amd64
+
+# hadolint ignore=DL3018
+RUN apk add --no-cache ca-certificates git \
+    && adduser -D -u 10001 gommitlint
+
+COPY --chmod=0755 dist/${TARGETOS}-${TARGETARCH}/gommitlint-${TARGETOS}-${TARGETARCH} /usr/local/bin/gommitlint
+
+USER gommitlint
+ENTRYPOINT ["/usr/local/bin/gommitlint"]

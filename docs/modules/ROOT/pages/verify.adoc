@@ -1,0 +1,456 @@
+= Verifying Gommitlint Artifacts
+:relfilesuffix: .adoc
+
+Use this procedure for checksum and signature verification.
+Signature verification requires an independently trusted signing key.
+These checks do not prove that the software or build environment is free of
+malicious code.
+
+[TIP]
+====
+This page is the *operational recipe* for release integrity and authentication
+where a signer trust route exists. For deterministic-build controls, parity
+limits, runtime hardening, and the supply-chain design, see
+xref:reproducible-builds.adoc[Reproducible Builds] and
+xref:security-posture.adoc[Security Posture].
+====
+
+== Release Artifacts
+
+|===
+| Artifact | Pattern | Description | Verification
+
+| Binary archives
+| `+gommitlint-{VERSION}-{OS}-{ARCH}.tar.gz+`
+| Compiled binaries for each OS/architecture
+| Cosign-signed checksum
+
+| Source archive
+| `+gommitlint-{VERSION}-src.tar.gz+`
+| Complete source code snapshot
+| Cosign-signed checksum
+
+| Checksums
+| `+gommitlint_{VERSION}_checksums.txt+`
+| SHA-256 hashes of published release files
+| Cosign
+
+| SLSA Provenance
+| `slsa-provenance.intoto.json` + `.bundle`
+| Multi-subject in-toto Statement with the signer's SLSA Provenance v1.0 claims about the build
+| Cosign
+
+| Debian
+| `+gommitlint_{VERSION}_{ARCH}.deb+`
+| System package
+| Cosign-signed checksum; current workflow adds GPG `.sig` sidecar
+
+| RPM
+| `+gommitlint-{VERSION}-1.{ARCH}.rpm+`
+| System package
+| Cosign-signed checksum; current workflow adds GPG `.sig` sidecar
+
+| Alpine
+| `+gommitlint_{VERSION}_{ARCH}.apk+`
+| System package
+| Cosign-signed checksum; current workflow adds GPG `.sig` sidecar
+
+| Container
+| `+codefloe.com/itiquette/gommitlint:v{VERSION}+`
+| OCI container for Docker/Podman
+| Cosign
+
+| SBOMs
+| `*.sbom.json` + `*.sbom.json.bundle`
+| Software Bill of Materials - lists dependencies identified by the producer
+| Cosign
+|===
+
+This table describes the artifact contract targeted by the workflow currently
+on `main`. Historical releases were produced by the workflow stored in each
+release tag and can have a different signer or evidence set.
+
+*Per-package files:*
+
+The current workflow produces a GPG `.sig` sidecar for each distro package and
+an SBOM with a Cosign bundle. The Cosign-signed checksum manifest also covers
+the package itself. Do not assume historical releases used this exact contract.
+
+== Before You Start
+
+Use Bash with `curl`, GNU `sha256sum`, `awk`, and `tr`. Full verification also
+requires `jq` and a trusted Cosign installation.
+Use a new, empty working directory. Downloads overwrite files with the same name.
+The archive examples select Linux x86-64, not your host platform automatically.
+For another platform, select its exact filename from the intended release.
+
+Run each command in order and stop if it fails. Do not extract, install, or run
+an artifact before the required authentication checks succeed.
+If a signature, digest, or expected identity does not match, do not bypass the failure.
+
+Define this helper in the same Bash shell as the subsequent steps:
+
+[,bash]
+----
+set -o pipefail
+
+check_release_file() {
+  local expected
+  expected=$(awk -v name="$1" '
+    $2 == name {
+      count++
+      digest = $1
+      if (NF != 2 || length(digest) != 64 || digest ~ /[^0-9a-f]/) invalid = 1
+    }
+    END {
+      if (count != 1 || invalid) exit 1
+      print digest
+    }
+  ' "${CHECKSUMS}") || {
+    printf 'Missing, duplicate, or malformed checksum entry for %s\n' "$1" >&2
+    return 1
+  }
+  printf '%s  %s\n' "${expected}" "$1" | sha256sum -c -
+}
+----
+
+The helper requires one valid checksum entry for the exact filename. It checks
+only that file, not similarly named files or unrelated manifest entries.
+A successful comparison prints the filename followed by `OK`.
+
+== Quick Integrity Check
+
+An unsigned checksum detects download corruption but not a forged release.
+The quick check below is not release authentication. Use the full procedure to
+authenticate the checksum manifest before relying on its hashes.
+
+The repository's
+{repo-base}/src/branch/main/scripts/install/verify-release.sh[`scripts/install/verify-release.sh`]
+can download and check the host archive. Its `--full` mode requires
+`COSIGN_PUBLIC_KEY` to point to a key obtained through the trust-root procedure
+below; the script does not download its own trust root.
+Unlike the manual steps, the script's successful `--full` mode also extracts
+the archive into the current directory.
+
+*Manual:*
+
+[,bash]
+----
+VERSION="0.9.12" # replace with the release version, without the leading v
+BASE_URL="https://codefloe.com/itiquette/gommitlint/releases/download/v${VERSION}"
+ARCHIVE="gommitlint-${VERSION}-linux-x86_64.tar.gz"
+CHECKSUMS="gommitlint_${VERSION}_checksums.txt"
+
+# Download binary and checksums
+curl -sSfL "${BASE_URL}/${ARCHIVE}" -o "${ARCHIVE}" &&
+  curl -sSfL "${BASE_URL}/${CHECKSUMS}" -o "${CHECKSUMS}" &&
+  check_release_file "${ARCHIVE}"
+----
+
+== Full Verification
+
+=== Identify the Signer Generation
+
+The latest published release, `v0.9.12`, predates the current signer workflow.
+Its tagged workflow delegates signing to `itiquette/forgejo-ci` at commit
+`41dcd04fcfa1196e42990c429e2a9c954254271c`. This repository does not document
+an independently authenticated historical Cosign public key or GPG fingerprint
+for that signer. The checksum procedure above can detect corruption for
+`v0.9.12`, but the current ci-policy key cannot authenticate it.
+
+The workflow currently on `main` instead delegates signing to the Forgejo
+workflows of `itiquette/forge-ci`, with the Cosign key that
+`itiquette/ci-policy` publishes. That flow is not yet represented by a published
+Gommitlint release. Its caller and pinned reusable-workflow contracts are
+aligned, but production remains blocked until an independently authenticated
+signed forge-ci release carries that revision. Once a release is produced by
+that flow, authenticate the exact forge-ci revision pinned in that release
+tag and use the key whose digest that tag's workflow writes out, as described
+below. Do not use the current key retroactively for older bundles.
+
+For releases older than `v0.9.12`, inspect the workflow in the exact release
+tag. No blanket authenticated historical-key route is currently published.
+
+If release authentication is required and no independently authenticated key
+route exists for that release, stop. A checksum match cannot replace the missing
+trust root.
+
+=== Establish the Current CI-Policy Cosign Trust Root
+
+`itiquette/ci-policy` owns the organization Cosign key in `keys/cosign.pub`
+and its companion `keys/cosign.pub.sha256` file. The tagged Gommitlint release
+workflow writes that digest out as the `cosign-public-key-sha256` input of its
+signer call. Obtain both files from a ci-policy revision whose digest file
+holds that value.
+Authenticate that ci-policy revision through a separately trusted signed release or out-of-band channel.
+Downloading the key and artifact from the same server does not independently
+authenticate either one.
+
+After acquiring a trusted ci-policy checkout:
+
+[,bash]
+----
+CI_POLICY_DIR=/path/to/trusted/ci-policy
+COSIGN_KEY="${CI_POLICY_DIR}/keys/cosign.pub"
+KEY_DIGEST=$(tr -d '[:space:]' < "${CI_POLICY_DIR}/keys/cosign.pub.sha256") &&
+  [[ "${KEY_DIGEST}" =~ ^[0-9a-f]{64}$ ]] &&
+  printf '%s  %s\n' "${KEY_DIGEST}" "${COSIGN_KEY}" | sha256sum -c - &&
+  export COSIGN_KEY
+----
+
+The companion digest detects accidental key-file drift within that trusted
+revision. It does not make an unauthenticated checkout trustworthy.
+
+The commands below apply only to a release signed with this key by the current signer workflow. They
+use Cosign 3.1.1, the version pinned by the current signer.
+Install it through a trusted package/tool source.
+Read the installed version with `cosign version`.
+Do not pipe an unverified `latest` download directly into use.
+
+Use the shell where you defined `check_release_file`.
+Set `VERSION` to the intended release version, without a leading `v`.
+Use a release made by this signer.
+Do not reuse `0.9.12` from the quick check for this procedure.
+Step 1 initializes the filenames and base URL for later steps.
+Steps 1-3 cover the archive. Do the image, package, and SBOM steps only for
+artifacts you intend to use.
+
+=== 1. Checksum Verification
+
+Make sure that the archive matches the checksum manifest. This becomes an
+authenticity check only after step 2 authenticates that manifest.
+
+[,bash]
+----
+: "${VERSION:?set VERSION to a release made by the current signer workflow}"
+BASE_URL="https://codefloe.com/itiquette/gommitlint/releases/download/v${VERSION}"
+ARCHIVE="gommitlint-${VERSION}-linux-x86_64.tar.gz"
+CHECKSUMS="gommitlint_${VERSION}_checksums.txt"
+
+curl -sSfL "${BASE_URL}/${ARCHIVE}" -o "${ARCHIVE}" &&
+  curl -sSfL "${BASE_URL}/${CHECKSUMS}" -o "${CHECKSUMS}" &&
+  check_release_file "${ARCHIVE}"
+----
+
+=== 2. Cosign Signature Verification
+
+Authenticate the checksum manifest with the independently trusted key for this
+release's signer. A checksum match alone is not sufficient.
+
+[,bash]
+----
+: "${COSIGN_KEY:?set COSIGN_KEY to the independently trusted ci-policy key}"
+BUNDLE="${CHECKSUMS}.bundle"
+
+# Download the signature bundle
+curl -sSfL "${BASE_URL}/${BUNDLE}" -o "${BUNDLE}" &&
+  cosign verify-blob --key "${COSIGN_KEY}" --bundle "${BUNDLE}" "${CHECKSUMS}"
+----
+
+Continue only if Cosign exits successfully. Do not change the key or disable
+verification requirements merely to accept a failed bundle.
+
+=== 3. SLSA Provenance Verification
+
+Authenticate the https://slsa.dev/spec/v1.0/provenance[SLSA Provenance v1.0]
+in-toto Statement. Then compare its build claims with your expected release.
+The signature authenticates the Statement's contents. It does not independently
+prove that the builder performed the claimed work.
+
+[,bash]
+----
+: "${COSIGN_KEY:?set COSIGN_KEY to the independently trusted ci-policy key}"
+PROVENANCE="slsa-provenance.intoto.json"
+
+# Download the SLSA Statement and its Cosign signature bundle
+curl -sSfL "${BASE_URL}/${PROVENANCE}" -o "${PROVENANCE}" &&
+  curl -sSfL "${BASE_URL}/${PROVENANCE}.bundle" -o "${PROVENANCE}.bundle" &&
+  cosign verify-blob \
+    --key "${COSIGN_KEY}" \
+    --bundle "${PROVENANCE}.bundle" \
+    "${PROVENANCE}" &&
+  jq -e '._type == "https://in-toto.io/Statement/v1" and
+    .predicateType == "https://slsa.dev/provenance/v1"' "${PROVENANCE}" &&
+  jq '.predicate' "${PROVENANCE}" &&
+
+# Require exactly one archive subject and compare its SHA-256 digest
+EXPECTED=$(jq -er --arg name "${ARCHIVE}" '
+  [.subject[] | select(.name == $name)] |
+  if length == 1 then .[0].digest.sha256
+  else error("Expected exactly one archive subject") end |
+  select(type == "string" and test("^[0-9a-f]{64}$"))
+' "${PROVENANCE}") &&
+  ACTUAL=$(sha256sum "${ARCHIVE}") &&
+  [ "${EXPECTED}" = "${ACTUAL%% *}" ] &&
+  printf '%s\n' 'Artifact matches signed provenance'
+----
+
+Compare the source repository, commit, workflow, and builder with independently
+approved values for the intended release. Do not accept those values merely
+because they appear in the signed Statement.
+If a required field is absent or differs from your expectations, stop.
+
+For future image releases, the current signer is intended to attach this
+provenance and a CycloneDX SBOM as OCI 1.1 referrers.
+See <<kubernetes-admission-applicability>> for the Gommitlint prerequisites and the standalone registry-side policy templates.
+
+Select the image digest approved for the intended release before you run these
+commands. Replace `REPLACE_WITH_RELEASE_DIGEST` with that 64-digit hexadecimal
+digest. Use the same digest for verification and deployment, not a mutable tag.
+
+[,bash]
+----
+IMAGE="codefloe.com/itiquette/gommitlint@sha256:REPLACE_WITH_RELEASE_DIGEST"
+cosign verify-attestation --key "${COSIGN_KEY}" --type slsaprovenance1 \
+  "${IMAGE}"
+
+cosign verify-attestation --key "${COSIGN_KEY}" --type cyclonedx \
+  "${IMAGE}"
+----
+
+Apply the same predicate and artifact-identity review to the signed attestation
+payloads. Signature success alone does not establish your release policy.
+
+*Provenance predicate fields (SLSA v1.0 layout):*
+
+|===
+| Field | Description
+
+| `buildDefinition.buildType`
+| URI identifying the build platform — `https://forgejo.org/actions/buildtypes/workflow/v1` for Forgejo Actions
+
+| `buildDefinition.externalParameters.workflow`
+| The workflow file, repository, and ref (tag) that triggered the build
+
+| `buildDefinition.resolvedDependencies`
+| Recorded build inputs, including the source Git URI and commit SHA. This is not proof of a complete input inventory.
+
+| `runDetails.builder.id`
+| Claimed builder identity, such as `https://codefloe.com/itiquette/gommitlint/.forgejo/workflows/release.yml@vX.Y.Z`
+
+| `runDetails.metadata.invocationId`
+| Claimed Forgejo run URL
+
+| `runDetails.metadata.startedOn` / `finishedOn`
+| Producer-reported timestamps, not independent measurements of elapsed build time
+|===
+
+[,bash]
+----
+# See builder identity (workflow + tag)
+jq '.predicate.runDetails.builder.id' "${PROVENANCE}"
+
+# See source commit
+jq '.predicate.buildDefinition.resolvedDependencies' "${PROVENANCE}"
+
+# List all artifacts covered by this provenance
+jq '.subject[] | .name' "${PROVENANCE}"
+----
+
+=== 4. Container Image Verification
+
+For an image, authenticate the exact digest selected in step 3. If you do not
+have an approved digest and matching trusted signer, stop.
+
+[,bash]
+----
+: "${COSIGN_KEY:?set COSIGN_KEY to the independently trusted ci-policy key}"
+: "${IMAGE:?set IMAGE to the approved digest reference from step 3}"
+cosign verify --key "${COSIGN_KEY}" "${IMAGE}"
+----
+
+This checks the image signature. It does not prove that the image has no
+vulnerabilities or that a later pull by tag will select the same digest.
+
+=== 5. Package Verification
+
+The repository does not currently publish a GPG public key and full fingerprint
+through an independently authenticated channel. A `Good signature` message by
+itself proves only that a package matches whichever key was imported; it does
+not establish that the key belongs to Itiquette.
+
+Use the already authenticated checksum manifest as the package trust path:
+
+[,bash]
+----
+PACKAGE="gommitlint_${VERSION}_amd64.deb"
+
+curl -sSfL "${BASE_URL}/${PACKAGE}" -o "${PACKAGE}" &&
+  check_release_file "${PACKAGE}"
+----
+
+The package's `.sig` sidecar provides an additional check, not a substitute for
+the package checksum. Before that check, obtain the GPG key through an
+independently trusted channel. Compare its complete fingerprint with the
+authenticated value from that channel.
+No fingerprint is supplied here because this repository has no published value
+to cite.
+
+=== 6. SBOM Verification
+
+Authenticate the SBOM for the package selected in step 5. The signature does
+not prove that the dependency inventory is complete or free of vulnerabilities.
+
+[,bash]
+----
+: "${PACKAGE:?set PACKAGE to the package checked in step 5}"
+: "${COSIGN_KEY:?set COSIGN_KEY to the independently trusted ci-policy key}"
+SBOM="${PACKAGE}.sbom.json"
+SBOM_BUNDLE="${SBOM}.bundle"
+
+curl -sSfL "${BASE_URL}/${SBOM}" -o "${SBOM}" &&
+  curl -sSfL "${BASE_URL}/${SBOM_BUNDLE}" -o "${SBOM_BUNDLE}" &&
+  cosign verify-blob --key "${COSIGN_KEY}" --bundle "${SBOM_BUNDLE}" "${SBOM}" &&
+  jq '.metadata.component, (.components | length)' "${SBOM}"
+----
+
+Compare the SBOM's artifact identity with the package you selected. The component
+count alone does not establish that the SBOM describes that package.
+
+[#kubernetes-admission-applicability]
+== Kubernetes admission applicability
+
+No published Gommitlint release currently satisfies the current signer workflow's image-signature, SLSA-provenance, and SBOM-attestation contract.
+Published `v0.9.12` predates that signer, and the current ci-policy key cannot authenticate it.
+A future release is intended to carry an image-digest signature, a signed CycloneDX inventory including the image's base layers, and signed SLSA Provenance v1.0 identifying the source repository, commit, workflow, and run.
+These are intended OCI 1.1 referrers, not currently available release evidence.
+
+Before enabling admission enforcement, establish `COSIGN_KEY` from an independently authenticated ci-policy revision whose key digest the selected tagged release writes out.
+Require successful image-signature, SLSA-attestation, and SBOM-attestation verification with that matching signer, and inspect the provenance contents as described above.
+A failure can indicate different signer generations.
+
+The standalone link:https://codefloe.com/itiquette/docs/src/branch/main/development/notes/signed-container-admission.adoc[Signed container admission] note retains the complete `cosign tree` example, policy-engine comparison, Kyverno and Sigstore policy-controller YAML, manual Cosign/jq commands, provenance excerpt, audit-to-enforcement rollout, and future keyless variants.
+It uses Gommitlint as a worked example and does not establish that these prerequisites have passed.
+Until a Fulcio deployment trusts Codefloe as an OIDC issuer, the example is key-based; a future keyless deployment needs the matching issuer, workload identity, and Sigstore trust infrastructure.
+See xref:security-posture.adoc[Security Posture] for the release design.
+
+== Troubleshooting
+
+*"No such file" errors:* Archives use dashes (`gommitlint-0.9.12-linux-x86_64.tar.gz`), checksums use underscores (`gommitlint_0.9.12_checksums.txt`).
+
+*Missing, duplicate, or malformed checksum entry:* Make sure that the manifest
+and filename belong to the same release. Do not select a similar filename or
+ignore a duplicate entry to obtain a passing result.
+
+*Signature or digest mismatch:* Stop before installation or execution.
+Examine the selected release, signer generation, trusted revision, and filenames.
+If the mismatch remains unexplained, do not use the artifact.
+
+*GPG "not certified" warning:* The signature can be cryptographically valid
+while the signer identity remains untrusted. Compare the key's complete
+fingerprint with an independently authenticated value before attributing it to
+Itiquette.
+
+== Trust-Root Ownership
+
+For a future release from the current workflow, `itiquette/ci-policy` owns the
+Cosign trust root in `keys/cosign.pub`.
+Use an independently authenticated revision whose `keys/cosign.pub.sha256` is
+the digest that release tag's workflow writes out.
+A mutable mirror is not the trust anchor.
+
+Published release `v0.9.12` belongs to the historical `itiquette/forgejo-ci`
+signer generation. This repository currently supplies no authenticated
+historical public-key route for that generation or older ones.
+
+No GPG public key or fingerprint is currently published by this repository.

@@ -1,0 +1,12 @@
+name: gommitlint
+title: Gommitlint
+version: ~
+start_page: index.adoc
+nav:
+  - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    repo-base: https://codefloe.com/itiquette/gommitlint
+    up: ''
+    idprefix: ''
+    idseparator: '-'

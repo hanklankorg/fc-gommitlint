@@ -1,0 +1,13 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# The product images copy one file: the binary named by DIRPATH. Everything
+# else stays out of the build context, including the recorded sandbox and
+# distribution image archives under bin/.
+*
+# just build-image and build-image-multi stage the host binary here.
+!bin/.image.*/gommitlint
+# The release workflow builds from the GoReleaser and musl output directories.
+!dist/gommitlint-pie_linux_*/gommitlint
+!dist/musl-*/gommitlint

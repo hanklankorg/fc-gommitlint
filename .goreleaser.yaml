@@ -1,0 +1,292 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+# Build-only GoReleaser configuration. Release CI owns publication.
+version: 2 # GoReleaser configuration format version
+project_name: gommitlint # Project name used in templates and naming
+# Environment Variables
+env:
+  - CGO_ENABLED=0 # Pure Go: no C library is linked
+# Pre-build verification
+before:
+  hooks:
+    - go mod verify # Verify module dependencies
+    # Note: manpage and completions are generated in the workflow before GoReleaser runs
+# Binary Builds
+builds:
+  # PIE build for GNU/Linux only (until supported on other platforms)
+  - id: "gommitlint-pie" # Unique identifier for this build configuration
+    binary: gommitlint # Output binary name
+    main: ./cmd/gommitlint # Path to main package/file
+    mod_timestamp: "{{ .CommitTimestamp }}" # Use commit timestamp for reproducible builds
+    buildmode: pie # Position Independent Executable for security
+    tags: # Build tags to include
+      - netgo # Use pure Go network implementation
+      - osusergo # Use pure Go OS user/group implementation
+    flags: # Compiler flags
+      - -trimpath # Remove file system paths from executable
+      - -buildvcs=false # Disable VCS stamping for reproducibility
+    ldflags: &build_ldflags
+      - all=-w -buildid= -X main.version={{.Version}} -X main.commit={{.FullCommit}} -X main.date={{.CommitTimestamp}}
+    env: # Build-specific environment variables
+      - CGO_ENABLED=0 # Pure Go: no C library is linked
+    goos: # Target operating systems
+      - linux
+    goarch: # Target architectures
+      - amd64
+      - arm64
+  # NOTE: Musl PIE binaries for Containerfile.alpine are built in the release workflow
+  # (not GoReleaser) to avoid duplicate binary names for the same OS/arch.
+  # See the "Build musl PIE binaries" step in release.yml.
+  # Standard build where the release cannot produce a tested, internally linked
+  # PIE with CGO_ENABLED=0. Go supports PIE generally on macOS,
+  # linux/riscv64, freebsd/amd64, and openbsd/arm64, but not that release mode
+  # for every cross-compiled target below.
+  - id: "gommitlint-nopie" # Unique identifier for non-PIE builds
+    binary: gommitlint # Output binary name
+    main: ./cmd/gommitlint # Path to main package/file
+    mod_timestamp: "{{ .CommitTimestamp }}" # Use commit timestamp for reproducible builds
+    tags: # Build tags to include
+      - netgo # Use pure Go network implementation
+      - osusergo # Use pure Go OS user/group implementation
+    flags: # Compiler flags
+      - -trimpath # Remove file system paths from executable
+      - -buildvcs=false # Disable VCS stamping for reproducibility
+    ldflags: *build_ldflags
+    env: # Build-specific environment variables
+      - CGO_ENABLED=0 # Pure Go: no C library is linked
+    goos: # Target operating systems
+      - linux
+      - darwin
+      - freebsd
+      - netbsd
+      - openbsd
+    goarch: # Target architectures
+      - amd64
+      - arm64
+      - riscv64
+    ignore: # Platform combinations to skip
+      # GNU/Linux AMD64/ARM64 handled by PIE build
+      - goos: linux
+        goarch: amd64
+      - goos: linux
+        goarch: arm64
+      # macOS: only ARM64 (Apple Silicon) - Intel Macs are outdated
+      - goos: darwin
+        goarch: amd64
+      - goos: darwin
+        goarch: riscv64
+      # Go does not provide freebsd/riscv64 or netbsd/riscv64 ports.
+      - goos: freebsd
+        goarch: riscv64
+      - goos: netbsd
+        goarch: riscv64
+# Reproducible Builds
+gomod:
+  # Build from the checked-out source tree, not the module proxy. proxy:true
+  # rebuilds the module as *published* at the tag; because Go module versions are
+  # immutable, a tag that is re-pointed (as during release debugging) keeps
+  # serving stale proxy-cached content, so source changes never reach the build.
+  # The release job checks out the exact tag, so the local tree already is the
+  # tagged source — reproducible without the proxy round-trip.
+  proxy: false
+# Source Archives
+source:
+  enabled: true # Enable source archive creation
+  name_template: "{{ .ProjectName }}-{{ .Version }}-src" # Source archive naming template
+  format: tar.gz # Compression format for source archive
+# Binary Archives
+archives:
+  # Standard SHA-1 builds
+  - id: archive
+    ids:
+      - gommitlint-pie
+      - gommitlint-nopie
+    name_template: >-
+      {{- .ProjectName }}-{{- .Version }}-{{- .Os }}-{{- if eq .Arch "amd64" }}x86_64{{- else }}{{ .Arch }}{{ end }}{{- if .Arm }}v{{ .Arm }}{{ end }}
+    wrap_in_directory: true
+    allow_different_binary_count: true
+    # Reproducible-builds: without these, every archive entry carries the
+    # checkout's wall-clock mtime and the runner's uid/gid, so two builds of
+    # the same commit produce different archives, a different checksums.txt,
+    # and a signature over a manifest nobody can independently reproduce.
+    # `mtime` is parsed as RFC3339Nano, so it must be `.CommitDate`;
+    # `.CommitTimestamp` is a Unix integer and fails to parse.
+    # `owner`/`group` also zero the numeric uid/gid in the tar header.
+    # The same anchor is reused for the `files` entries below.
+    # `builds_info.mtime` reaches the binary entries only from GoReleaser
+    # 2.18.2 (2.18.1 never evaluated the template), which .mise.toml pins.
+    builds_info: &archive_entry_info
+      owner: root
+      group: root
+      mtime: "{{ .CommitDate }}"
+    files:
+      - src: LICENSE
+        info: *archive_entry_info
+      - src: README.adoc
+        info: *archive_entry_info
+      - src: REUSE.toml
+        info: *archive_entry_info
+      - src: SECURITY.md
+        info: *archive_entry_info
+      - src: CHANGELOG.md
+        info: *archive_entry_info
+      - src: LICENSES
+        strip_parent: false
+        info: *archive_entry_info
+      - src: docs/*
+        strip_parent: false
+        info: *archive_entry_info
+      - src: locale/**
+        strip_parent: false
+        info: *archive_entry_info
+      - src: generated/locale/**
+        strip_parent: false
+        info: *archive_entry_info
+      - src: generated/manpages/gommitlint.1.gz
+        dst: man/man1/gommitlint.1.gz
+        info: *archive_entry_info
+      - src: generated/manpages/sv/man1/gommitlint.1.gz
+        dst: man/sv/man1/gommitlint.1.gz
+        info: *archive_entry_info
+      - src: generated/completions/*
+        dst: completions/
+        strip_parent: true
+        info: *archive_entry_info
+nfpms:
+  - id: packages # Unique identifier for package configuration
+    file_name_template: "{{ .ConventionalFileName }}" # Use conventional naming format
+    # Reproducible-builds, same reason as the archive above: without this nfpm
+    # stamps the implicit parent directories in data.tar/control.tar with
+    # wall-clock time, so the .deb and .rpm bytes differ between two builds of
+    # the same commit. Parsed as RFC3339Nano, hence `.CommitDate`.
+    mtime: "{{ .CommitDate }}"
+    maintainer: Josef Andersson <janderssonse@proton.me> # Package maintainer contact
+    vendor: Itiquette # Organization/vendor name
+    homepage: https://codefloe.com/itiquette/gommitlint # Project homepage URL
+    changelog: ./packaging/nfpm/changelog.yaml # nfpm/chglog YAML for both RPM and Debian
+    description: |- # Package description (multi-line)
+      Git commit message linter and validator
+       Gommitlint validates git commit messages against configurable rules
+       including Conventional Commits format, subject/body length limits,
+       spell checking, imperative mood, and GPG/SSH signature policy checks.
+       .
+       It integrates with git hooks and CI/CD pipelines to enforce consistent
+       commit message standards across development teams.
+       .
+       Features:
+        * Conventional Commits validation
+        * Configurable subject/body length limits
+        * Spell checking with custom dictionaries
+        * Imperative mood enforcement
+        * GPG/SSH signature presence, format, type, and key-inventory policy
+        * Git hook integration
+    license: EUPL-1.2 OR GPL-3.0-or-later # Dual-licensed; recipient choice
+    section: devel # Package section/category
+    priority: optional # Package installation priority
+    bindir: /usr/bin # Binary installation directory (default: /usr/bin)
+    contents: # Additional files to include in package
+      # Shell completions
+      - src: ./generated/completions/gommitlint.bash # Source file path
+        dst: /usr/share/bash-completion/completions/gommitlint # Destination in package
+        file_info: # File metadata
+          mode: 0644 # File permissions (readable by all)
+      - src: ./generated/completions/gommitlint.fish
+        dst: /usr/share/fish/vendor_completions.d/gommitlint.fish
+        file_info:
+          mode: 0644
+      - src: ./generated/completions/gommitlint.zsh
+        dst: /usr/share/zsh/vendor-completions/_gommitlint
+        file_info:
+          mode: 0644
+      # Manual pages
+      - src: ./generated/manpages/gommitlint.1.gz
+        dst: /usr/share/man/man1/gommitlint.1.gz
+        file_info:
+          mode: 0644
+      - src: ./generated/manpages/sv/man1/gommitlint.1.gz
+        dst: /usr/share/man/sv/man1/gommitlint.1.gz
+        file_info:
+          mode: 0644
+      # Translations
+      - src: ./generated/locale/en/LC_MESSAGES/gommitlint.mo
+        dst: /usr/share/locale/en/LC_MESSAGES/gommitlint.mo
+        file_info:
+          mode: 0644
+      - src: ./generated/locale/sv/LC_MESSAGES/gommitlint.mo
+        dst: /usr/share/locale/sv/LC_MESSAGES/gommitlint.mo
+        file_info:
+          mode: 0644
+      # Documentation
+      # Note: type: doc would mark files with %doc in RPM but excludes them from deb packages
+      # See nfpm issue for details on this limitation
+      - src: ./debian/copyright
+        dst: /usr/share/doc/gommitlint/copyright
+        file_info:
+          mode: 0644
+      # Note: changelog.Debian.gz is auto-generated by nfpm from changelog.yaml
+      # Changelog must be gzip-compressed per Debian Policy §12.7
+      - src: ./generated/changelog.gz
+        dst: /usr/share/doc/gommitlint/changelog.gz
+        file_info:
+          mode: 0644
+      - src: ./README.adoc
+        dst: /usr/share/doc/gommitlint/README.adoc
+        file_info:
+          mode: 0644
+      - src: ./SECURITY.md
+        dst: /usr/share/doc/gommitlint/SECURITY.md
+        file_info:
+          mode: 0644
+    dependencies: # Required packages for functionality
+      - git # Git is required for repository operations
+    recommends: # Recommended but optional packages
+      - ca-certificates # For HTTPS certificate validation
+    formats: # Package formats to generate
+      - deb # Debian/Ubuntu packages (.deb)
+      - rpm # Red Hat/SUSE packages (.rpm)
+      - apk # Alpine packages (.apk)
+    deb: # Debian-specific configuration
+      lintian_overrides: # Override lintian (Debian package checker) warnings
+        # Go binaries keep symbols for stack traces
+        - unstripped-binary-or-object
+        # Go binaries with CGO_ENABLED=0 are statically linked by design
+        - statically-linked-binary
+        - unknown-field License # nfpm adds License field; licensing in copyright file
+    rpm: # RPM-specific configuration
+      summary: Git commit message linter and validator # Short package summary (no period)
+# Container Images
+# Container builds are handled by forge-ci's build-release-image action,
+# outside GoReleaser. Local development images use the Podman recipes in the
+# justfile.
+# Checksums
+checksum:
+  name_template: "{{ .ProjectName }}_{{ .Version }}_checksums.txt" # Checksum file name
+  algorithm: sha256 # Hashing algorithm to use
+  extra_files: # Additional files to include in checksums
+    - glob: ./dist/*.pem # Include certificate files
+# Metadata
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}" # Use commit timestamp for reproducible builds
+# Software Bill of Materials
+sboms:
+  - id: archive-sbom # SBOM configuration for binary archives
+    artifacts: archive # Generate SBOM for archive artifacts
+    documents: # SBOM document naming templates
+      - "{{ .ArtifactName }}.sbom.json"
+  - id: source-sbom # SBOM configuration for source archives
+    artifacts: source # Generate SBOM for source artifacts
+    documents:
+      - "{{ .ProjectName }}_{{ .Version }}_src.sbom.json"
+  - id: package-sbom # SBOM configuration for system packages
+    artifacts: package # Generate SBOM for package artifacts (deb/rpm/apk)
+    documents:
+      - "{{ .ArtifactName }}.sbom.json" # Use artifact name for uniqueness
+# Binary Size Reporting
+report_sizes: true # Generate size reports for all artifacts
+# This configuration emits unsigned artifacts. The release workflow signs and
+# publishes them in its separately privileged sign-and-publish job.
+# Release notes supplied by the workflow override this minimal changelog.
+changelog:
+  sort: asc

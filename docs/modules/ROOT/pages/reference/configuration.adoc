@@ -1,0 +1,786 @@
+= Configuration
+:relfilesuffix: .adoc
+:up: ../
+
+Configuration schema, file formats, discovery, and worked examples. For the rule catalog, see xref:./rules.adoc[Validation Rules].
+
+== Configuration
+
+=== File Locations
+
+Configuration has three load modes:
+
+[cols="1,3"]
+|===
+|Mode |Sources
+
+|Discovery (default)
+|Built-in defaults, then one global XDG settings file, then one project file.
+Later sources override earlier ones.
+
+|Explicit (`--config <path>`)
+|Built-in defaults, then the named file and its imports. Discovered global and
+project files are not loaded.
+
+|Defaults only (`--ignore-config`)
+|Built-in defaults. This flag cannot be combined with `--config`.
+|===
+
+Discovery checks `.yaml`, `.yml`, then `.toml` and uses the first existing file
+at each level. The global level is
+`$XDG_CONFIG_HOME/gommitlint/settings.*`, falling back to
+`$HOME/.config/gommitlint/settings.*`. The project level is
+`.gommitlint.*` in the current directory, or the `--repo-path` directory.
+
+Built-in field defaults come from `settings.NewDefault`; rule activation comes
+from the rule catalog. Seven rules are default-enabled. `identity`,
+`jirareference`, and `linearhistory` are default-disabled. Use `rules.enabled`
+and `rules.disabled` for explicit activation changes.
+
+Read, parse, or path-security failures in a discovered file produce a warning and skip that source.
+The same failure in an explicit file is fatal.
+Validation errors in the final effective configuration are fatal in either mode.
+Discovery does not retry another extension after a load failure.
+Group-writable files produce an advisory warning but still load.
+Executable or world-writable files and symlinked configuration files are rejected.
+
+Merging is field-by-field. An omitted field retains its earlier value.
+Explicit `false` and numeric zero replace earlier values, subject to final validation.
+Lists replace earlier lists rather than append; `[]` clears an inherited list.
+Empty `output`, `theme`, and `crypto_signature.key_directory` strings retain earlier values.
+Later `extends` entries override earlier entries; the importing file overrides its imports.
+
+=== Configuration Schema
+
+All configuration is under the `gommitlint:` root key.
+
+==== Top-Level Fields
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`allow_fixup_commits`
+|bool
+|Skip all commit rules for `fixup!`, `squash!`, and `amend!` commits
+|`false`
+
+|`checks`
+|object
+|GLxxx check activation settings
+|see below
+
+|`conventional`
+|object
+|Conventional commit settings
+|see below
+
+|`crypto_signature`
+|object
+|Signature metadata and key-inventory policy
+|see below
+
+|`extends`
+|string[]
+|Local configuration paths or `preset:<name>` entries. Paths are relative to the importing file.
+Only global or explicit configuration can import paths outside its directory.
+This loader permission does not authenticate the imported policy.
+|`[]`
+
+|`identity`
+|object
+|Commit author email settings
+|see below
+
+|`ignore_commits`
+|string[]
+|Object-ID prefixes to skip commit validation (7-64 hexadecimal characters)
+|`[]`
+
+|`jira`
+|object
+|JIRA reference settings
+|see below
+
+|`managed_sources`
+|object[]
+|Managed remote configuration sources for `config sync`
+|`[]`
+
+|`message`
+|object
+|Commit message settings
+|see below
+
+|`output`
+|string
+|Default output format
+|`""`
+
+|`theme`
+|string
+|Default output theme
+|`""`
+
+|`repo`
+|object
+|Repository validation settings
+|see below
+
+|`rules`
+|object
+|Rule activation settings
+|see below
+
+|`spell`
+|object
+|Spell checking settings
+|see below
+
+|`limits`
+|object
+|Global validation limits
+|see below
+|===
+
+==== message.subject
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`case`
+|string
+|Case style. `lower`, `upper`, and `sentence` enforce that specific case.
+`auto` selects `lower` for conventional descriptions and `sentence` for
+non-conventional subjects. `any` disables the check, equivalent to listing
+`GL104` in `checks.disabled`.
+|`auto`
+
+|`forbid_endings`
+|string[]
+|Forbidden suffix characters
+|`[".", ",", ";", ":", "!", "?"]`
+
+|`max_length`
+|int
+|Maximum subject length (must be positive)
+|`100`
+
+|`require_imperative`
+|bool
+|Enforce imperative mood
+|`true`
+|===
+
+==== message.body
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`allow_signoff_only`
+|bool
+|Allow body with only sign-off trailers
+|`false`
+
+|`max_line_length`
+|int
+|Maximum line length in body (0-200, 0=disabled); single-token lines such as URLs are exempt
+|`72`
+
+|`min_length`
+|int
+|Minimum length in characters of a body that is present (0-1000, 0=disabled); independent of `required`
+|`0`
+
+|`min_signoff_count`
+|int
+|Minimum number of sign-off trailers (0-10)
+|`1`
+
+|`required`
+|bool
+|Require commit body
+|`false`
+|===
+
+==== conventional
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`allow_multi_scope`
+|bool
+|Allow multiple scopes: `feat(ui,api): ...`
+|`false`
+
+|`disallow_breaking`
+|bool
+|Reject breaking change indicator (`!`)
+|`false`
+
+|`max_description_length`
+|int
+|Maximum description length after `type(scope):` (0-200; 0 uses the default)
+|`72`
+
+|`require_scope`
+|bool
+|Require scope in conventional commits
+|`false`
+
+|`scopes`
+|string[]
+|Valid scope values (empty = any)
+|`[]`
+
+|`types`
+|string[]
+|Valid commit types
+|`["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "revert", "style", "test"]`
+|===
+
+==== crypto_signature
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`allowed_signers`
+|string[]
+|Eligible key fingerprints, emails, or full user IDs in `key_directory`, not authenticated commit signers.
+Fingerprints and emails match without case sensitivity; full user IDs are case-sensitive. No wildcards.
+|`[]`
+
+|`key_directory`
+|string
+|Path to public key files used for independent key-inventory policy (private keys are ignored with a warning)
+|`""`
+
+|`min_ec_bits`
+|int
+|Minimum EC key bits (`0` uses default, max `521`)
+|`256`
+
+|`min_rsa_bits`
+|int
+|Minimum RSA key bits (`0` uses default, max `8192`)
+|`2048`
+
+|`required`
+|bool
+|Require a GPG or SSH signature block to be present
+|`false`
+
+|`require_gpg`
+|bool
+|Require GPG type when a signature is present; mutually exclusive with `require_ssh`
+|`false`
+
+|`require_ssh`
+|bool
+|Require SSH type when a signature is present; mutually exclusive with `require_gpg`
+|`false`
+
+|`verify_format`
+|bool
+|Validate signature format structure
+|`false`
+|===
+
+`required: true` is necessary to reject unsigned commits.
+The type and format settings alone do not require a signature.
+Public diagnostic IDs include `GL501` for a missing signature and `GL507` for no eligible keys.
+Native JSON also exposes reason strings such as `missing_signature` and `no_trusted_keys`.
+See xref:./rules.adoc#_check_catalog[Check Catalog] for the full mapping.
+
+These settings do not cryptographically verify the commit payload, identify or
+authorize its signer, or detect replay. A matching `allowed_signers` key only
+shows that an eligible key exists in `key_directory`; it does not show that the
+key made the commit signature. Use Git or forge policy for that trust boundary.
+
+==== identity
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`allowed_authors`
+|string[]
+|Commit author emails. Accepts plain exact addresses or `*@domain.com`; matching is case-insensitive and does not inspect committer or signature identity.
+|`[]`
+|===
+
+==== jira
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`ignore_ticket_patterns`
+|string[]
+|Regex patterns to exclude from validation (invalid regexes are rejected)
+|`[]`
+
+|`project_prefixes`
+|string[]
+|Valid JIRA project prefixes (uppercase letters only, e.g., `["PROJ", "TEAM"]`); when set, only a key with a listed prefix counts as a reference
+|`[]`
+
+|`require_in_body`
+|bool
+|Require JIRA reference in body
+|`false`
+
+|`require_in_subject`
+|bool
+|Require JIRA reference in subject
+|`false`
+|===
+
+==== repo
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`max_commits_ahead`
+|int
+|Maximum commits ahead of reference branch (1-1000)
+|`10`
+|===
+
+
+==== spell
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`ignore_words`
+|string[]
+|Words to skip in spell checking
+|`[]`
+
+|`locale`
+|string
+|Dictionary locale: `both`, `US`, `UK`, `GB`, or empty for both dialects
+|`both`
+|===
+
+==== limits
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`max_commit_count`
+|int
+|Maximum commits validated in one run
+|`2000`
+
+|`max_key_files`
+|int
+|Maximum key files loaded from a directory
+|`200`
+|===
+
+==== rules
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`disabled`
+|string[]
+|Rules to deactivate explicitly
+|`[]`
+
+|`enabled`
+|string[]
+|Rules to activate explicitly, including default-disabled rules
+|`[]`
+|===
+
+Empty lists do not mean that no rules run. The catalog supplies seven
+default-enabled rules; the lists contain only user overrides.
+
+==== checks
+
+Use `checks.enabled` and `checks.disabled` when you want to configure rule-backed public `GLxxx` diagnostic IDs instead of whole readable rule names.
+
+`rules.disabled` vetoes the parent rule; `checks.disabled` suppresses individual rule-backed diagnostics.
+`checks.enabled` can activate a check and its parent unless those vetoes apply.
+Check filtering does not prevent the parent rule from executing.
+`checks.disabled: [GL901]` is the dispatcher exception for allowing autosquash commits.
+Other `GL900`-range runtime diagnostics cannot be enabled or disabled through `checks.*`.
+
+`checks.enabled` does not change behavior settings. If a check depends on another setting, configure that setting too; see xref:./rules.adoc#_check_catalog[Check Catalog].
+
+[cols="2,1,3,2"]
+|===
+|Field |Type |Description |Default
+
+|`disabled`
+|string[]
+|Rule-backed GLxxx checks to deactivate; also accepts `GL901`
+|`[]`
+
+|`enabled`
+|string[]
+|Rule-backed GLxxx checks to activate beyond parent rule defaults
+|`[]`
+|===
+
+[source,yaml]
+----
+gommitlint:
+  message:
+    body:
+      required: true     # GL301 needs body validation to be required
+  checks:
+    disabled: [GL102]   # do not fail on subject length
+    enabled: [GL301]    # enable the commit-body structure check
+----
+
+==== managed_sources
+
+Each entry under `managed_sources` describes a remote configuration file for `gommitlint config sync`.
+The command fetches the file, checks its configured SHA-256, and writes a local copy.
+This checksum check does not independently authenticate the policy publisher.
+
+[cols="2,1,3"]
+|===
+|Field |Type |Description
+
+|`id`
+|string
+|Stable identifier referenced by `config sync --source <id>`
+
+|`source`
+|string
+|HTTPS URL of the remote config, or `${ENV_VAR}` for indirection
+
+|`destination`
+|string
+|Local destination relative to the directory of the owning configuration file; must stay inside that directory
+
+|`integrity.sha256`
+|string
+|64-character hex SHA-256 of the expected content
+
+|`headers`
+|map[string]string
+|Optional HTTP headers sent with the fetch request (see below)
+
+|`resolved`
+|object
+|Tool-managed metadata (don't hand-edit). Populated by `config sync` with the fetched URL's scheme, host, port, and path, plus revision and timestamp. `final_url` omits userinfo, query, and fragment.
+|===
+
+===== Authenticated managed sources
+
+For private policies, use the `headers` map instead of credentials in URLs.
+Header values support `${ENV_VAR}` substitution without persisting expanded values.
+
+The managed-source examples are templates, not ready-to-use policies.
+Before refresh, replace each `<trusted-sha256>` with the expected digest from an independently trusted policy source.
+Review the source host and header recipients before supplying credentials.
+
+[source,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: https://policy.example.com/v1/gommitlint.yaml
+      destination: cfg/team-policy.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+      headers:
+        Authorization: "Bearer ${POLICY_TOKEN}"
+----
+
+Managed-source controls and limits:
+
+* **Configured headers remain configuration.** Literal header values stay in the configuration file.
+  `config show` redacts literal values and preserves `${ENV_VAR}` placeholders; refresh does not persist expanded header values.
+* **Header diagnostics omit resolved values.** Header names may appear in diagnostic output for debugging.
+* **HTTPS is required for every managed source.** Plain-text HTTP is rejected during config validation or, for environment-resolved URLs, before fetching.
+* **Cross-host redirects are rejected.** Redirects must retain the original host and explicit port, ignoring host case, and use HTTPS.
+  The HTTP client rejects a different host or port before sending the redirected request.
+* **Configured sources remain configuration.** A literal `source` stays unchanged in the configuration file.
+  `config sync` removes userinfo, query, and fragment before writing `resolved.final_url`; `config show` also sanitizes displayed source URLs.
+  The URL path remains visible, including after environment expansion. Do not put credentials in URL paths.
+
+Configuration validation rejects reserved HTTP header names: `Host`, `Content-Length`, `Transfer-Encoding`, and `Connection`.
+It also rejects empty names and names with embedded CR or LF characters.
+
+For unauthenticated public sources, omit `headers` entirely; the source must still use `https://`.
+
+===== Coredump suppression
+
+Gommitlint attempts to set `RLIMIT_CORE` to zero during CLI startup.
+On Linux, it also attempts `PR_SET_DUMPABLE=0` to restrict dumps and access through ptrace-controlled `/proc` files.
+These controls are best effort, not a barrier against privileged processes.
+If suppression fails, startup continues and logs the failure at debug level.
+
+Why this matters: a crash with sensitive material in memory can write the entire process image to disk.
+
+Crash dumps can contain credentials. Restrict their storage and access.
+To diagnose Gommitlint with crash dumps, use `--allow-coredumps` or `GOMMITLINT_ALLOW_COREDUMPS=1`.
+This skips suppression for that invocation; it does not enable dumps that the host forbids.
+
+Gommitlint does not lock its entire process memory. Process-wide `MCL_FUTURE`
+can make later Go allocations fail under a finite memory-lock limit and cannot
+prevent the runtime or HTTP stack from copying secrets. Environments that need
+swap-at-rest protection should disable or encrypt swap at the operating-system
+layer.
+
+===== Secret env-var minimization
+
+The sync tracks environment variables consumed while resolving selected source URLs and header templates.
+Deferred cleanup unsets those names in the Gommitlint process, including when a later step fails.
+It does not change the parent shell or revoke credentials.
+`os.Unsetenv` prevents later environment lookups; it does not guarantee erasure from process memory or Linux's initial `/proc/$PID/environ` data.
+
+Cleanup runs after the selected sync, not after each source, so sources can share a token.
+
+===== Header value zeroing
+
+The resolver stores header values in byte buffers.
+After `Header.Set` copies a value into the HTTP request, Gommitlint clears its resolver-owned buffer.
+Error cleanup also clears these buffers.
+
+[IMPORTANT]
+====
+This is residue *minimization*, not *elimination*.
+Go's HTTP stack and runtime can retain other copies; garbage collection does not guarantee immediate erasure.
+Use short-lived credentials. Treat a token exposed in a process dump as compromised.
+====
+
+=== Rule Priority
+
+Rules follow explicit priority order:
+
+1. **Explicitly disabled** → Never run (highest priority)
+2. **Explicitly enabled** → Run when not explicitly disabled; this opts into default-disabled rules
+3. **Default disabled** → Skip unless enabled
+4. **Default enabled** → Run unless disabled
+
+== Sharing Configuration
+
+=== Built-in Presets
+
+Built-in presets are composed through `extends`:
+
+[source,yaml]
+----
+gommitlint:
+  extends:
+    - preset:conventional
+    - preset:secure
+----
+
+[cols="1,3",options="header"]
+|===
+| Preset | Purpose
+
+| `preset:minimal` | Low-friction onboarding
+| `preset:conventional` | Recommended default conventional setup
+| `preset:ambitious` | Stronger commit quality and structure
+| `preset:secure` | Focused conventional, sign-off, signature-policy, and author-email rule set
+|===
+
+=== Shared Team Configuration
+
+Use a local `extends` when one repo config should build on another file in the same repository:
+
+[source,yaml]
+----
+gommitlint:
+  extends:
+    - .gommitlint.team.yaml
+  message:
+    subject:
+      max_length: 80
+----
+
+A discovered project file can import only paths inside its own directory subtree.
+A global configuration can import an external central policy, as shown below.
+The example uses the default XDG location; `XDG_CONFIG_HOME` can change that location.
+This is not enforced organization-wide policy: project values can override it, and explicit or defaults-only loading bypasses it.
+
+[source,yaml]
+----
+# ~/.config/gommitlint/settings.yaml
+gommitlint:
+  extends:
+    - /etc/gommitlint/org-policy.yaml
+----
+
+To share policy from a central repository, declare a `managed_sources` entry.
+Vendor the remote file with `gommitlint config sync`.
+The vendored `destination` is applied automatically. No separate `extends` is needed:
+
+[source,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: https://forge.example/team/policies/raw/tag/v1.2.3/gommitlint.yaml
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+The `source` field can also come from an environment variable, resolved during `config sync`:
+
+[source,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: ${GOMMITLINT_POLICY_URL}
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+`config sync` reads definitions from the owning file, not from the full merged source graph.
+It can replace destination files and update the owning file's `resolved` metadata.
+Individual writes are atomic, but the full refresh is not transactional; a write failure can leave partial updates.
+Normal configuration loading uses local vendored copies and does not fetch managed sources.
+Environment-variable source URLs are resolved during `config sync`.
+
+Review and complete `.gommitlint.yaml` before using this example.
+Preserve needed destination files and the owning configuration before refresh.
+The second command validates only if refresh succeeds:
+
+[source,bash]
+----
+gommitlint --config .gommitlint.yaml config sync &&
+gommitlint --config .gommitlint.yaml validate
+----
+
+=== Inspecting Shared Configuration
+
+[source,bash]
+----
+gommitlint config show --format=json
+gommitlint config check
+----
+
+These commands inspect local configuration and vendored files; they do not fetch remote policies.
+Inspect warnings and confirm the intended source graph, not only a successful exit code.
+
+`config sync --check` and `--dry-run` both fetch upstream content and can send configured headers.
+They do not write vendored files or resolved metadata.
+For an approved remote comparison, select the owning file explicitly:
+
+[source,bash]
+----
+gommitlint --config .gommitlint.yaml config sync --check
+----
+
+Without either flag, `config sync --source team-policy` refreshes that source and can replace files.
+Diagnostic repair hints are suggestions, not authorization to perform these operations.
+
+For a short text summary, use `--view=compact`. For the full source graph, provenance, and managed-source details, use `--view=verbose`.
+
+`config show` includes a source graph and provenance for selected settings, including explicit rule overrides.
+For those tracked values, it can show the previous source and value.
+Managed-source environment names describe configuration or recorded resolution, not proof that a variable is currently available.
+
+`config check` groups managed-source issues with explicit codes and next-step hints. This makes multi-source troubleshooting easier in local shells and CI logs. It also includes a managed-source summary block for scanning larger policy setups.
+
+For a step-by-step debugging workflow, see xref:{up}config-troubleshooting.adoc[Config Troubleshooting].
+
+== Configuration Examples
+
+=== Minimal Configuration
+
+[source,yaml]
+----
+gommitlint:
+  message:
+    subject:
+      max_length: 72
+  rules:
+    disabled:
+      - cryptosignature
+----
+
+=== Corporate Environment
+
+[source,yaml]
+----
+gommitlint:
+  jira:
+    project_prefixes: ["PROJ", "TEAM"]
+  message:
+    body:
+      min_length: 30
+      max_line_length: 72
+      required: true
+  rules:
+    enabled:
+      - jirareference
+      - identity
+  identity:
+    allowed_authors: ["*@company.com"]
+  crypto_signature:
+    required: true
+    verify_format: true
+----
+
+This example requires a recognizable, complete signature block. It does not
+cryptographically authenticate the signer.
+
+=== Legacy Repository Migration
+
+[source,yaml]
+----
+gommitlint:
+  ignore_commits:
+    - "a1b2c3d4e5f6"    # Pre-gommitlint commit
+    - "c7a8b9e0f1d2"    # Emergency hotfix
+  rules:
+    disabled:
+      - cryptosignature
+    enabled:
+      - conventional
+----
+
+NOTE: `ignore_commits` accepts 7-64 hexadecimal characters, covering abbreviated and full SHA-1 or SHA-256 object IDs. Invalid object IDs generate warnings (included in the JSON `warnings` array and CI output) but don't fail validation.
+
+=== Fixup Commits
+
+Gommitlint detects Git autosquash prefixes: `fixup!`, `squash!`, and `amend!`.
+
+By default, these commits fail validation with a clear message reminding you to squash before merge. This catches "forgot to squash" mistakes in CI/PR checks.
+
+[source,yaml]
+----
+gommitlint:
+  # Default: false - fixup commits fail validation
+  allow_fixup_commits: false
+----
+
+Teams can allow these commits before an independently enforced squash-on-merge step:
+
+[source,yaml]
+----
+gommitlint:
+  # Allow fixup commits - they skip all commit rules
+  allow_fixup_commits: true
+----
+
+**Behavior:**
+
+* `allow_fixup_commits: false` (default): Autosquash commits fail with `GL901`, unless `checks.disabled` includes `GL901`.
+* `allow_fixup_commits: true`: Autosquash commits skip all commit rules. This includes signature and identity checks.
+* Disabling `GL901` has the same skip effect. Repository checks and other commits can still fail the run.
+
+Gommitlint does not perform the squash or enforce the forge's merge policy.

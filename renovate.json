@@ -1,0 +1,33 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>itiquette/renovate-runner//configuration/renovate-base"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update the version-tag and digest pins of the distribution matrix images in test/distribution/images",
+      "managerFilePatterns": [
+        "/^test/distribution/images$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=docker depName=(?<depName>\\S+)\\n[a-z0-9][a-z0-9.-]*=\\S+:(?<currentValue>[\\w.-]+)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Alpine base image: never automerge. Containerfile.alpine pins package versions from a specific Alpine release (depName=alpine_X_Y/...), and Renovate cannot derive those annotations from the base image. An automerged minor bump would leave them naming the previous release, which check-alpine-pins fails on and a release build would fail on later. A human moves the pair together.",
+      "matchManagers": [
+        "dockerfile",
+        "custom.regex"
+      ],
+      "matchPackageNames": [
+        "alpine"
+      ],
+      "automerge": false
+    }
+  ]
+}

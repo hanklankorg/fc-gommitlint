@@ -1,0 +1,19 @@
+Gommitlint is dual-licensed. You may use, modify, and redistribute the
+source code under EITHER of the following licences, at your choice:
+
+  * European Union Public Licence, version 1.2 (EUPL-1.2)
+    Full text: LICENSES/EUPL-1.2.txt
+    Online:    https://eupl.eu/1.2/en/
+
+  * GNU General Public License, version 3 or (at your option) any later
+    version (GPL-3.0-or-later)
+    Full text: LICENSES/GPL-3.0-or-later.txt
+    Online:    https://www.gnu.org/licenses/gpl-3.0.html
+
+Documentation, configuration files, and assets are released under
+Creative Commons Zero v1.0 Universal (CC0-1.0); see LICENSES/CC0-1.0.txt.
+
+The Atkinson Hyperlegible font bundled with the landing page is under
+OFL-1.1.
+The Go gopher derivative is under CC-BY-3.0. See REUSE.toml
+for the per-file picture and https://reuse.software/ for verification.

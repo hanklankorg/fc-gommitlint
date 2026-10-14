@@ -1,0 +1,57 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# Live-trial fixture, not an active workflow. Forge CI's hosted GitHub trial
+# copies this file to .github/workflows/ of a disposable repository and puts
+# the engine under test where this file names diggsweden/forge-ci.
+name: Pull Request Workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-checks:
+    uses: hanklankorg/fc-forge-ci/.github/workflows/pullrequest-orchestrator.yml@de3d259e079867ddbfea8d85a32859feef25d73d
+    secrets: inherit
+    permissions:
+      contents: read
+      packages: read
+      security-events: write
+    with:
+      forge-ci-binary-ref: v0.90.0-pre
+      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-de3d259
+      project-type: go
+      lint-engine: nanolinter
+      # The trial names a mirror of the Go flavour here.
+      nanolinter-image: ghcr.io/hanklankorg/nanolinter:go@sha256:d3888d6baf33d695da5db6ce064590d671a0a22720c8589a0071a5bf32a43364
+
+  # The tests stay the caller's, as in .forgejo/workflows/pullrequest.yml.
+  test:
+    name: Test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - name: Race tests
+        run: go test -count=1 -race $(go list ./... | grep -v /generated)
+      - name: Vet tagged tiers
+        run: |
+          go vet -tags integration ./...
+          go vet -tags blackbox ./...

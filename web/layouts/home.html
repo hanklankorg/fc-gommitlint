@@ -1,0 +1,43 @@
+<!--
+SPDX-FileCopyrightText: The Gommitlint Authors
+SPDX-License-Identifier: CC0-1.0
+-->
+<!DOCTYPE html>
+<html lang="{{ site.LanguageCode }}">
+{{ partial "head.html" . }}
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header>
+    <div class="hero-art">
+      {{- /* Decorative: the adjacent <h1> already names the site, so the
+           logo adds no further information for screen-reader users.
+           `.Params.logo_alt` is still consumed by og:image:alt in head.html. */ -}}
+      <img src="/logo-animated.svg" alt=""
+           width="720" height="300">
+    </div>
+    <h1>{{ site.Title }}</h1>
+    <p class="tagline">{{ site.Params.tagline }}</p>
+    <div class="lead">{{ .Params.lead | markdownify }}</div>
+    <div class="cta">
+      <a class="btn btn-primary" href="{{ site.Params.docs_url }}tutorial.html">Getting started</a>
+    </div>
+  </header>
+
+  <main id="main">
+    {{- with .Params.status_note }}
+    <p class="status-note">{{ . | markdownify }}</p>
+    {{- end }}
+    <ul class="feature-grid" role="list">
+      {{- range .Params.features }}
+      <li>
+        <h2>{{ .title }}</h2>
+        <div>{{ .body | markdownify }}</div>
+      </li>
+      {{- end }}
+    </ul>
+  </main>
+
+  {{- partial "footer.html" . }}
+</body>
+</html>

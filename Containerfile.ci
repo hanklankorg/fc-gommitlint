@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+
+# The pull-request job image: the repository variable CI_JOB_IMAGE names a
+# published build of this file by digest. No workflow builds it; an operator
+# does, as described under "Pull-request job image" in
+# docs/contributing/development.md. NANOLINTER_GO_IMAGE has no default so the
+# base is always an explicit, digest-pinned Nanolinter Go flavor (Debian 13).
+ARG NANOLINTER_GO_IMAGE
+FROM ${NANOLINTER_GO_IMAGE}
+
+USER 0:0
+
+# Gommitlint's PR gates need gettext catalogs, race-enabled Go tests, and the
+# SSH signing fixture in addition to the tools supplied by Nanolinter's Go image.
+# The versions are pinned because this image is built once and reviewed;
+# Renovate proposes updates from the annotations. A Debian point release
+# retires old versions, so a rebuild may need the pins bumped first.
+#
+# gcc carries no annotation: the binary package's version differs from that of
+# its source package (gcc-defaults), which is what Repology tracks. Bump it by
+# hand when a rebuild reports the version gone.
+ARG GCC_VERSION="4:14.2.0-1"
+# renovate: datasource=repology depName=debian_13/gettext versioning=deb
+ARG GETTEXT_VERSION="0.23.1-2"
+# renovate: datasource=repology depName=debian_13/glibc versioning=deb
+ARG LIBC6_DEV_VERSION="2.41-12+deb13u4"
+# renovate: datasource=repology depName=debian_13/openssh versioning=deb
+ARG OPENSSH_CLIENT_VERSION="1:10.0p1-7+deb13u4"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        gcc="${GCC_VERSION}" \
+        gettext="${GETTEXT_VERSION}" \
+        libc6-dev="${LIBC6_DEV_VERSION}" \
+        openssh-client="${OPENSSH_CLIENT_VERSION}" \
+    && rm -rf /var/lib/apt/lists/*
+
+USER 65532:65532

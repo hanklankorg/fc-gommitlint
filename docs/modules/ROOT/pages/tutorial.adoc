@@ -1,0 +1,753 @@
+= Gommitlint Tutorial
+:toc: macro
+:toclevels: 3
+:relfilesuffix: .adoc
+
+[TIP]
+====
+For concise command syntax and technical specifications, see xref:reference.adoc[Reference].
+====
+
+toc::[]
+
+== Zero Configuration
+
+Use a trusted Gommitlint installation and a repository you are authorized to inspect.
+The examples assume Bash in that repository unless an explicit path is shown.
+Commands in reference blocks are alternatives, not one sequence to run in full.
+Stop on failure and review configuration warnings before continuing.
+
+This first command checks local `HEAD` without CI base detection:
+
+[,bash]
+----
+# Navigate to any Git repository
+cd -- /absolute/path/to/your-git-repo &&
+  gommitlint validate --no-ci-detect
+----
+
+Illustrative output excerpt when the selected validation succeeds; formatting and selected rules can differ by version and configuration:
+
+[,text]
+----
+COMMIT [abc1234] feat: add user authentication
+  ✓ Commit body
+  ✓ Commit type
+  ✓ Sign-off
+  ✓ Signature
+  ✓ Spelling
+  ✓ Subject
+
+✓ All checks passed
+----
+
+Seven rules are enabled by default; `identity`, `jirareference`, and `linearhistory` are disabled by default.
+No new configuration file is required, but default discovery can load existing user or project policy.
+A passing result does not prove every rule executed or that commit signatures were cryptographically verified.
+
+== Visual Walkthrough
+
+This short demo shows the common local flow: create a conventional preset config, validate `HEAD`, compare a feature branch against `main`, show detailed failure output, then show an invalid commit being blocked.
+
+image::gommitlint-onboarding.gif[Gommitlint onboarding walkthrough,width=820]
+
+== Basic Commands
+
+=== Validation
+
+Select one operation and replace example hashes with locally available commit references.
+These examples disable CI detection so it cannot replace the selected ref, range, or count.
+
+[,bash]
+----
+# Validate last commit (default behavior)
+gommitlint validate --no-ci-detect
+
+# Validate specific commit by hash or reference
+gommitlint validate --no-ci-detect --ref=abc1234  # Replace with an existing hash
+gommitlint validate --no-ci-detect --ref=HEAD~1
+
+# Validate commit range
+gommitlint validate --no-ci-detect --range=main..HEAD
+
+# Validate from base branch (common for feature branches)
+gommitlint validate --no-ci-detect --base-branch=main
+# Comma-separated fallback list: uses first existing branch
+gommitlint validate --no-ci-detect --base-branch=main,master,develop
+# --base-branch supplies the reference for the branchahead rule
+
+# Validate multiple commits from HEAD
+gommitlint validate --no-ci-detect --count=5
+----
+
+=== Git Hooks
+
+Inspect existing hooks and policy before installing anything:
+
+[,bash]
+----
+gommitlint doctor
+gommitlint hook status
+----
+
+After reviewing the selected configuration and existing hook ownership, install local hooks as a separate operation:
+
+[,bash]
+----
+gommitlint hook install
+----
+
+Installation changes `commit-msg` and `pre-push` behavior; pre-push can execute a configured test command.
+It is not necessary to create a commit merely to diagnose configuration or hook status.
+User-wide `hook install --global` changes Git's global `core.hooksPath`; repository settings can still override that path.
+Local and global removal are separate mutations, not automatic troubleshooting steps.
+Global removal has no `--dry-run`. See xref:usecases/hook-lifecycle.adoc[Hook Lifecycle] before changing or removing hooks.
+
+=== Help and Information
+
+[,bash]
+----
+# General help
+gommitlint --help
+
+# Command-specific help
+gommitlint validate --help
+
+# Rule-specific guidance
+gommitlint validate --rule-help=conventional
+gommitlint validate --rule-help=subject
+gommitlint validate --rule-help=jirareference
+----
+
+== Configuration
+
+Gommitlint uses sensible defaults - no configuration required. When you need customization:
+
+=== Configuration Hierarchy
+
+Default discovery merges these sources from lowest to highest precedence:
+
+. *Built-in defaults*
+. *User config* - `$XDG_CONFIG_HOME/gommitlint/settings.*`
+. *Project config* - `.gommitlint.*` in the current or `--repo-path` directory
+
+`--config` uses a separate mode: built-in defaults plus the named file and its
+imports. It bypasses discovered user and project files. `--ignore-config` uses
+defaults only. Command flags such as `--rule`, `--format`, and `--base-branch`
+then affect that invocation.
+
+Supported formats: `.yaml`, `.yml`, `.toml`
+
+Discovery chooses the first existing extension at each level, not all three files.
+A discovered load failure can warn and skip that source without trying the next extension; explicit configuration failures are fatal.
+Global settings are not an enforced policy floor: project settings can override them, and explicit/defaults-only modes bypass discovery.
+
+Project and explicit config files can also use local `extends` entries. Extended files are loaded
+first, then the current file overrides them.
+
+Built-in presets use the same `extends` mechanism:
+
+[,yaml]
+----
+gommitlint:
+  extends:
+    - preset:conventional
+    - preset:secure
+----
+
+Later presets override earlier ones, and the current config file still wins over all presets.
+
+You can inspect preset sources and composition with:
+
+[,bash]
+----
+gommitlint config show --format=json
+----
+
+Look at:
+
+* `source_graph`
+* `provenance`
+* `provenance[].overrides`
+
+=== Configuration Options
+
+[,bash]
+----
+# Use specific config file
+gommitlint --config /path/to/config.yaml validate --no-ci-detect
+
+# Ignore all config files (use defaults only)
+gommitlint --ignore-config validate --no-ci-detect
+
+# Show effective configuration
+gommitlint config show
+----
+
+=== Creating a Configuration File
+
+Preview a preset or full template before writing a file:
+
+[,bash]
+----
+gommitlint config init --preset conventional --stdout
+gommitlint config init --stdout
+----
+
+For a missing project file, use `gommitlint config init --preset conventional` after reviewing the preview.
+If the file exists, inspect or edit it instead. `--force` replaces it; it does not merge or preserve custom settings.
+Do not redirect a preview over a configuration you need to retain.
+
+Creating user-wide policy is optional and affects later discovery outside this repository.
+After reviewing the XDG destination, create it without forcing replacement:
+
+[,bash]
+----
+(
+  set -euo pipefail
+  config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/gommitlint"
+  mkdir -p "$config_dir"
+  gommitlint config init --output "$config_dir/settings.yaml"
+)
+----
+
+=== Configuration File Formats
+
+Gommitlint supports multiple formats:
+
+*YAML* (recommended):
+
+[,yaml]
+----
+# .gommitlint.yaml
+gommitlint:
+  rules:
+    disabled: [spell]
+----
+
+*TOML*:
+
+[,toml]
+----
+# .gommitlint.toml
+[gommitlint.rules]
+disabled = ["spell"]
+----
+
+=== Custom Configuration
+
+Edit `.gommitlint.yaml` to override defaults:
+
+[,yaml]
+----
+gommitlint:
+  message:
+    subject:
+      max_length: 50    # Shorter subjects
+  rules:
+    disabled:
+      - spell           # Disable spell checking
+    enabled:
+      - jirareference   # Enable JIRA validation
+----
+
+For the complete configuration schema, see xref:reference/configuration.adoc#_configuration_schema[Configuration reference].
+
+=== Viewing Configuration
+
+[,bash]
+----
+gommitlint config show              # Show effective configuration
+gommitlint config show --format=yaml  # Export as YAML
+----
+
+=== Shared Team Configuration
+
+Use `extends` for local composition:
+
+[,yaml]
+----
+gommitlint:
+  extends:
+    - .gommitlint.team.yaml
+----
+
+Use `managed_sources` when you want to sync a team-owned config file from a remote repository and
+vendor it locally:
+
+The following entries are templates. Before refresh, replace `<trusted-sha256>` with a digest obtained through an independently trusted policy source.
+Review the source endpoint, destination, and any credentials; a checksum match alone does not authenticate the publisher.
+
+[,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: https://forge.example/team/policies/raw/tag/v1.2.3/gommitlint.yaml
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+You can also resolve the remote source from an environment variable during `config sync`:
+
+[,yaml]
+----
+gommitlint:
+  managed_sources:
+    - id: team-policy
+      source: ${GOMMITLINT_POLICY_URL}
+      destination: .gommitlint.team.yaml
+      integrity:
+        sha256: "<trusted-sha256>"
+----
+
+Refresh reads definitions from the owning configuration file, not the whole merged source graph.
+It can replace vendored files and update resolved metadata; the full refresh is not one transaction.
+Preserve needed files before an approved refresh. This example validates only if refresh succeeds:
+
+[,bash]
+----
+gommitlint --config .gommitlint.yaml config sync &&
+  gommitlint --config .gommitlint.yaml validate --no-ci-detect
+----
+
+[,bash]
+----
+gommitlint config check
+gommitlint config check --format=json
+----
+
+Normal configuration loading uses local vendored copies and does not fetch managed sources.
+`config sync`, including `--check` and `--dry-run`, fetches upstream content and can send configured headers.
+Environment-variable source URLs are resolved during that explicit refresh/comparison step.
+Local loading alone does not establish reproducible validation across different tool versions, Git environments, or configurations.
+
+=== Preset Matrix
+
+`Yes` means the rule is enabled (or the setting is on) for that preset; `No` means it is disabled (or off).
+A rule being enabled is distinct from the conditions it enforces; see the signature note below.
+The table describes each preset with built-in defaults, before additional configuration overlays.
+
+|===
+| Feature | `minimal` | `conventional` | `ambitious` | `secure`
+
+| Conventional format
+| Yes
+| Yes
+| Yes
+| Yes
+
+| Subject rule
+| Yes
+| Yes
+| Yes
+| Yes
+
+| Commit body rule
+| No
+| Yes
+| Yes
+| No
+
+| Body required
+| No
+| No
+| Yes
+| No
+
+| Spell check
+| No
+| Yes
+| Yes
+| No
+
+| Branch ahead
+| No
+| Yes
+| Yes
+| No
+
+| Require scope
+| No
+| No
+| Yes
+| No
+
+| Sign-off
+| No
+| Yes
+| Yes
+| Yes
+
+| Identity
+| No
+| No
+| No
+| Yes
+
+| Crypto signature (enabled)
+| No
+| Yes
+| No
+| Yes
+|===
+
+NOTE: The signature rule is *enabled* in the `conventional` and `secure`
+presets, but `crypto_signature.required` defaults to `false`, so unsigned
+commits pass unless you set `required: true`. The rule checks signature
+presence, armor, type, and optional key inventory. It does not
+cryptographically verify or authorize the signer.
+
+Start shared-config troubleshooting with local inspection:
+
+[,bash]
+----
+gommitlint config show --format=json
+gommitlint config check
+----
+
+For an approved upstream comparison, use `gommitlint --config .gommitlint.yaml config sync --check`.
+It can make network requests but does not refresh vendored files.
+`config sync --source team-policy` without a check/dry-run flag can replace that source and metadata; it is not merely inspection.
+
+For text output:
+
+* For summary and next-step guidance only, use `--view=compact`.
+* For the full source graph, provenance, overrides, and managed-source details, use `--view=verbose`.
+
+For a focused troubleshooting workflow with JSON field examples, see xref:config-troubleshooting.adoc[Config Troubleshooting].
+
+`gommitlint config show` includes both the config source graph and selected value provenance so you
+can see which file last set important effective values, including explicit rule overrides. When a
+value was overridden, the previous source and value are shown as part of the provenance entry.
+Provenance entries also explain why key values and rule states are active.
+
+For managed sources that use `+${ENV_VAR}+`, `gommitlint config show` also displays `source mode:
+environment`, the configured source string, the referenced environment variable name, and whether
+the last sync resolved the source from the environment.
+
+`gommitlint config check` groups managed-source issues with explicit issue codes and next-step hints
+to make troubleshooting multiple shared policies easier. The text output also includes a managed
+source summary block with per-source status, suggested next steps, and a recommended next command.
+If you are unsure what to run next, start with `gommitlint config check --format=json`.
+Then inspect `recommended_next_command`.
+That hint is not authorization to execute it. Recorded environment-resolution metadata does not prove that the variable is currently set.
+
+== Output Formats
+
+=== Verbosity Levels
+
+[,bash]
+----
+# Minimal output (default)
+gommitlint validate --no-ci-detect
+
+# Verbose: show error details (code, expected/actual)
+gommitlint validate --no-ci-detect -v
+
+# Extra verbose: show error details + help text
+gommitlint validate --no-ci-detect -vv
+----
+
+==== Default Output
+
+[,text]
+----
+  ✗ Commit type - Must follow format: type(scope): description
+----
+
+==== Verbose (`-v`) adds error details
+
+[,text]
+----
+  ✗ Commit type - Must follow format: type(scope): description
+      Check ID: GL201
+      Expected: type(scope): description
+      Actual: bad commit message
+----
+
+==== Extra Verbose (`-vv`) adds help text
+
+[,text]
+----
+      Help:
+        Use format: type(scope): description (e.g., 'feat: add login')
+----
+
+=== Machine-Readable Formats
+
+[,bash]
+----
+# JSON output for automation
+gommitlint validate --no-ci-detect --format=json
+
+# GitHub Actions annotations
+gommitlint validate --no-ci-detect --format=github
+
+# GitLab CI annotations
+gommitlint validate --no-ci-detect --format=gitlab
+
+# Forgejo Actions annotations (GitHub-compatible)
+gommitlint validate --no-ci-detect --format=forgejo
+
+# Table format (structured output)
+gommitlint validate --no-ci-detect --format=table
+----
+
+==== JSON Example
+
+This is an abbreviated illustration, not the complete JSON contract.
+Repository-rule results also appear under `repository.rules`; they must not be ignored by automation.
+
+[,json]
+----
+{
+  "summary": {
+    "allPassed": false,
+    "totalCommits": 1
+  },
+  "commits": [{
+    "hash": "abc1234",
+    "subject": "add new feature",
+    "passed": false,
+    "rules": [{
+      "rule": "conventional",
+      "status": "failed",
+      "errors": [{
+        "diagnostic": {
+          "id": "GL201",
+          "reason": "invalid_conventional_format",
+          "category": "message.conventional",
+          "summary": "Commit subject must follow conventional format"
+        },
+        "message": "..."
+      }]
+    }]
+  }]
+}
+----
+
+Run `gommitlint validate --format=json` to see the full structure.
+
+=== Color Control
+
+[,bash]
+----
+gommitlint validate --no-ci-detect --color=never
+NO_COLOR=1 gommitlint validate --no-ci-detect
+----
+
+== Integration
+
+[NOTE]
+====
+For deeper, scenario-driven walkthroughs (matrix builds, monorepo strategies, hook lifecycles, cross-repo policies), see the use cases:
+
+* xref:usecases/ci-pipeline.adoc[CI/CD Pipeline]
+* xref:usecases/hook-lifecycle.adoc[Hook Lifecycle]
+* xref:usecases/cross-repository.adoc[Cross-Repository]
+====
+
+=== CI/CD Integration
+
+Gommitlint detects supported CI environments and can select an output format and PR base branch.
+CI base detection can override explicit refs, ranges, or counts; explicit output-format selection is a separate decision.
+For a complete workflow, use xref:usecases/ci-pipeline.adoc[CI/CD Pipeline] and its checkout, runner, and installation prerequisites.
+An immutable action pin identifies action code; it does not independently authenticate a binary that the action downloads.
+
+The following is a validation step only, not an installer or checkout procedure.
+Provision an independently authenticated binary outside the untrusted checkout and set its absolute path in `GOMMITLINT_BIN`.
+Set `BASE_SHA` and `HEAD_SHA` from trusted CI event data, and make both commits available in the selected checkout.
+
+[,bash]
+----
+(
+  set -euo pipefail
+  : "${GOMMITLINT_BIN:?set the absolute path to the approved binary}"
+  : "${BASE_SHA:?set the selected base commit}"
+  : "${HEAD_SHA:?set the selected head commit}"
+  [[ "$GOMMITLINT_BIN" == /* && -f "$GOMMITLINT_BIN" && -x "$GOMMITLINT_BIN" ]] || exit 1
+  [[ "$BASE_SHA" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]] || exit 1
+  [[ "$HEAD_SHA" =~ ^([0-9a-f]{40}|[0-9a-f]{64})$ ]] || exit 1
+  "$GOMMITLINT_BIN" validate --no-ci-detect --range="$BASE_SHA..$HEAD_SHA" --format=forgejo
+)
+----
+
+Select and review the CI configuration separately; repository-controlled policy is not an enforced organization-wide floor.
+For an explicit local base branch and format, disable CI detection:
+
+[,bash]
+----
+# Use the selected base branch instead of the detected CI base
+gommitlint validate --no-ci-detect --base-branch=develop --format=json
+
+# Disable auto-detection entirely
+gommitlint validate --no-ci-detect
+----
+
+=== Environment Variables
+
+* `NO_COLOR=1` - Disable colored output
+* `GOMMITLINT_DEBUG=1` - Enable debug logging in Git hooks
+* `GOMMITLINT_NO_CI_DETECT=1` - Disable automatic CI environment detection
+* `gommitlint --log-level=debug validate` - Debug logging for CLI
+
+[,bash]
+----
+# Inspect configuration and hook state without creating a commit
+gommitlint --log-level=debug doctor
+----
+
+`GOMMITLINT_DEBUG` affects hook execution; it is not the CLI logging flag.
+A hook test can execute repository or test commands. Use the separate hook-testing procedure rather than creating a diagnostic commit.
+
+=== Pre-commit Framework
+
+[,yaml]
+----
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: gommitlint
+        name: Validate commit message
+        entry: bash -c 'gommitlint validate --message-file="$1"' --
+        language: system
+        stages: [commit-msg]
+----
+
+=== Manual Git Hook
+
+The following is script content, not an installation command.
+Inspect the effective hook path and any existing dispatcher before installing a manual hook; do not overwrite another tool's hook.
+Prefer the supported lifecycle described in xref:usecases/hook-lifecycle.adoc[Hook Lifecycle].
+
+[,bash]
+----
+#!/bin/sh
+exec gommitlint validate --message-file="$1"
+----
+
+== Advanced Usage
+
+=== Scripting and Automation
+
+Gommitlint uses multiple failure classes, not only exit `1`; see xref:cli-conventions.adoc[CLI Conventions].
+Retain the producer status instead of allowing `jq` or `grep` to replace it.
+This Bash example keeps a private report, stderr, and exit-status record, then lists failed commit and repository rules:
+
+[,bash]
+----
+(
+  umask 077
+  report_dir=$(mktemp -d) || exit 1
+  status=0
+  gommitlint validate --no-ci-detect --format=json \
+    >"$report_dir/report.json" 2>"$report_dir/stderr.log" || status=$?
+  if ! printf '%s\n' "$status" >"$report_dir/exit-status"; then
+    [ "$status" -eq 0 ] || exit "$status"
+    exit 1
+  fi
+  printf 'Report directory: %s\n' "$report_dir" >&2
+  report_status=0
+  jq -se 'length == 1 and (.[0] |
+    (.summary.allPassed | type == "boolean")
+    and (.commits | type == "array")
+    and (.repository.rules | type == "array"))' "$report_dir/report.json" \
+    >/dev/null || report_status=$?
+  if [ "$report_status" -eq 0 ]; then
+    jq -r '(.commits[].rules[], .repository.rules[])
+      | select(.status == "failed") | .rule' "$report_dir/report.json" || report_status=$?
+    jq -e '.summary.allPassed' "$report_dir/report.json" >/dev/null || report_status=$?
+  fi
+  [ "$status" -eq 0 ] || exit "$status"
+  [ "$report_status" -eq 0 ] || exit 1
+)
+----
+
+The shape check is not complete schema validation or required-check coverage verification.
+Setup/output failures can leave no usable report, and quiet mode can suppress successful JSON output.
+Inspect warnings, skipped rules, and selected commits as well as the summary; see xref:output-formats.adoc[Output Formats].
+
+=== Custom Workflows
+
+[,bash]
+----
+# Test commit messages before creating commits
+printf '%s\n' "feat: add new API endpoint" | gommitlint validate --message-file=-
+
+# From the intended feature-branch checkout, validate against main
+gommitlint validate --no-ci-detect --base-branch=main
+----
+
+Message-only validation does not authenticate a commit object or signature, and the sample can fail other configured rules.
+Do not switch branches merely to run this tutorial. Validation output is not a release-notes data source.
+
+== Troubleshooting
+
+=== Common Issues
+
+==== Rule Not Running
+
+[,bash]
+----
+# Check effective configuration
+gommitlint config show
+gommitlint config check
+----
+
+Check rule activation and skip reasons before editing policy.
+`rules.disabled` vetoes activation; enabling a check does not automatically enable every dependent behavior setting.
+Do not overwrite the configuration or disable a rule merely because it did not run as expected.
+See xref:reference/rules.adoc[Validation Rules] for activation and skip behavior.
+
+==== Configuration Not Found
+
+[,bash]
+----
+# Verify configuration search path
+gommitlint config show
+
+# Use explicit configuration
+gommitlint --config /path/to/config.yaml validate --no-ci-detect
+
+# Test with defaults only
+gommitlint --ignore-config validate --no-ci-detect
+----
+
+==== Git Hook Issues
+
+[,bash]
+----
+gommitlint doctor
+gommitlint hook status
+----
+
+Inspect local/global hook ownership and effective `core.hooksPath` before considering removal or reinstallation.
+Running an installed hook executes code; it is not equivalent to reading its status.
+Use xref:usecases/hook-lifecycle.adoc[Hook Lifecycle] for approved testing and recovery, not a shared `/tmp/msg` file or automatic reinstall.
+
+=== Performance Issues
+
+[,bash]
+----
+# Limit commit range for large repositories
+gommitlint validate --no-ci-detect --count=10
+
+# Use specific commit instead of range
+gommitlint validate --no-ci-detect --ref=HEAD
+
+# Use a separately reviewed CI policy
+gommitlint --config .gommitlint-ci.yaml validate --no-ci-detect
+----
+
+Narrowing coverage or disabling rules is a policy change, not a transparent performance optimization.
+
+== Next Steps
+
+Now that you understand the basics of gommitlint:
+
+* *xref:reference.adoc[Reference]* - Command syntax, configuration schema, and technical specifications
+* *xref:architecture.adoc[Architecture Documentation]* - Implementation details for contributors
+* *{repo-base}/src/branch/main/docs/manpages/gommitlint.1.md[Man Page]* - Command reference (`man gommitlint`)

@@ -1,0 +1,56 @@
+# SPDX-FileCopyrightText: The Gommitlint Authors
+#
+# SPDX-License-Identifier: CC0-1.0
+# Copy to .gitlab-ci.yml in a clean trial checkout. The lab trial substitutes
+# CI_JOB_IMAGE; for hosted use, write the reviewed published image digest here.
+# Local Forge CI candidate; publish and authenticate the component before hosted use.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+variables:
+  GIT_DEFAULT_HASH: sha256
+  CHECKOUT_OBJECT_FORMAT: sha256
+  # Native Kubernetes runner overrides; the runner must permit this bounded budget.
+  KUBERNETES_CPU_REQUEST: "4"
+  KUBERNETES_CPU_LIMIT: "4"
+  KUBERNETES_EPHEMERAL_STORAGE_REQUEST: 4Gi
+  KUBERNETES_EPHEMERAL_STORAGE_LIMIT: 8Gi
+  GOTOOLCHAIN: local
+  GIT_CONFIG_COUNT: "1"
+  GIT_CONFIG_KEY_0: safe.directory
+  GIT_CONFIG_VALUE_0: "*"
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+include:
+  - component: $CI_SERVER_FQDN/itiquette/forge-ci/check@0c7c4354acc7b215da895d36204f9099dcff8406
+    inputs:
+      engine-project: itiquette/forge-ci
+      job-image: $CI_JOB_IMAGE
+      commands:
+        - bash .forgejo/scripts/download-go-modules.sh
+        - bash .forgejo/scripts/check-workflow-policy.sh
+        - nanolinter verify --require secrets,sast
+        - just check-schema check-translations check-gettext-catalogs
+        - |
+          goreleaser_stamps=$(grep -ohE -- '-X main\.[a-zA-Z]+' .goreleaser.yaml | sort -u)
+          musl_stamps=$(grep -ohE -- '-X main\.[a-zA-Z]+' .forgejo/workflows/release.yml | sort -u)
+          test "${goreleaser_stamps}" = "${musl_stamps}"
+        - |
+          forge-ci validate isolation \
+            --workflow .forgejo/workflows/release.yml \
+            --build-job build-and-release --sign-job sign-and-publish \
+            --prepare-job prepare --dist-digest-output dist_digest \
+            --single-pin-subject itiquette/forge-ci \
+            --single-pin-input forge-ci-sha \
+            --contract-root "${HELPERS_ROOT}/.." \
+            --literal-input signer-image=image-digest \
+            --literal-input cosign-public-key-sha256=sha256 \
+            --literal-input transparency-log=enum:none/public \
+            --signing-secret RELEASE_COSIGN_PRIVATE_KEY \
+            --signing-secret RELEASE_COSIGN_PASSPHRASE \
+            --signing-secret RELEASE_GPG_PRIVATE_KEY \
+            --signing-secret RELEASE_GPG_PASSPHRASE \
+            --signing-secret RELEASE_GPG_FINGERPRINT
+        - go list ./... | grep -v generated | xargs go test -count=1 -race -buildvcs=false
+        - go vet -tags integration ./...
+        - go vet -tags blackbox ./...

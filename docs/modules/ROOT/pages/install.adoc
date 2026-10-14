@@ -1,0 +1,72 @@
+= Install
+:relfilesuffix: .adoc
+
+Choose one installation method.
+Record the method and paths you used; xref:uninstall.adoc[Uninstall] relies on that record.
+Before running a downloaded file, check it as described in xref:verify.adoc[Verify Releases].
+
+== Mise
+
+[,bash]
+----
+mise use "forgejo:itiquette/gommitlint@<version>"
+----
+
+== GNU/Linux packages
+
+Download the package for your distribution and architecture from the {repo-base}/releases[releases page].
+
+[,bash]
+----
+# Ubuntu, Debian and other Debian-based operating systems:
+sudo dpkg -i <PACKAGE_FILE>
+
+# Fedora and other Red Hat-based operating systems:
+sudo rpm -i <PACKAGE_FILE>
+
+# Alpine:
+sudo apk add --allow-untrusted <PACKAGE_FILE>
+----
+
+Debian packages are named with `amd64`/`arm64`; RPM and Alpine packages use `x86_64`/`aarch64`; release archives use `x86_64`/`arm64`.
+
+== BSD and macOS
+
+Download and extract the archive for your platform and architecture from the {repo-base}/releases[releases page].
+macOS binaries are cross-compiled, untested, and currently unsupported.
+
+== Container
+
+[,bash]
+----
+podman run --rm --pull=never --network=none --read-only <IMAGE> --help
+----
+
+Two images are published from the unreleased 0.10.0 line.
+The default image, tagged `<version>`, is Alpine-based and includes Git, so it validates SHA-1 and SHA-256 repositories.
+The image tagged `<version>-distroless` is minimal and contains no Git, so it validates SHA-1 repositories only.
+Published 0.9.x releases used the opposite naming: the plain tag was the distroless image and `<version>-alpine` the one with Git.
+
+Mount the repository at `/repo`, the default image's working directory and the one path its Git trusts:
+
+[,bash]
+----
+podman run --rm --network=none --read-only -v "$PWD:/repo:ro" <IMAGE> validate --no-ci-detect
+----
+
+== Supported platforms
+
+The platform and architecture table is in xref:reference.adoc#platform-support[Reference → Platform Support].
+
+== SHA-256 Git repositories
+
+The unreleased 0.10.0 line detects SHA-256 repositories with a single `gommitlint` binary, and needs git installed for that feature.
+Published 0.9.x releases still require the separate `gommitlint-sha256` archive.
+Regular SHA-1 repositories keep using the embedded go-git adapter.
+See xref:sha256-repositories.adoc[SHA-256 Repositories] for the details.
+
+== Next steps
+
+* xref:tutorial.adoc[Tutorial] — validate your first commit
+* xref:shell-completion.adoc[Shell Completion]
+* xref:usecases/hook-lifecycle.adoc[Git Hook Lifecycle]
