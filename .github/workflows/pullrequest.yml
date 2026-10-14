@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   pr-checks:
-    uses: hanklankorg/fc-forge-ci/.github/workflows/pullrequest-orchestrator.yml@de3d259e079867ddbfea8d85a32859feef25d73d
+    uses: hanklankorg/fc-forge-ci/.github/workflows/pullrequest-orchestrator.yml@ad8c4a69d80f39f8196f9b0c5813d9b0b8c9c85e
     secrets: inherit
     permissions:
       contents: read
@@ -29,7 +29,7 @@ jobs:
       security-events: write
     with:
       forge-ci-binary-ref: v0.90.0-pre
-      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-de3d259
+      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-ad8c4a6
       project-type: go
       lint-engine: nanolinter
       # The trial names a mirror of the Go flavour here.
