@@ -20,3 +20,5 @@ The release is deliberately smaller than `.forgejo/workflows/release.yml`.
 Forge CI's GitHub orchestrator builds plain binaries and images; archives,
 distribution packages, the distroless image and key-based Cosign belong to the
 Forgejo release and are not reproduced here.
+
+Hosted trial pull request.
