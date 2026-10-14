@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   release:
-    uses: hanklankorg/fc-forge-ci/.github/workflows/release-orchestrator.yml@eeab0e1add0f7034e389e5fe948904c8cb643273
+    uses: hanklankorg/fc-forge-ci/.github/workflows/release-orchestrator.yml@d1d399e869c58afaed87fa444e95d846305e678a
     permissions:
       contents: write
       packages: write
@@ -35,9 +35,9 @@ jobs:
     with:
       branch: main
       forge-ci-binary-ref: v0.90.0-pre
-      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-eeab0e1
-      runtime-image-full: ghcr.io/hanklankorg/forge-ci-runtime:sha-eeab0e1
-      runtime-image-go: ghcr.io/hanklankorg/forge-ci-runtime-go-1.27:sha-eeab0e1
+      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-d1d399e
+      runtime-image-full: ghcr.io/hanklankorg/forge-ci-runtime:sha-d1d399e
+      runtime-image-go: ghcr.io/hanklankorg/forge-ci-runtime-go-1.27:sha-d1d399e
       artifacts-config: test/live/github/artifacts.yml
       changelog-creator: git-cliff
       release-publisher: github-cli
