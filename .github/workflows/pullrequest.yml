@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   pr-checks:
-    uses: hanklankorg/fc-forge-ci/.github/workflows/pullrequest-orchestrator.yml@ab8dfb93b6ca383e903d49053b7a189ed9f0c3e7
+    uses: hanklankorg/fc-forge-ci/.github/workflows/pullrequest-orchestrator.yml@a9a681047a1bf2429ba6617b829815f2ddfadd65
     # No secrets: the gate's only one, CODE_SCANNING_TOKEN, is for SARIF upload.
     # The orchestrator's documented caller grant (docs/reference.md): a job
     # asking for more than its caller grants stops the run before it starts.
@@ -30,7 +30,7 @@ jobs:
       actions: read
     with:
       forge-ci-binary-ref: v0.90.0-pre
-      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-ab8dfb9
+      runtime-image: ghcr.io/hanklankorg/forge-ci-runtime-base:sha-a9a6810
       project-type: go
       lint-engine: nanolinter
       # The trial names a mirror of the Go flavour here.
