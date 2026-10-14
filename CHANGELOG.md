@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [release-request/v0.1.4] - 2026-10-14
+
+### Changed
+
+- Use forge-ci eeab0e1 for the hosted trial
+- Use forge-ci 89af0d8 for the hosted trial
+
+## [0.1.3] - 2026-10-14
+
+
 ## [release-request/v0.1.3] - 2026-10-14
 
 ### Changed
@@ -41,6 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use forge-ci ad8c4a6 for the hosted trial
 - Import gommitlint 8a9266d for the hosted trial
 
+[release-request/v0.1.4]: https://github.com/hanklankorg/fc-gommitlint/compare/v0.1.3..release-request/v0.1.4
+[0.1.3]: https://github.com/hanklankorg/fc-gommitlint/compare/release-request/v0.1.3..v0.1.3
 [release-request/v0.1.3]: https://github.com/hanklankorg/fc-gommitlint/compare/v0.1.2..release-request/v0.1.3
 [0.1.2]: https://github.com/hanklankorg/fc-gommitlint/compare/release-request/v0.1.2..v0.1.2
 [release-request/v0.1.2]: https://github.com/hanklankorg/fc-gommitlint/compare/v0.1.1..release-request/v0.1.2
